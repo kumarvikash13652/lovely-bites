@@ -53,12 +53,109 @@
 </head>
 <body>
 
-    <nav>
-        <div class="logo">ANAND MAKHANA</div>
-        <div>
-            <a href="#buy" class="btn btn-primary" style="font-size: 0.8rem;">Buy Now</a>
+   <nav class="navbar">
+    <div class="logo-container">
+        <img src="https://maximum-bronze-clavuwxidq.edgeone.app/%E0%A4%86%E0%A4%A8%E0%A4%82%E0%A4%A6%20(1).png" 
+             alt="Anand Logo" class="brand-logo">
+        
+        <div class="usp-text">
+            <span class="usp-main">शुद्ध आर्गेनिक: बिहार के वेटलैंड्स से</span>
+            <span class="usp-sub">Direct from the Farm of Origin</span>
         </div>
-    </nav>
+    </div>
+    
+    <div class="nav-actions">
+        <a href="#buy" class="btn btn-primary nav-buy-btn">Buy Now</a>
+    </div>
+</nav>
+
+<style>
+    .navbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 5%;
+        background: #ffffff;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .logo-container {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex: 1; /* Allows logo area to take available space */
+    }
+
+    .brand-logo {
+        height: 55px;
+        width: auto;
+        flex-shrink: 0; /* Prevents logo from getting crushed */
+    }
+
+    .usp-text {
+        display: flex;
+        flex-direction: column;
+        border-left: 2px solid #FFD700;
+        padding-left: 10px;
+    }
+
+    .usp-main {
+        font-size: 0.9rem;
+        font-weight: 700;
+        color: #2d5a27;
+        line-height: 1.2;
+    }
+
+    .usp-sub {
+        font-size: 0.7rem;
+        color: #666;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+    }
+
+    .nav-buy-btn {
+        font-size: 0.8rem !important;
+        padding: 6px 15px !important;
+        white-space: nowrap; /* Keeps "Buy Now" on one line */
+    }
+
+    /* --- MOBILE VIEW OPTIMIZATION --- */
+    @media (max-width: 600px) {
+        .navbar {
+            padding: 8px 3%;
+        }
+        
+        .brand-logo {
+            height: 40px; /* Slightly smaller on mobile */
+        }
+
+        .usp-text {
+            padding-left: 8px;
+            gap: 2px;
+        }
+
+        .usp-main {
+            font-size: 0.65rem; /* Small enough to fit but still readable */
+            max-width: 130px;    /* Prevents text from pushing the button off-screen */
+            display: block;
+        }
+
+        .usp-sub {
+            font-size: 0.55rem;
+            display: block;
+        }
+
+        .nav-buy-btn {
+            font-size: 0.7rem !important;
+            padding: 5px 10px !important;
+        }
+    }
+</style>
 
 
 
