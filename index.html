@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anand Makhana | Premium Foxnuts from Mithila</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* CSS Reset & Variables */
+        * { margin: 0; padding: 0; box-box: border-box; }
+        :root {
+            --primary: #8B4513; /* Earthy Brown */
+            --accent: #E67E22;  /* Roasted Orange */
+            --light: #FDF5E6;   /* Creamy White */
+            --dark: #2C3E50;
+        }
+
+        body { font-family: 'Poppins', sans-serif; background: var(--light); color: var(--dark); line-height: 1.6; }
+
+        /* Navigation */
+        nav { background: white; padding: 1rem 5%; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .logo { font-weight: 700; font-size: 1.5rem; color: var(--primary); }
+
+        /* Hero Section */
+        .hero { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 100px 5%; background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1622321458266-435967074218?auto=format&fit=crop&w=1350&q=80'); background-size: cover; background-position: center; color: white; min-height: 80vh; }
+        .hero h1 { font-size: 3.5rem; margin-bottom: 1rem; }
+        .hero p { font-size: 1.2rem; max-width: 600px; margin-bottom: 2rem; }
+
+        /* Buttons */
+        .btn { padding: 12px 30px; border-radius: 50px; text-decoration: none; font-weight: 600; transition: 0.3s; display: inline-block; cursor: pointer; border: none; }
+        .btn-primary { background: var(--accent); color: white; margin: 5px; }
+        .btn-primary:hover { background: #d35400; transform: translateY(-2px); }
+
+        /* Features Section */
+        .features { padding: 80px 5%; display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px; text-align: center; }
+        .feature-card { background: white; padding: 40px 20px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+        .feature-card h3 { color: var(--primary); margin-bottom: 15px; }
+
+        /* Product Preview */
+        .product-section { background: white; padding: 80px 5%; text-align: center; }
+        .product-box { border: 2px solid var(--light); display: inline-block; padding: 20px; border-radius: 20px; }
+        .product-img { max-width: 300px; width: 100%; border-radius: 10px; }
+
+        /* Mobile Responsive Adjustments */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.2rem; }
+            .hero p { font-size: 1rem; }
+            nav { flex-direction: column; gap: 10px; }
+        }
+
+        footer { background: var(--dark); color: white; padding: 40px 5%; text-align: center; }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="logo">ANAND MAKHANA</div>
+        <div>
+            <a href="#buy" class="btn btn-primary" style="font-size: 0.8rem;">Buy Now</a>
+        </div>
+    </nav>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="announcement-strip">
+    <div class="scrolling-text">
+        <span>🎉 Special Launch Offer: Get 10% Off on your first Amazon order!</span>
+        <span>🚚 Free Delivery on orders above ₹499 in Gurugram & Delhi</span>
+        <span>✨ Authentic Mithila Makhana - Direct from the Farm</span>
+        <span>🎉 Special Launch Offer: Get 10% Off on your first Amazon order!</span>
+    </div>
+</div>
+
+<style>
+    .announcement-strip {
+        background: #333; /* Dark contrast color */
+        color: #fff;
+        padding: 8px 0;
+        font-size: 0.85rem;
+        font-weight: 500;
+        overflow: hidden;
+        white-space: nowrap;
+        border-bottom: 2px solid var(--accent);
+    }
+
+    .scrolling-text {
+        display: inline-block;
+        padding-left: 100%;
+        animation: scroll-left 25s linear infinite;
+    }
+
+    .scrolling-text span {
+        padding-right: 50px; /* Space between announcements */
+    }
+
+    @keyframes scroll-left {
+        0% { transform: translateX(0); }
+        100% { transform: translateX(-100%); }
+    }
+
+    /* Pause animation on hover so people can read/click */
+    .announcement-strip:hover .scrolling-text {
+        animation-play-state: paused;
+    }
+
+    /* Mobile adjustment */
+    @media (max-width: 768px) {
+        .announcement-strip {
+            font-size: 0.75rem;
+            padding: 5px 0;
+        }
+    }
+</style>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="image-banner-strip">
+    <div class="banner-overlay">
+        <span class="banner-tag">Harvested in Mithila, Bihar</span>
+    </div>
+</div>
+
+<style>
+    .image-banner-strip {
+        width: 100%;
+        height: 250px; /* Adjust height as needed */
+        background-image: url('https://images.unsplash.com/photo-1622321458266-435967074218?auto=format&fit=crop&w=1500&q=80'); /* Professional Makhana-style placeholder */
+        background-size: cover;
+        background-position: center;
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-bottom: 4px solid var(--accent);
+    }
+
+    .banner-overlay {
+        background: rgba(0, 0, 0, 0.4); /* Darkens the image slightly for text readability */
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .banner-tag {
+        color: white;
+        font-size: 1.2rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        border: 2px solid white;
+        padding: 10px 25px;
+        background: rgba(139, 69, 19, 0.6); /* Semi-transparent Earthy Brown */
+    }
+
+    /* Mobile view: Makes the banner shorter so it doesn't take the whole screen */
+    @media (max-width: 768px) {
+        .image-banner-strip {
+            height: 150px;
+        }
+        .banner-tag {
+            font-size: 0.9rem;
+            padding: 8px 15px;
+        }
+    }
+</style>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <section class="hero">
+        <h1>Handpicked from Mithila</h1>
+        <p>Experience the crunch of jumbo-sized foxnuts, roasted to perfection. Direct from the heart of Bihar to your doorstep.</p>
+        <div id="buy">
+            <a href="#" class="btn btn-primary">Shop on Amazon</a>
+            <a href="#" class="btn btn-primary" style="background: #fb641b;">Buy on Blinkit</a>
+        </div>
+    </section>
+
+    <section class="features">
+        <div class="feature-card">
+            <h3>Jumbo Size</h3>
+            <p>Every nut is graded to ensure only the largest, fluffiest makhana reach you.</p>
+        </div>
+        <div class="feature-card">
+            <h3>Mithila Sourced</h3>
+            <p>Authentically grown in the wetlands of Bihar, the home of Makhana.</p>
+        </div>
+        <div class="feature-card">
+            <h3>Zero Trans-Fat</h3>
+            <p>The perfect healthy snack for weight loss and heart health.</p>
+        </div>
+    </section>
+
+    <section class="product-section">
+        <h2>Our Bestseller</h2>
+        <div class="product-box">
+            <img src="https://images.unsplash.com/photo-1599420186946-7b6fb4e297f0?auto=format&fit=crop&w=500&q=80" alt="Makhana Pack" class="product-img">
+            <h3>Premium 250g Pack</h3>
+            <p style="color: var(--accent); font-weight: bold; font-size: 1.5rem;">₹349</p>
+            <p>Inclusive of all taxes</p>
+        </div>
+
+<div class="product-box">
+            <img src="https://images.unsplash.com/photo-1599420186946-7b6fb4e297f0?auto=format&fit=crop&w=500&q=80" alt="Makhana Pack" class="product-img">
+            <h3>Premium 250g Pack</h3>
+            <p style="color: var(--accent); font-weight: bold; font-size: 1.5rem;">₹349</p>
+            <p>Inclusive of all taxes</p>
+        </div>
+<div class="product-box">
+            <img src="https://images.unsplash.com/photo-1599420186946-7b6fb4e297f0?auto=format&fit=crop&w=500&q=80" alt="Makhana Pack" class="product-img">
+            <h3>Premium 250g Pack</h3>
+            <p style="color: var(--accent); font-weight: bold; font-size: 1.5rem;">₹349</p>
+            <p>Inclusive of all taxes</p>
+        </div>
+    </section>
+
+
+
+
+
+<section class="product-section">
+        <h2>Our Bestseller</h2>
+        <div class="product-box">
+            <img src="https://images.unsplash.com/photo-1599420186946-7b6fb4e297f0?auto=format&fit=crop&w=500&q=80" alt="Makhana Pack" class="product-img">
+            <h3>Premium 250g Pack</h3>
+            <p style="color: var(--accent); font-weight: bold; font-size: 1.5rem;">₹349</p>
+            <p>Inclusive of all taxes</p>
+        </div>
+
+<div class="product-box">
+            <img src="https://images.unsplash.com/photo-1599420186946-7b6fb4e297f0?auto=format&fit=crop&w=500&q=80" alt="Makhana Pack" class="product-img">
+            <h3>Premium 250g Pack</h3>
+            <p style="color: var(--accent); font-weight: bold; font-size: 1.5rem;">₹349</p>
+            <p>Inclusive of all taxes</p>
+        </div>
+<div class="product-box">
+            <img src="https://images.unsplash.com/photo-1599420186946-7b6fb4e297f0?auto=format&fit=crop&w=500&q=80" alt="Makhana Pack" class="product-img">
+            <h3>Premium 250g Pack</h3>
+            <p style="color: var(--accent); font-weight: bold; font-size: 1.5rem;">₹349</p>
+            <p>Inclusive of all taxes</p>
+        </div>
+    </section>
+
+
+
+
+
+    <footer>
+        <p>&copy; 2026 Anand Makhana. Produced in Bihar | Marketed in Gurugram.</p>
+	<p>Reg Office : Ward 05, Madhepura, 852113 (Bihar) | Contact : 73196XXXXX</p>
+	<p>GSTIN : XXXXXXXXXX | FSSAI Lic No. XXXXXXXXXXXXXXXXXXXXXXXXXX</p>
+    </footer>
+
+</body>
+</html>
