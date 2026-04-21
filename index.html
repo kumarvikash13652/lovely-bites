@@ -3,567 +3,103 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Anand Makhana | Premium Foxnuts from Mithila</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <title>Lovely Bites | Authentic Bihar Products</title>
     <style>
-        /* CSS Reset & Variables */
-        * { margin: 0; padding: 0; box-box: border-box; }
         :root {
-            --primary: #8B4513; /* Earthy Brown */
-            --accent: #E67E22;  /* Roasted Orange */
-            --light: #FDF5E6;   /* Creamy White */
-            --dark: #2C3E50;
+            --primary: #00008B; /* Dark Blue */
+            --accent: #FFD700; /* Yellow */
+            --bg: #FFFFFF;
+            --text: #00008B;
         }
-
-        body { font-family: 'Poppins', sans-serif; background: var(--light); color: var(--dark); line-height: 1.6; }
-
-        /* Navigation */
-        nav { background: white; padding: 1rem 5%; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        .logo { font-weight: 700; font-size: 1.5rem; color: var(--primary); }
-
-        /* Hero Section */
-        .hero { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 100px 5%; background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1622321458266-435967074218?auto=format&fit=crop&w=1350&q=80'); background-size: cover; background-position: center; color: white; min-height: 80vh; }
-        .hero h1 { font-size: 3.5rem; margin-bottom: 1rem; }
-        .hero p { font-size: 1.2rem; max-width: 600px; margin-bottom: 2rem; }
-
-        /* Buttons */
-        .btn { padding: 12px 30px; border-radius: 50px; text-decoration: none; font-weight: 600; transition: 0.3s; display: inline-block; cursor: pointer; border: none; }
-        .btn-primary { background: var(--accent); color: white; margin: 5px; }
-        .btn-primary:hover { background: #d35400; transform: translateY(-2px); }
-
-        /* Features Section */
-        .features { padding: 80px 5%; display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px; text-align: center; }
-        .feature-card { background: white; padding: 40px 20px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
-        .feature-card h3 { color: var(--primary); margin-bottom: 15px; }
-
-        /* Product Preview */
-        .product-section { background: white; padding: 80px 5%; text-align: center; }
-        .product-box { border: 2px solid var(--light); display: inline-block; padding: 20px; border-radius: 20px; }
-        .product-img { max-width: 300px; width: 100%; border-radius: 10px; }
-
-        /* Mobile Responsive Adjustments */
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; background: var(--bg); color: var(--text); }
+        header, footer { background: var(--primary); color: white; padding: 1.5rem; text-align: center; }
+        .yellow { color: var(--accent); }
+        
+        /* Logo Styling */
+        .logo { font-size: 2rem; font-weight: bold; margin-bottom: 10px; }
+        .logo img { max-height: 80px; }
+        
+        /* Hero Banner (Can be hidden) */
+        .hero { position: relative; height: 350px; background: #ddd; display: flex; align-items: center; justify-content: center; overflow: hidden; margin-bottom: 20px; }
+        
+        /* Product Grid */
+        .product-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; padding: 20px; max-width: 1200px; margin: auto; }
+        .product-card { border: 2px solid var(--primary); padding: 15px; text-align: center; border-radius: 8px; }
+        .product-card img { width: 100%; height: 150px; object-fit: cover; margin-bottom: 10px; }
+        
         @media (max-width: 768px) {
-            .hero h1 { font-size: 2.2rem; }
-            .hero p { font-size: 1rem; }
-            nav { flex-direction: column; gap: 10px; }
+            .product-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
         }
-
-        footer { background: var(--dark); color: white; padding: 40px 5%; text-align: center; }
+        
+        .btn { display: block; margin: 5px 0; padding: 8px; background: var(--primary); color: white; text-decoration: none; border-radius: 4px; font-size: 0.85rem; font-weight: bold; }
+        .btn:hover { background: var(--accent); color: var(--primary); }
+        
+        .make-in-bharat { text-align: center; padding: 20px; background: #f9f9f9; }
+        .marketplace { font-size: 1.1rem; margin-top: 10px; }
     </style>
 </head>
 <body>
 
-    <nav class="navbar">
-        <div class="logo-container">
-            <div class="brand-text-logo">
-                <span class="brand-lovely">LOVELY</span>
-                <span class="brand-bites">BITES</span>
-            </div>
-        </div>
-        
-        <div class="nav-actions">
-            <a href="#buy" class="btn btn-primary nav-buy-btn">Buy Now</a>
-        </div>
-    </nav>
-    
-    <style>
-        /* Google Fonts for the new brand name */
-        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&family=Poppins:wght@400;600&display=swap');
-    
-        .navbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 5%;
-            background: #ffffff;
-            box-shadow: 0 2px 15px rgba(0,0,0,0.08);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            width: 100%;
-            box-sizing: border-box;
-        }
-    
-        .logo-container {
-            display: flex;
-            align-items: center;
-            flex: 1;
-        }
-    
-        /* Stylizing "Lovely Bites" */
-        .brand-text-logo {
-            display: flex;
-            flex-direction: column;
-            line-height: 0.9;
-            cursor: pointer;
-        }
-    
-        .brand-lovely {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: #d4af37; /* Metallic Gold color */
-            letter-spacing: 1px;
-        }
-    
-        .brand-bites {
-            font-family: 'Poppins', sans-serif;
-            font-size: 1rem;
-            font-weight: 600;
-            color: #2d5a27; /* Organic Green */
-            letter-spacing: 4px;
-            margin-left: 2px;
-        }
-    
-        .nav-buy-btn {
-            font-family: 'Poppins', sans-serif;
-            font-size: 0.85rem !important;
-            font-weight: 600;
-            padding: 10px 22px !important;
-            border-radius: 50px !important;
-            background: #2d5a27 !important; /* Matching Green */
-            border: none !important;
-            transition: transform 0.2s ease;
-        }
-    
-        .nav-buy-btn:hover {
-            transform: scale(1.05);
-            background: #1e3d1a !important;
-        }
-    
-        /* --- MOBILE VIEW --- */
-        @media (max-width: 600px) {
-            .navbar {
-                padding: 10px 4%;
-            }
-            .brand-lovely {
-                font-size: 1.4rem;
-            }
-            .brand-bites {
-                font-size: 0.8rem;
-                letter-spacing: 3px;
-            }
-            .nav-buy-btn {
-                font-size: 0.75rem !important;
-                padding: 8px 16px !important;
-            }
-        }
-    </style>
-
-
-
-
-
-
-
-
-
-
-
-
-<div class="announcement-strip">
-    <div class="scrolling-text">
-    <span>🏆 **Authentic Mithila Makhana:** Proudly GI Tagged – The Gold Standard of Purity!</span>
-    
-    <span>🌾 **Premium Beaten Rice:** Traditional Katarni Poha – Light, Nutritious with Natural Aroma & Perfectly Flattened.</span>
-    
-    <span>💪 **Superfood Special:** Farm-Fresh Ragi (Finger Millet) & Golden Corn Flours.</span>
-    
-    <!---<span>🚚 **Fast Delivery:** Free Shipping on orders above ₹499 in Gurugram & Delhi!</span>--->
-    
-    <span>✨ **Anand Makhana:** From the Wetlands of Bihar to your Kitchen.</span>
-    <!---<span>🎁 **First Order Perk:** Use code ANAND10 for 10% Off on Amazon India!</span>--->
-</div>
-</div>
-
-<style>
-    .announcement-strip {
-        background: #333; /* Dark contrast color */
-        color: #fff;
-        padding: 8px 0;
-        font-size: 0.85rem;
-        font-weight: 500;
-        overflow: hidden;
-        white-space: nowrap;
-        border-bottom: 2px solid var(--accent);
-    }
-
-    .scrolling-text {
-        display: inline-block;
-        padding-left: 100%;
-        animation: scroll-left 25s linear infinite;
-    }
-
-    .scrolling-text span {
-        padding-right: 50px; /* Space between announcements */
-    }
-
-    @keyframes scroll-left {
-        0% { transform: translateX(0); }
-        100% { transform: translateX(-100%); }
-    }
-
-    /* Pause animation on hover so people can read/click */
-    .announcement-strip:hover .scrolling-text {
-        animation-play-state: paused;
-    }
-
-    /* Mobile adjustment */
-    @media (max-width: 768px) {
-        .announcement-strip {
-            font-size: 0.75rem;
-            padding: 5px 0;
-        }
-    }
-</style>
-
-
-
-
-
-
-
-<br>
-
-
-
-
-
-<div class="image-banner-strip">
-    <div class="banner-overlay">
-        <!---<span class="banner-tag">Harvested in Mithila, Bihar</span>--->
+<header>
+    <div class="logo">
+        <!-- Logo Image Option -->
+        <!-- <img src="logo.png" alt="Lovely Bites"> -->
+        Lovely Bites
     </div>
-</div>
+    <div class="marketplace">Available on <span class="yellow">Amazon</span> & <span class="yellow">Meesho</span></div>
+</header>
 
-<style>
-    .image-banner-strip {
-        width: 100%;
-        height: 250px; /* Adjust height as needed */
-        background-image: url('https://www.mbamakhanawala.com/wp-content/uploads/2023/03/makhana-banner-e1680071127184-1-980x274.png'); /* Professional Makhana-style placeholder */
-        background-size: cover;
-        background-position: center;
-        position: relative;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-bottom: 4px solid var(--accent);
-    }
-
-    .banner-overlay {
-        background: rgba(0, 0, 0, 0.4); /* Darkens the image slightly for text readability */
-        width: 100%;
-        height: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .banner-tag {
-        color: white;
-        font-size: 1.2rem;
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 2px;
-        border: 2px solid white;
-        padding: 10px 25px;
-        background: rgba(139, 69, 19, 0.6); /* Semi-transparent Earthy Brown */
-    }
-
-    /* Mobile view: Makes the banner shorter so it doesn't take the whole screen */
-    @media (max-width: 768px) {
-        .image-banner-strip {
-            height: 150px;
-        }
-        .banner-tag {
-            font-size: 0.9rem;
-            padding: 8px 15px;
-        }
-    }
-</style>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<br>
-
-
-
-
-
-
-   <section class="hero">
-    <div class="hero-content">
-        <h1>Handpicked from Mithila</h1>
-        <p>Experience the crunch of jumbo-sized foxnuts, roasted to perfection. Direct from the heart of Bihar to your doorstep.</p>
-        <div id="buy">
-            <a href="https://www.amazon.in" target="_blank" class="btn btn-primary">Shop on Amazon</a>
-            <a href="https://www.blinkit.com" target="_blank" class="btn btn-primary btn-blinkit">Buy on Blinkit</a>
-        </div>
-    </div>
+<!-- Hero Banner Section -->
+<section class="hero">
+    <div class="hero-slide"><h2>Authentic Bihar Products Carousel</h2></div>
 </section>
 
-<style>
-    .hero {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        text-align: center;
-        min-height: 85vh;
-        padding: 0 5%;
-        /* The linear-gradient creates a dark "tint" so white text is easy to read */
-        background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), 
-                    url('https://images.emtcontent.com/tourism/bihar-img/home3.webp');
-        background-size: cover;
-        background-position: center;
-        background-attachment: fixed; /* Creates a nice parallax scrolling effect */
-        color: white;
-    }
+<section class="make-in-bharat">
+    <h3>A <span class="yellow">MAKE IN BHARAT</span> Initiative</h3>
+</section>
 
-    .hero-content {
-        max-width: 800px;
-        animation: fadeIn 1.5s ease-in;
-    }
-
-    .hero h1 {
-        font-size: 4rem;
-        margin-bottom: 1.5rem;
-        text-shadow: 2px 2px 10px rgba(0,0,0,0.5);
-        font-weight: 700;
-    }
-
-    .hero p {
-        font-size: 1.3rem;
-        margin-bottom: 2.5rem;
-        text-shadow: 1px 1px 5px rgba(0,0,0,0.5);
-        font-weight: 400;
-    }
-
-    .btn-blinkit {
-        background: #fb641b;
-        margin-left: 10px;
-    }
-
-    /* Animation to make the site feel premium */
-    @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(20px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-
-    /* Mobile Responsive Adjustments */
-    @media (max-width: 768px) {
-        .hero {
-            background-attachment: scroll; /* Fixed background doesn't work well on some phones */
-            min-height: 70vh;
-        }
-        .hero h1 {
-            font-size: 2.5rem;
-        }
-        .hero p {
-            font-size: 1.1rem;
-        }
-        .btn {
-            display: block;
-            margin: 10px auto;
-            width: 80%;
-        }
-    }
-</style>
-
-    <section class="features">
-        <div class="feature-card">
-            <h3>Jumbo Size</h3>
-            <p>Every nut is graded to ensure only the largest, fluffiest makhana reach you.</p>
+<main>
+    <div class="product-grid">
+        <!-- Product 1 -->
+        <div class="product-card">
+            <img src="https://via.placeholder.com/150" alt="Makhana">
+            <h4>Makhana</h4>
+            <a href="#" class="btn">Buy on Meesho</a>
+            <a href="#" class="btn">Buy on Amazon</a>
+            <a href="#" class="btn">Other</a>
         </div>
-        <div class="feature-card">
-            <h3>Mithila Sourced</h3>
-            <p>Authentically grown in the wetlands of Bihar, the home of Makhana.</p>
+        <!-- Product 2 -->
+        <div class="product-card">
+            <img src="https://via.placeholder.com/150" alt="Katarni Poha">
+            <h4>Katarni Poha</h4>
+            <a href="#" class="btn">Buy on Meesho</a>
+            <a href="#" class="btn">Buy on Amazon</a>
+            <a href="#" class="btn">Other</a>
         </div>
-        <div class="feature-card">
-            <h3>Zero Trans-Fat</h3>
-            <p>The perfect healthy snack for weight loss and heart health.</p>
+        <!-- Product 3 -->
+        <div class="product-card">
+            <img src="https://via.placeholder.com/150" alt="Millets">
+            <h4>Millets Flour</h4>
+            <a href="#" class="btn">Buy on Meesho</a>
+            <a href="#" class="btn">Buy on Amazon</a>
+            <a href="#" class="btn">Other</a>
         </div>
-    </section>
-
-    <section class="product-section">
-        <h2>Our Bestseller</h2>
-        <div class="product-box">
-            <img src="https://austexagro.com/wp-content/uploads/2025/05/Roasted-Makhana-2-3.jpg" alt="Makhana Pack" class="product-img">
-            <h3>Premium 250g Pack</h3>
-            <p style="color: var(--accent); font-weight: bold; font-size: 1.5rem;">₹349</p>
-            <p>Inclusive of all taxes</p>
+        <!-- Product 4 -->
+        <div class="product-card">
+            <img src="https://via.placeholder.com/150" alt="Other">
+            <h4>Special GI Product</h4>
+            <a href="#" class="btn">Buy on Meesho</a>
+            <a href="#" class="btn">Buy on Amazon</a>
+            <a href="#" class="btn">Other</a>
         </div>
-
-<div class="product-box">
-            <img src="https://austexagro.com/wp-content/uploads/2025/05/Roasted-Makhana-2-3.jpg" alt="Makhana Pack" class="product-img">
-            <h3>Premium 250g Pack</h3>
-            <p style="color: var(--accent); font-weight: bold; font-size: 1.5rem;">₹349</p>
-            <p>Inclusive of all taxes</p>
-        </div>
-<div class="product-box">
-            <img src="https://austexagro.com/wp-content/uploads/2025/05/Roasted-Makhana-2-3.jpg" alt="Makhana Pack" class="product-img">
-            <h3>Premium 250g Pack</h3>
-            <p style="color: var(--accent); font-weight: bold; font-size: 1.5rem;">₹349</p>
-            <p>Inclusive of all taxes</p>
-        </div>
-    </section>
-
-
-
-
-
-<section class="product-section">
-        <h2>Our Bestseller</h2>
-        <div class="product-box">
-            <img src="https://austexagro.com/wp-content/uploads/2025/05/Roasted-Makhana-2-3.jpg" alt="Makhana Pack" class="product-img">
-            <h3>Premium 250g Pack</h3>
-            <p style="color: var(--accent); font-weight: bold; font-size: 1.5rem;">₹349</p>
-            <p>Inclusive of all taxes</p>
-        </div>
-
-<div class="product-box">
-            <img src="https://austexagro.com/wp-content/uploads/2025/05/Roasted-Makhana-2-3.jpg" alt="Makhana Pack" class="product-img">
-            <h3>Premium 250g Pack</h3>
-            <p style="color: var(--accent); font-weight: bold; font-size: 1.5rem;">₹349</p>
-            <p>Inclusive of all taxes</p>
-        </div>
-<div class="product-box">
-            <img src="https://austexagro.com/wp-content/uploads/2025/05/Roasted-Makhana-2-3.jpg" alt="Makhana Pack" class="product-img">
-            <h3>Premium 250g Pack</h3>
-            <p style="color: var(--accent); font-weight: bold; font-size: 1.5rem;">₹349</p>
-            <p>Inclusive of all taxes</p>
-        </div>
-    </section>
-
-
-
-
-
-    
-
-<footer class="site-footer">
-    <div class="footer-content">
-        <div class="make-in-india-box">
-            <img src="https://i0.wp.com/myvoice.opindia.com/wp-content/uploads/sites/3/2019/01/mii.png?ssl=1" 
-                 alt="Make In India Logo" class="mii-logo">
-            <p class="mii-text">A Proud <span>Make In India</span> Initiative</p>
-        </div>
-        
-        <hr class="footer-divider">
-        
-        <p class="copyright">
-            &copy; 2026 <strong>Anand Makhana</strong>. 
-            <span class="location-tag">Produced in Bihar</span> | 
-            <span class="location-tag">Marketed Nationwide</span>
-        </p>
-
- <p class="copyright"> 
-            <span class="location-tag">GST : 10JQBPK5246N1ZO</span> | 
-            <span class="location-tag">FSSAI Lic No : XXXXXXXXXXXXXXXXXXXX</span>
-        </p>
-
-<hr class="footer-divider">
-
- <div class="make-in-india-box">
-            <!---<img src="https://i0.wp.com/myvoice.opindia.com/wp-content/uploads/sites/3/2019/01/mii.png?ssl=1" 
-                 alt="Make In India Logo" class="mii-logo">--->
-            <p class="mii-text"> <span>CONTACT US</span> </p>
-        </div>
-
-<p class="copyright">
-             
-            <span class="location-tag">Mob : 73196******</span> | 
-            <span class="location-tag">email : 13abhi***92@gmail.com</span>
-        </p>
-  <p class="copyright">
-            <strong>Address</strong>. 
-            <span class="location-tag">Vill :Sakarpura, Dist :Madhepura, PIN :852113</span> | 
-            <span class="location-tag">(Bihar)</span>
-        </p>
-        
     </div>
+</main>
+
+<footer>
+    <p>Brand Info: GSTIN | FSSAI | MSME Member</p>
+    <p>Address: XXXXX | Mobile: XXXXXXXX | Email: XXXXXXXX</p>
+    <p>Manufacturing Unit: XXXXXXXXXXXXXXXXXXXXXX</p>
 </footer>
-
-<style>
-    .site-footer {
-        background: #1a1a1a; /* Sleek dark background */
-        color: #ffffff;
-        padding: 50px 5%;
-        text-align: center;
-        font-family: 'Poppins', sans-serif;
-    }
-
-    .footer-content {
-        max-width: 1000px;
-        margin: 0 auto;
-    }
-
-    .make-in-india-box {
-        margin-bottom: 30px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 15px;
-    }
-
-    .mii-logo {
-        width: 180px; /* Adjusted for desktop */
-        height: auto;
-        filter: brightness(1.1); /* Makes the logo pop on dark background */
-    }
-
-    .mii-text {
-        font-size: 1.1rem;
-        letter-spacing: 1px;
-        color: #cccccc;
-    }
-
-    .mii-text span {
-        color: #FFD700; /* Gold color for 'Make In India' */
-        font-weight: 700;
-        text-transform: uppercase;
-    }
-
-    .footer-divider {
-        border: 0;
-        height: 1px;
-        background: linear-gradient(to right, transparent, #444, transparent);
-        margin: 20px 0;
-    }
-
-    .copyright {
-        font-size: 0.9rem;
-        color: #888;
-        letter-spacing: 0.5px;
-    }
-
-    .location-tag {
-        color: #bbb;
-        margin: 0 5px;
-    }
-
-    /* Mobile View */
-    @media (max-width: 768px) {
-        .mii-logo {
-            width: 140px;
-        }
-        .mii-text {
-            font-size: 0.9rem;
-        }
-        .copyright {
-            line-height: 1.8;
-        }
-    }
-</style>
 
 </body>
 </html>
