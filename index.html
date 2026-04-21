@@ -11,7 +11,8 @@
             --bg: #FFFFFF;
             --text: #00008B;
         }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; background: var(--bg); color: var(--text); }
+        * { box-sizing: border-box; } /* Ensures padding doesn't break layout */
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; background: var(--bg); color: var(--text); overflow-x: hidden; }
         
         /* Header Fix */
         header { background: var(--primary); color: white; padding: 1.5rem; text-align: center; position: relative; }
@@ -27,23 +28,33 @@
             color: var(--accent);
             font-size: 0.85rem;
             font-weight: bold;
+            text-align: right;
         }
         
         /* Logo Styling */
         .logo { font-size: 2rem; font-weight: bold; margin-bottom: 10px; }
-        .logo img { max-height: 80px; }
+        .logo img { max-height: 80px; max-width: 90%; }
         
         /* Hero Banner */
         .hero { position: relative; height: 350px; background: #0293dc; display: flex; align-items: center; justify-content: center; overflow: hidden; margin-bottom: 20px; text-align: center; padding: 10px; }
         
-        /* Product Grid */
-        .product-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; padding: 20px; max-width: 1200px; margin: auto; }
+        /* Product Grid Fix */
+        .product-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; padding: 15px; max-width: 1200px; margin: auto; }
         .product-card { border: 2px solid var(--primary); padding: 15px; text-align: center; border-radius: 8px; }
-        .product-card img { width: 240px; height: 240px; object-fit: cover; margin-bottom: 10px; }
+        
+        /* Fixed Image Logic */
+        .product-card img { 
+            width: 240px; 
+            max-width: 100%; /* Makes image shrink on mobile */
+            height: 240px; 
+            object-fit: cover; 
+            margin-bottom: 10px; 
+        }
         
         @media (max-width: 768px) {
             .product-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
-            .gstin-top-right { font-size: 0.7rem; top: 5px; right: 5px; }
+            .product-card img { height: 150px; } /* Smaller height for mobile cards */
+            .gstin-top-right { font-size: 0.65rem; top: 5px; right: 5px; }
         }
         
         .btn { display: block; margin: 5px 0; padding: 8px; background: var(--primary); color: white; text-decoration: none; border-radius: 4px; font-size: 0.85rem; font-weight: bold; }
@@ -57,7 +68,6 @@
 
 <header>
     <div class="gstin-top-right">K L ENTERPRISE <br> GSTIN: 10JQBPK5246N1ZO</div>
-<br>
     <div class="logo">
         <img src="https://i.ibb.co/mFyGcMzs/Whats-App-Image-2026-04-21-at-12-22-57-removebg-preview.png" alt="Lovely Bites"> 
     </div>
@@ -107,41 +117,8 @@
     </div>
 </main>
 
-<!--<main>
-    <div class="product-grid">
-        <div class="product-card">
-            <img src="https://via.placeholder.com/150" alt="Makhana">
-            <h4>Makhana</h4>
-            <a href="#" class="btn">Buy on Meesho</a>
-            <a href="#" class="btn">Buy on Amazon</a>
-            <a href="#" class="btn">Other</a>
-        </div>
-        <div class="product-card">
-            <img src="https://via.placeholder.com/150" alt="Katarni Poha">
-            <h4>Katarni Poha</h4>
-            <a href="#" class="btn">Buy on Meesho</a>
-            <a href="#" class="btn">Buy on Amazon</a>
-            <a href="#" class="btn">Other</a>
-        </div>
-        <div class="product-card">
-            <img src="https://via.placeholder.com/150" alt="Millets">
-            <h4>Millets Flour</h4>
-            <a href="#" class="btn">Buy on Meesho</a>
-            <a href="#" class="btn">Buy on Amazon</a>
-            <a href="#" class="btn">Other</a>
-        </div>
-        <div class="product-card">
-            <img src="https://via.placeholder.com/150" alt="Other">
-            <h4>Special GI Product</h4>
-            <a href="#" class="btn">Buy on Meesho</a>
-            <a href="#" class="btn">Buy on Amazon</a>
-            <a href="#" class="btn">Other</a>
-        </div>
-    </div>
-</main>-->
-
 <footer>
-    <p>Brand Info:   FSSAI 20426290000095</p>
+    <p>Brand Info: FSSAI 20426290000095</p>
     <p>Address: Lovely Bites, Building : Shiv Kala Bhawan, Maharshi Menhi Nagar ward 05, Madhepura, PIN 852113, Bihar </p> 
     <p>Email: support@lovely-bites.shop</p>
     <p>Manufacturing Unit: Village : Sakarpura, Dist : Madhepura, PIN 852113 Bihar</p>
