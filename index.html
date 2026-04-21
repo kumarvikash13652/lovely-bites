@@ -10,8 +10,9 @@
             --accent: #FFD700; /* Yellow */
             --bg: #FFFFFF;
             --text: #00008B;
+            --blog-bg: #eef7fa; /* Light Blue background for blog */
         }
-        * { box-sizing: border-box; } /* Ensures padding doesn't break layout */
+        * { box-sizing: border-box; } 
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; background: var(--bg); color: var(--text); overflow-x: hidden; }
         
         /* Header Fix */
@@ -45,16 +46,31 @@
         /* Fixed Image Logic */
         .product-card img { 
             width: 240px; 
-            max-width: 100%; /* Makes image shrink on mobile */
+            max-width: 100%; 
             height: 240px; 
             object-fit: cover; 
             margin-bottom: 10px; 
         }
+
+        /* NEW: Blog Carousel Styling */
+        .blog-section { padding: 40px 20px; background: var(--blog-bg); margin-top: 30px; }
+        .blog-container { 
+            display: flex; gap: 20px; overflow-x: auto; padding-bottom: 20px;
+            max-width: 1200px; margin: auto; scroll-snap-type: x mandatory; 
+        }
+        .blog-tile { 
+            min-width: 280px; height: 280px; background: #fff; 
+            border: 2px solid var(--primary); border-radius: 12px; padding: 20px;
+            scroll-snap-align: start; text-align: center; display: flex; flex-direction: column; justify-content: center;
+        }
+        .blog-tile h4 { margin-top: 0; color: var(--primary); border-bottom: 2px solid var(--accent); padding-bottom: 5px; }
+        .blog-tile p { font-size: 0.9rem; line-height: 1.4; color: #333; }
         
         @media (max-width: 768px) {
             .product-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
-            .product-card img { height: 150px; } /* Smaller height for mobile cards */
+            .product-card img { height: 150px; } 
             .gstin-top-right { font-size: 0.65rem; top: 5px; right: 5px; }
+            .blog-tile { min-width: 220px; height: 250px; }
         }
         
         .btn { display: block; margin: 5px 0; padding: 8px; background: var(--primary); color: white; text-decoration: none; border-radius: 4px; font-size: 0.85rem; font-weight: bold; }
@@ -91,31 +107,49 @@
             <h4>Murmura/Mudhi</h4>
             <a href="https://www.meesho.com/LovelyBites?_ms=3.0.1" class="btn">Buy on Meesho</a>
             <a href="https://www.meesho.com/LovelyBites?_ms=3.0.1" class="btn">Buy on Amazon</a>
-            <!--<a href="#" class="btn">Other</a>-->
         </div>
         <div class="product-card">
             <img src="https://i.ibb.co/pBknH1GN/Poha-front.png" alt="Katarni Poha">
             <h4>Rare Katarni Poha</h4>
             <a href="https://www.meesho.com/LovelyBites?_ms=3.0.1" class="btn">Buy on Meesho</a>
-            <a href="https://www.meesho.com/LovelyBites?_ms=3.0.1" class="btn">Buy on Amazon</a>
-            <!--<a href="#" class="btn">Other</a>-->
+            <a href="#" class="btn">Buy on Amazon</a>
         </div>
         <div class="product-card">
             <img src="https://i.ibb.co/kgVxnDdP/makhana-front.png" alt="Makhana">
             <h4>Mithila Makhana</h4>
             <a href="https://www.meesho.com/LovelyBites?_ms=3.0.1" class="btn">Buy on Meesho</a>
             <a href="https://www.meesho.com/LovelyBites?_ms=3.0.1" class="btn">Buy on Amazon</a>
-            <!--<a href="#" class="btn">Other</a>-->
         </div>
         <div class="product-card">
             <img src="https://i.ibb.co/0jHdSjXd/sattu-front.png" alt="Sattu">
             <h4>Chana Sattu</h4>
             <a href="https://www.meesho.com/LovelyBites?_ms=3.0.1" class="btn">Buy on Meesho</a>
             <a href="https://www.meesho.com/LovelyBites?_ms=3.0.1" class="btn">Buy on Amazon</a>
-            <!--<a href="#" class="btn">Other</a>-->
         </div>
     </div>
 </main>
+
+<section class="blog-section">
+    <h2 style="text-align:center; color: var(--primary); margin-bottom: 20px;">Why Choose Authentic Bihar?</h2>
+    <div class="blog-container">
+        <div class="blog-tile">
+            <h4>Mithila Makhana (GI Tag)</h4>
+            <p>Our Makhana is GI-tagged and harvested from the wetlands of Mithila. It is naturally rich in antioxidants and vital minerals.</p>
+        </div>
+        <div class="blog-tile">
+            <h4>Bhagalpuri Katarni Poha</h4>
+            <p>Renowned for its unique natural aroma and delicate taste. A nutrient-dense, fiber-rich choice directly from the heart of Bhagalpur.</p>
+        </div>
+        <div class="blog-tile">
+            <h4>Chana Sattu & Energy</h4>
+            <p>Known as "The poor man's protein," our roasted chana sattu is a natural, cooling superfood for sustained energy throughout your day.</p>
+        </div>
+        <div class="blog-tile">
+            <h4>Millets: Nature's Superfood</h4>
+            <p>From Corn and Raagi to Bajra, our stone-ground flours retain the natural goodness, iron, and calcium essential for a balanced diet.</p>
+        </div>
+    </div>
+</section>
 
 <footer>
     <p>Brand Info: FSSAI 20426290000095</p>
