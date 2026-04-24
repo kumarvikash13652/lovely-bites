@@ -80,27 +80,30 @@
             --bg: #faf7f2;          
             --text: #2d2926;
             --blog-bg: #eeeae0;
+            /* Flag Colors */
+            --f-saffron: #ff6600;
+            --f-green: #046434;
+            --f-blue: #1c1ca5;
         }
         * { box-sizing: border-box; } 
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; background: var(--bg); color: var(--text); overflow-x: hidden; }
         
-        /* Language Bar */
         .lang-bar { background: #f0f0f0; padding: 10px; text-align: center; border-bottom: 1px solid #ddd; }
         .lang-btn { background: none; border: 1px solid var(--primary); color: var(--primary); padding: 5px 10px; cursor: pointer; font-weight: bold; border-radius: 4px; margin: 0 5px; }
         .lang-btn:hover { background: var(--primary); color: white; }
         #google_translate_element { display: inline-block; vertical-align: middle; }
         
         .goog-te-banner-frame.skiptranslate { display: none !important; }
-        body { top: 0 !important; }
-
         header { background: var(--primary); color: white; padding: 1.5rem; text-align: center; position: relative; border-bottom: 5px solid var(--accent); }
         
-        /* Rectangular Flag Component */
-        .flag-box { position: absolute; top: 15px; left: 15px; width: 45px; height: 30px; display: flex; flex-direction: column; border: 1px solid #ccc; }
-        .f-saffron { flex: 1; background: #FF9933; }
-        .f-white { flex: 1; background: #FFFFFF; position: relative; }
-        .f-white::after { content: ''; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: 8px; height: 8px; border: 1px solid #000080; border-radius: 50%; }
-        .f-green { flex: 1; background: #138808; }
+        /* Flag Positioning and Structure */
+        .flag { position: absolute; top: 15px; left: 15px; width: 60px; height: 40px; display: flex; flex-direction: column; border: 1px solid #ccc; }
+        .flag > * { flex: 1; }
+        .saffron { background-color: var(--f-saffron); }
+        .white { background-color: white; position: relative; display: grid; place-items: center; }
+        .green { background-color: var(--f-green); }
+        .wheel { height: 85%; aspect-ratio: 1/1; border: 1px solid var(--f-blue); border-radius: 50%; position: relative; }
+        .spoke { height: 50%; width: 1px; position: absolute; left: 50%; bottom: 50%; transform-origin: bottom; background-color: var(--f-blue); }
         
         .gstin-top-right { position: absolute; top: 10px; right: 15px; color: var(--accent); font-size: 0.85rem; font-weight: bold; text-align: right; }
         
@@ -123,15 +126,13 @@
             .product-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
             .product-card img { height: 150px; } 
             .gstin-top-right { font-size: 0.6rem; top: 5px; right: 5px; }
-            .flag-box { top: 10px; left: 10px; width: 30px; height: 20px; }
+            .flag { top: 10px; left: 10px; width: 45px; height: 30px; }
             .blog-tile { min-width: 220px; height: 250px; }
         }
         
         .btn { display: block; margin: 5px 0; padding: 8px; background: var(--primary); color: white; text-decoration: none; border-radius: 4px; font-size: 0.85rem; font-weight: bold; }
         .btn:hover { background: var(--accent); color: white; }
         .make-in-bharat { text-align: center; padding: 20px; background: #f9f9f9; }
-        .marketplace { font-size: 1.1rem; margin-top: 10px; }
-
         .shipping-section { text-align: center; padding: 40px 20px; }
         .contact-btn { background: var(--accent); color: white; padding: 12px 25px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 1rem; margin-top: 10px; }
         
@@ -139,7 +140,6 @@
         .modal-content { background: rgba(255, 255, 255, 0.98); padding: 30px; border-radius: 12px; width: 90%; max-width: 400px; position: relative; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
         .modal-content input, .modal-content textarea { width: 100%; margin-bottom: 15px; padding: 12px; border: 1px solid #ccc; border-radius: 4px; }
         .close-btn { position: absolute; top: 10px; right: 15px; cursor: pointer; font-size: 1.5rem; }
-        
         .hidden-form { display: none; }
         footer { background: var(--primary); color: #ccc; padding: 1.5rem; text-align: center; }
     </style>
@@ -154,10 +154,10 @@
 </div>
 
 <header>
-    <div class="flag-box">
-        <div class="f-saffron"></div>
-        <div class="f-white"></div>
-        <div class="f-green"></div>
+    <div class="flag">
+        <div class="saffron"></div>
+        <div class="white"><div class="wheel"></div></div>
+        <div class="green"></div>
     </div>
     <div class="gstin-top-right">K L ENTERPRISE <br> GSTIN: 10JQBPK5246N1ZO</div>
     <div class="logo">
@@ -166,14 +166,14 @@
 </header>
 
 <section class="hero">
-    <div class="hero-slide">
+    <div>
         <h1>The Essence of Mithila, A Gift of Purity.</h1> 
-        <h4><div class="marketplace">Available on <span class="yellow">Amazon</span> & <span class="yellow">Meesho</span></div></h4>
+        <h4>Available on <span style="color:var(--accent);">Amazon</span> & <span style="color:var(--accent);">Meesho</span></h4>
     </div> 
 </section>
 
 <section class="make-in-bharat">
-    <h3>A <span class="yellow">MAKE IN BHARAT</span> Initiative</h3>
+    <h3>A <span style="color:var(--accent);">MAKE IN BHARAT</span> Initiative</h3>
 </section>
 
 <main>
@@ -253,12 +253,16 @@
     <p>Manufacturing Unit: Village : Sakarpura, Dist : Madhepura, PIN 852113 Bihar</p>
 </footer>
 
-<form name="international-shipping" netlify class="hidden-form" data-netlify="true">
-  <input type="hidden" name="form-name" value="international-shipping" />
-  <input type="text" name="name" />
-  <input type="email" name="email" />
-  <textarea name="message"></textarea>
-</form>
+<script>
+    // Generate 24 spokes for the wheel
+    const wheel = document.querySelector(".wheel");
+    for (let i = 0; i < 24; i++) {
+        let span = document.createElement("span");
+        span.classList.add("spoke");
+        span.style.transform = `rotate(${i * 15}deg)`;
+        wheel.appendChild(span);
+    }
+</script>
 
 </body>
 </html>
