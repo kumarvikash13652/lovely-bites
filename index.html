@@ -75,9 +75,9 @@
 
     <style>
         :root {
-            --primary: #1a3c34;     /* Deep Forest Green */
-            --accent: #ff9933;      /* Saffron */
-            --bg: #faf7f2;          /* Creamy Paper Background */
+            --primary: #1a3c34;     
+            --accent: #ff9933;      
+            --bg: #faf7f2;          
             --text: #2d2926;
             --blog-bg: #eeeae0;
         }
@@ -95,8 +95,13 @@
 
         header { background: var(--primary); color: white; padding: 1.5rem; text-align: center; position: relative; border-bottom: 5px solid var(--accent); }
         
-        /* Flag and GST Positioning */
-        .flag-left { position: absolute; top: 15px; left: 15px; font-size: 1.8rem; line-height: 1; }
+        /* Rectangular Flag Component */
+        .flag-box { position: absolute; top: 15px; left: 15px; width: 45px; height: 30px; display: flex; flex-direction: column; border: 1px solid #ccc; }
+        .f-saffron { flex: 1; background: #FF9933; }
+        .f-white { flex: 1; background: #FFFFFF; position: relative; }
+        .f-white::after { content: ''; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: 8px; height: 8px; border: 1px solid #000080; border-radius: 50%; }
+        .f-green { flex: 1; background: #138808; }
+        
         .gstin-top-right { position: absolute; top: 10px; right: 15px; color: var(--accent); font-size: 0.85rem; font-weight: bold; text-align: right; }
         
         .logo { font-size: 2rem; font-weight: bold; margin-bottom: 10px; }
@@ -118,7 +123,7 @@
             .product-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
             .product-card img { height: 150px; } 
             .gstin-top-right { font-size: 0.6rem; top: 5px; right: 5px; }
-            .flag-left { font-size: 1.2rem; top: 10px; left: 10px; }
+            .flag-box { top: 10px; left: 10px; width: 30px; height: 20px; }
             .blog-tile { min-width: 220px; height: 250px; }
         }
         
@@ -149,7 +154,11 @@
 </div>
 
 <header>
-    <div class="flag-left">🇮🇳</div>
+    <div class="flag-box">
+        <div class="f-saffron"></div>
+        <div class="f-white"></div>
+        <div class="f-green"></div>
+    </div>
     <div class="gstin-top-right">K L ENTERPRISE <br> GSTIN: 10JQBPK5246N1ZO</div>
     <div class="logo">
         <img src="https://i.ibb.co/mFyGcMzs/Whats-App-Image-2026-04-21-at-12-22-57-removebg-preview.png" alt="Lovely Bites"> 
