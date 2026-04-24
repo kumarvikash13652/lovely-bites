@@ -120,6 +120,9 @@
         .modal-content { background: rgba(255, 255, 255, 0.95); padding: 30px; border-radius: 12px; width: 90%; max-width: 400px; position: relative; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
         .modal-content input, .modal-content textarea { width: 100%; margin-bottom: 15px; padding: 12px; border: 1px solid #ccc; border-radius: 4px; }
         .close-btn { position: absolute; top: 10px; right: 15px; cursor: pointer; font-size: 1.5rem; }
+        
+        /* Netlify Detection Helper */
+        .hidden-form { display: none; }
     </style>
 </head>
 <body>
@@ -225,6 +228,13 @@
     <p>Email: support@lovelybites.online</p>
     <p>Manufacturing Unit: Village : Sakarpura, Dist : Madhepura, PIN 852113 Bihar</p>
 </footer>
+
+<form name="international-shipping" netlify class="hidden-form" data-netlify="true">
+  <input type="hidden" name="form-name" value="international-shipping" />
+  <input type="text" name="name" />
+  <input type="email" name="email" />
+  <textarea name="message"></textarea>
+</form>
 
 </body>
 </html>
