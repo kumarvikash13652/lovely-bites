@@ -3,264 +3,314 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
     <link rel="canonical" href="https://lovelybites.online/" />
+    <title>Lovely Bites | Authentic Bihar Snacks</title>
     
-    <title>Lovely Bites | Authentic Bihar Products</title>
-    
-    <meta name="description" content="Discover Lovely Bites for authentic Bihar food products. We offer 100% natural, GI-tagged Mithila Makhana, Bhagalpuri Katarni Poha, and premium Chana Sattu. Experience the pure essence of Bihar.">
-    <meta name="keywords" content="Authentic Bihar products, GI tagged food, Mithila Makhana, Bhagalpuri Katarni Poha, 100% natural Sattu, Make in Bharat, Traditional Bihar food, Lovely Bites, Buy Makhana online, Katarni Poha benefits, organic millet flour">
-    
-    <meta property="og:title" content="Lovely Bites | Authentic Bihar Products">
-    <meta property="og:description" content="Shop 100% natural, GI-tagged traditional food products from the heart of Bihar.">
-    <meta property="og:url" content="https://lovelybites.online/">
-
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "LocalBusiness",
-      "name": "Lovely Bites",
-      "url": "https://lovelybites.online/",
-      "image": "https://i.ibb.co/mFyGcMzs/Whats-App-Image-2026-04-21-at-12-22-57-removebg-preview.png",
-      "address": {
-        "@type": "PostalAddress",
-        "streetAddress": "Shiv Kala Bhawan, Maharshi Menhi Nagar ward 05",
-        "addressLocality": "Madhepura",
-        "addressRegion": "Bihar",
-        "postalCode": "852113",
-        "addressCountry": "IN"
-      },
-      "email": "support@lovelybites.online",
-      "hasOfferCatalog": {
-        "@type": "OfferCatalog",
-        "name": "Bihar Authentic Food Products",
-        "itemListElement": [
-          {"@type": "Offer", "itemOffered": {"@type": "Product", "name": "Mithila Makhana"}},
-          {"@type": "Offer", "itemOffered": {"@type": "Product", "name": "Bhagalpuri Katarni Poha"}},
-          {"@type": "Offer", "itemOffered": {"@type": "Product", "name": "Chana Sattu"}},
-          {"@type": "Offer", "itemOffered": {"@type": "Product", "name": "Millet Flour"}}
-        ]
-      }
-    }
-    </script>
-    
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-Q7KE84LF36"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-Q7KE84LF36');
-    </script>
-    
-    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
-    <script type="text/javascript">
-        function googleTranslateElementInit() {
-            new google.translate.TranslateElement({
-                pageLanguage: 'en', 
-                includedLanguages: 'en,hi,ta,ml,kn,es,ru,zh-CN,ar,ja',
-                layout: google.translate.TranslateElement.InlineLayout.SIMPLE
-            }, 'google_translate_element');
-        }
-
-        function changeLanguage(lang) {
-            var selectField = document.querySelector("select.goog-te-combo");
-            if (selectField) {
-                selectField.value = lang;
-                selectField.dispatchEvent(new Event('change'));
-            } else {
-                setTimeout(function() { changeLanguage(lang); }, 500);
-            }
-        }
-    </script>
+    <meta name="description" content="Discover Lovely Bites for authentic Bihar food products. 100% natural Mithila Makhana, Bhagalpuri Katarni Poha, and premium Chana Sattu.">
 
     <style>
         :root {
-            --primary: #1a3c34;     
-            --accent: #ff9933;      
-            --bg: #faf7f2;          
-            --text: #2d2926;
-            --blog-bg: #eeeae0;
-            /* Flag Colors */
-            --f-saffron: #ff6600;
-            --f-green: #046434;
-            --f-blue: #1c1ca5;
+            /* Vibrant Snack Brand Palette */
+            --brand-red: #e31e24;      /* Lays-style Red */
+            --brand-yellow: #ffcb05;   /* Energetic Yellow */
+            --brand-blue: #0054a6;     /* Logo Blue */
+            --brand-orange: #f58220;   /* Logo Orange */
+            --bg-cream: #fffdf5;       
+            --text-dark: #2d2926;
+            --white: #ffffff;
         }
-        * { box-sizing: border-box; } 
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; background: var(--bg); color: var(--text); overflow-x: hidden; }
+
+        * { box-sizing: border-box; transition: all 0.3s ease; } 
+
+        body { 
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; 
+            margin: 0; 
+            background: var(--bg-cream); 
+            color: var(--text-dark); 
+            line-height: 1.6;
+        }
+
+        /* Language Bar - Cleaned Up */
+        .lang-bar { 
+            background: var(--brand-blue); 
+            padding: 8px; 
+            text-align: center; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+        .lang-btn { 
+            background: rgba(255,255,255,0.2); 
+            border: 1px solid white; 
+            color: white; 
+            padding: 4px 12px; 
+            cursor: pointer; 
+            font-size: 12px;
+            border-radius: 20px; 
+        }
+        .lang-btn:hover { background: white; color: var(--brand-blue); }
+
+        /* Modern Header */
+        header { 
+            background: var(--white); 
+            padding: 1rem 2rem; 
+            text-align: center; 
+            position: relative; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            border-bottom: 4px solid var(--brand-red);
+        }
+
+        /* THE LOGO FIX: Removing bg feel & adding stroke */
+        .logo img { 
+            max-height: 110px; 
+            width: auto;
+            /* Creates a clean white/colored outline around the logo */
+            filter: drop-shadow(2px 2px 0px var(--brand-blue)) drop-shadow(-2px -2px 0px var(--brand-orange));
+            padding: 5px;
+        }
+
+        .gstin-top-right { 
+            position: absolute; 
+            top: 20px; 
+            right: 20px; 
+            color: #777; 
+            font-size: 0.7rem; 
+            text-align: right; 
+            font-family: monospace;
+        }
+
+        /* Hero Section - "Snack Style" */
+        .hero { 
+            background: radial-gradient(circle, var(--brand-red) 0%, #a31115 100%);
+            color: white;
+            padding: 60px 20px;
+            text-align: center;
+            clip-path: ellipse(150% 100% at 50% 0%); /* Modern Curve */
+            margin-bottom: 40px;
+        }
+        .hero h1 { font-size: 2.8rem; margin: 0; text-shadow: 2px 2px 10px rgba(0,0,0,0.3); letter-spacing: -1px; }
+        .hero p { font-size: 1.2rem; opacity: 0.9; }
+
+        /* Make in Bharat Banner */
+        .make-in-bharat { 
+            background: var(--brand-yellow); 
+            padding: 10px; 
+            font-weight: 900; 
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-align: center;
+            transform: rotate(-1deg);
+            width: fit-content;
+            margin: -20px auto 30px;
+            box-shadow: 5px 5px 0px var(--brand-blue);
+        }
+
+        /* Product Grid */
+        .product-grid { 
+            display: grid; 
+            grid-template-columns: repeat(4, 1fr); 
+            gap: 25px; 
+            padding: 20px; 
+            max-width: 1200px; 
+            margin: auto; 
+        }
         
-        .lang-bar { background: #f0f0f0; padding: 10px; text-align: center; border-bottom: 1px solid #ddd; }
-        .lang-btn { background: none; border: 1px solid var(--primary); color: var(--primary); padding: 5px 10px; cursor: pointer; font-weight: bold; border-radius: 4px; margin: 0 5px; }
-        .lang-btn:hover { background: var(--primary); color: white; }
-        #google_translate_element { display: inline-block; vertical-align: middle; }
+        .product-card { 
+            background: var(--white);
+            border-radius: 20px;
+            padding: 20px;
+            text-align: center;
+            border: 2px solid transparent;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+            position: relative;
+            overflow: visible; /* Changed from hidden to show badge clearly */
+        }
+        .product-card:hover { 
+            border-color: var(--brand-yellow);
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(227, 30, 36, 0.15);
+        }
         
-        .goog-te-banner-frame.skiptranslate { display: none !important; }
-        header { background: var(--primary); color: white; padding: 1.5rem; text-align: center; position: relative; border-bottom: 5px solid var(--accent); }
-        
-        /* Flag Positioning and Structure */
-        .flag { position: absolute; top: 15px; left: 15px; width: 60px; height: 40px; display: flex; flex-direction: column; border: 1px solid #ccc; }
-        .flag > * { flex: 1; }
-        .saffron { background-color: var(--f-saffron); }
-        .white { background-color: white; position: relative; display: grid; place-items: center; }
-        .green { background-color: var(--f-green); }
-        .wheel { height: 85%; aspect-ratio: 1/1; border: 1px solid var(--f-blue); border-radius: 50%; position: relative; }
-        .spoke { height: 50%; width: 1px; position: absolute; left: 50%; bottom: 50%; transform-origin: bottom; background-color: var(--f-blue); }
-        
-        .gstin-top-right { position: absolute; top: 10px; right: 15px; color: var(--accent); font-size: 0.85rem; font-weight: bold; text-align: right; }
-        
-        .logo { font-size: 2rem; font-weight: bold; margin-bottom: 10px; }
-        .logo img { max-height: 80px; max-width: 90%; }
-        
-        .hero { position: relative; height: 200px; background: linear-gradient(135deg, var(--primary), #2d5a27); display: flex; align-items: center; justify-content: center; overflow: hidden; margin-bottom: 20px; text-align: center; padding: 10px; color: white; }
-        .product-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; padding: 15px; max-width: 1200px; margin: auto; }
-        .product-card { border: 2px solid var(--primary); padding: 15px; text-align: center; border-radius: 12px; background: #ffffff; transition: transform 0.3s; }
-        .product-card:hover { transform: translateY(-5px); }
-        .product-card img { width: 240px; max-width: 100%; height: 240px; object-fit: cover; margin-bottom: 10px; }
-        
-        .blog-section { padding: 40px 20px; background: var(--blog-bg); margin-top: 30px; }
-        .blog-container { display: flex; gap: 20px; overflow-x: auto; padding-bottom: 20px; max-width: 1200px; margin: auto; scroll-snap-type: x mandatory; }
-        .blog-tile { min-width: 280px; height: 280px; background: #fff; border: 2px solid var(--primary); border-radius: 12px; padding: 20px; scroll-snap-align: start; text-align: center; display: flex; flex-direction: column; justify-content: center; }
-        .blog-tile h4 { margin-top: 0; color: var(--primary); border-bottom: 2px solid var(--accent); padding-bottom: 5px; }
-        .blog-tile p { font-size: 0.9rem; line-height: 1.4; color: #333; }
-        
+        .product-card img { 
+            width: 100%; 
+            height: 220px; 
+            object-fit: contain; 
+            margin-bottom: 15px; 
+            filter: drop-shadow(0 10px 10px rgba(0,0,0,0.1));
+            position: relative;
+            z-index: 1;
+        }
+
+        /* FIXED: BESTSELLER Badge Layering */
+        .bestseller-badge {
+            position: absolute; 
+            top: 10px; 
+            right: 10px; 
+            background: var(--brand-red); 
+            color: white; 
+            padding: 5px 10px; 
+            border-radius: 10px; 
+            font-size: 12px; 
+            font-weight: bold;
+            z-index: 10; /* Ensures it is above text and image */
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .product-card h4 { 
+            color: var(--brand-red); 
+            font-size: 1.4rem; 
+            margin: 10px 0;
+            font-weight: 800;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Button - Lays Yellow/Blue Style */
+        .btn { 
+            display: block; 
+            padding: 12px; 
+            background: var(--brand-blue); 
+            color: white; 
+            text-decoration: none; 
+            border-radius: 30px; 
+            font-weight: bold; 
+            text-transform: uppercase;
+            box-shadow: 0 4px 0px #003d7a;
+            position: relative;
+            z-index: 2;
+        }
+        .btn:active { transform: translateY(2px); box-shadow: none; }
+        .btn:hover { background: var(--brand-orange); }
+
+        /* Blog/Why Choose Section */
+        .blog-section { padding: 60px 20px; background: #fff; }
+        .blog-tile { 
+            background: var(--bg-cream); 
+            border-left: 5px solid var(--brand-red); 
+            border-radius: 10px;
+            min-width: 280px;
+            padding: 25px;
+        }
+        .blog-tile h4 { color: var(--brand-blue); font-size: 1.2rem; }
+
+        footer { 
+            background: var(--text-dark); 
+            color: #aaa; 
+            padding: 3rem 1rem; 
+            text-align: center; 
+            font-size: 0.9rem;
+        }
+
         @media (max-width: 768px) {
-            .product-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
-            .product-card img { height: 150px; } 
-            .gstin-top-right { font-size: 0.6rem; top: 5px; right: 5px; }
-            .flag { top: 10px; left: 10px; width: 45px; height: 30px; }
-            .blog-tile { min-width: 220px; height: 250px; }
+            .hero h1 { font-size: 1.8rem; }
+            .logo img { max-height: 80px; }
+            .gstin-top-right { position: relative; top: 0; right: 0; text-align: center; margin-bottom: 10px; }
+            
+            /* MOBILE 2X2 VIEW */
+            .product-grid { 
+                grid-template-columns: repeat(2, 1fr); 
+                gap: 12px; 
+                padding: 10px;
+            }
+            .product-card { padding: 12px; border-radius: 15px; }
+            .product-card img { height: 140px; }
+            .product-card h4 { font-size: 1rem; }
+            .btn { padding: 8px; font-size: 0.8rem; }
+            .bestseller-badge { font-size: 10px; padding: 3px 7px; top: 5px; right: 5px; }
         }
-        
-        .btn { display: block; margin: 5px 0; padding: 8px; background: var(--primary); color: white; text-decoration: none; border-radius: 4px; font-size: 0.85rem; font-weight: bold; }
-        .btn:hover { background: var(--accent); color: white; }
-        .make-in-bharat { text-align: center; padding: 20px; background: #f9f9f9; }
-        .shipping-section { text-align: center; padding: 40px 20px; }
-        .contact-btn { background: var(--accent); color: white; padding: 12px 25px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 1rem; margin-top: 10px; }
-        
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); justify-content: center; align-items: center; z-index: 2000; }
-        .modal-content { background: rgba(255, 255, 255, 0.98); padding: 30px; border-radius: 12px; width: 90%; max-width: 400px; position: relative; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
-        .modal-content input, .modal-content textarea { width: 100%; margin-bottom: 15px; padding: 12px; border: 1px solid #ccc; border-radius: 4px; }
-        .close-btn { position: absolute; top: 10px; right: 15px; cursor: pointer; font-size: 1.5rem; }
-        .hidden-form { display: none; }
-        footer { background: var(--primary); color: #ccc; padding: 1.5rem; text-align: center; }
     </style>
 </head>
 <body>
 
 <div class="lang-bar">
     <button class="lang-btn" onclick="location.reload()">English</button>
-    <button class="lang-btn" onclick="changeLanguage('ta')">தமிழ்</button>
-    <button class="lang-btn" onclick="changeLanguage('es')">Español</button>
+    <button class="lang-btn" onclick="changeLanguage('hi')">हिंदी</button>
     <div id="google_translate_element"></div>
 </div>
 
 <header>
-    <div class="flag">
-        <div class="saffron"></div>
-        <div class="white"><div class="wheel"></div></div>
-        <div class="green"></div>
-    </div>
-    <div class="gstin-top-right">K L ENTERPRISE <br> GSTIN: 10JQBPK5246N1ZO</div>
+    <div class="gstin-top-right">K L ENTERPRISE | GSTIN: 10JQBPK5246N1ZO</div>
     <div class="logo">
-        <img src="https://i.ibb.co/mFyGcMzs/Whats-App-Image-2026-04-21-at-12-22-57-removebg-preview.png" alt="Lovely Bites"> 
+        <img src="https://i.ibb.co/mFyGcMzs/Whats-App-Image-2026-04-21-at-12-22-57-removebg-preview.png" alt="Lovely Bites Logo"> 
     </div>
 </header>
 
 <section class="hero">
-    <div>
-        <h1>The Essence of Mithila, A Gift of Purity.</h1> 
-        <h4>Available on <span style="color:var(--accent);">Amazon</span> & <span style="color:var(--accent);">Meesho</span></h4>
-    </div> 
+    <h1>The Essence of Mithila, <br>A Gift of Purity.</h1> 
+    <p>Premium GI-Tagged Makhana & Snacks</p>
 </section>
 
-<section class="make-in-bharat">
-    <h3>A <span style="color:var(--accent);">MAKE IN BHARAT</span> Initiative</h3>
-</section>
+<div class="make-in-bharat">A MAKE IN BHARAT Initiative</div>
 
 <main>
     <div class="product-grid">
         <div class="product-card">
             <img src="https://i.ibb.co/spWsWZ0T/murmura-front.png" alt="Murmura">
-            <h4>Murmura/Mudhi</h4>
-           <a href="https://payments.cashfree.com/forms/makhana-200" class="btn">Buy Now</a>
-            <!--<a href="https://www.meesho.com/LovelyBites?_ms=3.0.1" class="btn">Buy on Meesho</a>-->
+            <h4>Murmura / Mudhi</h4>
+            <a href="https://payments.cashfree.com/forms/makhana-200" class="btn">Order Now</a>
         </div>
         <div class="product-card">
             <img src="https://i.ibb.co/pBknH1GN/Poha-front.png" alt="Katarni Poha">
-            <h4>Rare Katarni Poha</h4>
-            <a href="https://payments.cashfree.com/forms/makhana-200" class="btn">Buy Now</a>
-            <!--<a href="https://www.meesho.com/LovelyBites?_ms=3.0.1" class="btn">Buy on Meesho</a>-->
+            <h4>Katarni Poha</h4>
+            <a href="https://payments.cashfree.com/forms/makhana-200" class="btn">Order Now</a>
         </div>
         <div class="product-card">
+            <div class="bestseller-badge">BESTSELLER</div>
             <img src="https://i.ibb.co/kgVxnDdP/makhana-front.png" alt="Makhana">
-            <h4>Mithila Makhana 200g</h4>
-            <a href="https://payments.cashfree.com/forms/makhana-200" class="btn">Buy Now</a>
-            <!--<a href="https://www.meesho.com/LovelyBites?_ms=3.0.1" class="btn">Buy on Meesho</a>-->
+            <h4>Mithila Makhana</h4>
+            <a href="https://payments.cashfree.com/forms/makhana-200" class="btn">Order Now</a>
         </div>
         <div class="product-card">
             <img src="https://i.ibb.co/0jHdSjXd/sattu-front.png" alt="Sattu">
             <h4>Chana Sattu</h4>
-            <a href="https://payments.cashfree.com/forms/makhana-200" class="btn">Buy Now</a>
-            <!--<a href="https://www.meesho.com/LovelyBites?_ms=3.0.1" class="btn">Buy on Meesho</a>-->
+            <a href="https://payments.cashfree.com/forms/makhana-200" class="btn">Order Now</a>
         </div>
     </div>
 
-    <section class="shipping-section">
-        <p><strong>For International Order Shipping, kindly click below:</strong></p>
-        <button class="contact-btn" onclick="document.getElementById('shippingModal').style.display='flex'">Contact Us</button>
-    </section>
+    <div style="text-align:center; padding: 40px;">
+        <button class="btn" style="display:inline-block; padding: 15px 40px; background: var(--brand-orange);" onclick="document.getElementById('shippingModal').style.display='flex'">International Inquiries</button>
+    </div>
 </main>
 
-<div id="shippingModal" class="modal">
-    <div class="modal-content">
-        <span class="close-btn" onclick="document.getElementById('shippingModal').style.display='none'">&times;</span>
-        <h2 style="color: var(--primary);">International Inquiry</h2>
-        <form name="international-shipping" method="POST" data-netlify="true" netlify-honeypot="bot-field">
-            <input type="hidden" name="form-name" value="international-shipping" />
-            <input type="text" name="name" placeholder="Your Full Name" required>
-            <input type="email" name="email" placeholder="Your Email Address" required>
-            <textarea name="message" rows="4" placeholder="Your Shipping Requirements" required></textarea>
-            <button type="submit" class="btn" style="width: 100%;">Send Message</button>
-        </form>
-    </div>
-</div>
-
 <section class="blog-section">
-    <h2 style="text-align:center; color: var(--primary); margin-bottom: 20px;">Why Choose Authentic Bihar?</h2>
-    <div class="blog-container">
+    <h2 style="text-align:center; color: var(--brand-blue); margin-bottom: 40px;">Why Choose Lovely Bites?</h2>
+    <div class="product-grid" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));">
         <div class="blog-tile">
             <h4>Mithila Makhana (GI Tag)</h4>
-            <p>Our Makhana is GI-tagged and harvested from the wetlands of Mithila. It is naturally rich in antioxidants and vital minerals.</p>
+            <p>Harvested from the pure wetlands of Mithila. Naturally rich in antioxidants and vital minerals.</p>
         </div>
         <div class="blog-tile">
-            <h4>Bhagalpuri Katarni Poha</h4>
-            <p>Renowned for its unique natural aroma and delicate taste. A nutrient-dense, fiber-rich choice directly from the heart of Bhagalpur.</p>
+            <h4>Chana Sattu</h4>
+            <p>The "Clean Protein." Stone-ground roasted chana for sustained energy throughout your day.</p>
         </div>
         <div class="blog-tile">
-            <h4>Chana Sattu & Energy</h4>
-            <p>Known as "The poor man's protein," our roasted chana sattu is a natural, cooling superfood for sustained energy throughout your day.</p>
-        </div>
-        <div class="blog-tile">
-            <h4>Millets: Nature's Superfood</h4>
-            <p>From Corn and Raagi to Bajra, our stone-ground flours retain the natural goodness, iron, and calcium essential for a balanced diet.</p>
+            <h4>Zero Chemicals</h4>
+            <p>100% natural processing. No artificial colors or preservatives. Purely Bihar, Purely Honest.</p>
         </div>
     </div>
 </section>
 
 <footer>
-    <p>Brand Info: FSSAI 20426290000095</p>
-    <p>Address: Lovely Bites, Building : Shiv Kala Bhawan, Maharshi Menhi Nagar ward 05, Madhepura, PIN 852113, Bihar </p> 
+    <p><strong>FSSAI: 20426290000095</strong></p>
+    <p>Shiv Kala Bhawan, Maharshi Menhi Nagar, Madhepura, Bihar 852113</p> 
     <p>Email: support@lovelybites.online</p>
-    <p>Manufacturing Unit: Village : Sakarpura, Dist : Madhepura, PIN 852113 Bihar</p>
+    <div style="margin-top:20px; font-size: 11px; opacity: 0.5;">
+        &copy; 2026 Lovely Bites. All Rights Reserved.
+    </div>
 </footer>
 
-<script>
-    // Generate 24 spokes for the wheel
-    const wheel = document.querySelector(".wheel");
-    for (let i = 0; i < 24; i++) {
-        let span = document.createElement("span");
-        span.classList.add("spoke");
-        span.style.transform = `rotate(${i * 15}deg)`;
-        wheel.appendChild(span);
+<script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+<script type="text/javascript">
+    function googleTranslateElementInit() {
+        new google.translate.TranslateElement({pageLanguage: 'en'}, 'google_translate_element');
+    }
+    function changeLanguage(lang) {
+        var selectField = document.querySelector("select.goog-te-combo");
+        if (selectField) {
+            selectField.value = lang;
+            selectField.dispatchEvent(new Event('change'));
+        }
     }
 </script>
 
