@@ -1,9 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-Q7KE84LF36"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-Q7KE84LF36');
+    </script>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="canonical" href="https://lovelybites.online/" />
+    <link rel="icon" type="image/png" href="https://i.ibb.co/mFyGcMzs/Whats-App-Image-2026-04-21-at-12-22-57-removebg-preview.png">
+    
     <title>Lovely Bites | Authentic Bihar Snacks</title>
     
     <meta name="description" content="Discover Lovely Bites for authentic Bihar food products. 100% natural Mithila Makhana, Bhagalpuri Katarni Poha, and premium Chana Sattu.">
@@ -65,7 +76,6 @@
         .logo img { 
             max-height: 110px; 
             width: auto;
-            /* Creates a clean white/colored outline around the logo */
             filter: drop-shadow(2px 2px 0px var(--brand-blue)) drop-shadow(-2px -2px 0px var(--brand-orange));
             padding: 5px;
         }
@@ -124,7 +134,7 @@
             border: 2px solid transparent;
             box-shadow: 0 10px 20px rgba(0,0,0,0.05);
             position: relative;
-            overflow: visible; /* Changed from hidden to show badge clearly */
+            overflow: visible;
         }
         .product-card:hover { 
             border-color: var(--brand-yellow);
@@ -142,7 +152,6 @@
             z-index: 1;
         }
 
-        /* FIXED: BESTSELLER Badge Layering */
         .bestseller-badge {
             position: absolute; 
             top: 10px; 
@@ -153,7 +162,7 @@
             border-radius: 10px; 
             font-size: 12px; 
             font-weight: bold;
-            z-index: 10; /* Ensures it is above text and image */
+            z-index: 10; 
             box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
 
@@ -166,7 +175,6 @@
             z-index: 2;
         }
 
-        /* Button - Lays Yellow/Blue Style */
         .btn { 
             display: block; 
             padding: 12px; 
@@ -194,12 +202,59 @@
         }
         .blog-tile h4 { color: var(--brand-blue); font-size: 1.2rem; }
 
+        /* UPDATED FOOTER STYLES */
         footer { 
             background: var(--text-dark); 
             color: #aaa; 
-            padding: 3rem 1rem; 
-            text-align: center; 
+            padding: 3rem 2rem; 
             font-size: 0.9rem;
+        }
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 40px;
+            text-align: left;
+        }
+        .footer-col h5 {
+            color: var(--white);
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .footer-platforms {
+            margin: 10px 0;
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        .platform-link img {
+            height: 25px;
+            filter: grayscale(1) brightness(2);
+            opacity: 0.7;
+            transition: 0.3s;
+        }
+        .platform-link:hover img {
+            filter: grayscale(0) brightness(1);
+            opacity: 1;
+        }
+        .msme-logo {
+            height: 60px !important;
+            filter: none !important;
+            opacity: 1 !important;
+            margin-top: 10px;
+        }
+        .footer-bottom {
+            grid-column: 1 / -1;
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            font-size: 11px;
+            opacity: 0.5;
         }
 
         @media (max-width: 768px) {
@@ -207,7 +262,6 @@
             .logo img { max-height: 80px; }
             .gstin-top-right { position: relative; top: 0; right: 0; text-align: center; margin-bottom: 10px; }
             
-            /* MOBILE 2X2 VIEW */
             .product-grid { 
                 grid-template-columns: repeat(2, 1fr); 
                 gap: 12px; 
@@ -218,6 +272,16 @@
             .product-card h4 { font-size: 1rem; }
             .btn { padding: 8px; font-size: 0.8rem; }
             .bestseller-badge { font-size: 10px; padding: 3px 7px; top: 5px; right: 5px; }
+
+            /* Footer Mobile View */
+            .footer-container {
+                grid-template-columns: 1fr;
+                text-align: center;
+                gap: 30px;
+            }
+            .footer-platforms {
+                justify-content: center;
+            }
         }
     </style>
 </head>
@@ -269,7 +333,7 @@
     </div>
 
     <div style="text-align:center; padding: 40px;">
-        <button class="btn" style="display:inline-block; padding: 15px 40px; background: var(--brand-orange);" onclick="document.getElementById('shippingModal').style.display='flex'">International Inquiries</button>
+        <button class="btn" style="display:inline-block; padding: 15px 40px; background: var(--brand-orange);" onclick="alert('Redirecting to Inquiry Form...')">International Inquiries</button>
     </div>
 </main>
 
@@ -292,11 +356,32 @@
 </section>
 
 <footer>
-    <p><strong>FSSAI: 20426290000095</strong></p>
-    <p>Shiv Kala Bhawan, Maharshi Menhi Nagar, Madhepura, Bihar 852113</p> 
-    <p>Email: support@lovelybites.online</p>
-    <div style="margin-top:20px; font-size: 11px; opacity: 0.5;">
-        &copy; 2026 Lovely Bites. All Rights Reserved.
+    <div class="footer-container">
+        <div class="footer-col">
+            <h5>Quality & Certification</h5>
+            <p><strong>FSSAI: 20426290000095</strong></p>
+            <img src="https://5.imimg.com/data5/SELLER/Default/2021/3/XW/XQ/YF/125219532/msme-registration-service-500x500.png" alt="MSME Member" class="msme-logo">
+        </div>
+
+        <div class="footer-col">
+            <h5>Shop Online</h5>
+            <p>Find us on Marketplaces:</p>
+            <div class="footer-platforms">
+                <a href="#" class="platform-link"><img src="https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg" alt="Amazon"></a>
+                <a href="#" class="platform-link"><img src="https://upload.wikimedia.org/wikipedia/commons/8/80/Meesho_Logo_Full.png" alt="Meesho"></a>
+                <a href="#" class="platform-link"><img src="https://tiimg.tistatic.com/tradeindia/images/tradeindia-logo-new.png" alt="TradeIndia"></a>
+            </div>
+        </div>
+
+        <div class="footer-col">
+            <h5>Contact Us</h5>
+            <p>Shiv Kala Bhawan, Maharshi Menhi Nagar, Madhepura, Bihar 852113</p>
+            <p>Email: support@lovelybites.online</p>
+        </div>
+
+        <div class="footer-bottom">
+            &copy; 2026 Lovely Bites. All Rights Reserved.
+        </div>
     </div>
 </footer>
 
