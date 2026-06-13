@@ -10,7 +10,7 @@
     </script>
 
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <link rel="canonical" href="https://lovelybites.online/recipes.html" />
     <link rel="icon" type="image/png" href="https://i.ibb.co/mFyGcMzs/Whats-App-Image-2026-04-21-at-12-22-57-removebg-preview.png">
     
@@ -30,17 +30,31 @@
             --amazon-color: #FF9900;
             --meesho-color: #E71A65;
         }
+        
+        /* Layout Fix: Prevents accidental horizontal side-scroll leaks */
+        html, body { 
+            max-width: 100%; 
+            overflow-x: hidden; 
+            margin: 0; 
+            padding: 0; 
+        }
+
         * { box-sizing: border-box; transition: all 0.3s ease; } 
-        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; margin: 0; background: var(--bg-cream); color: var(--text-dark); line-height: 1.6; }
+        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background: var(--bg-cream); color: var(--text-dark); line-height: 1.6; }
+        
         .lang-bar { background: var(--brand-blue); padding: 8px; text-align: center; display: flex; justify-content: center; align-items: center; gap: 10px; }
         .lang-btn { background: rgba(255,255,255,0.2); border: 1px solid white; color: white; padding: 4px 12px; cursor: pointer; font-size: 12px; border-radius: 20px; }
         .lang-btn:hover { background: white; color: var(--brand-blue); }
+        
         header { background: var(--white); padding: 1rem 2rem; text-align: center; position: relative; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border-bottom: 4px solid var(--brand-red); }
         .logo img { max-height: 110px; width: auto; filter: drop-shadow(2px 2px 0px var(--brand-blue)) drop-shadow(-2px -2px 0px var(--brand-orange)); padding: 5px; }
         .gstin-top-right { position: absolute; top: 20px; right: 20px; color: #777; font-size: 0.7rem; text-align: right; font-family: monospace; }
-        .hero { background: radial-gradient(circle, var(--brand-orange) 0%, #c45b07 100%); color: white; padding: 60px 20px; text-align: center; clip-path: ellipse(150% 100% at 50% 0%); margin-bottom: 40px; }
+        
+        /* Hero safe viewport rendering config */
+        .hero { background: radial-gradient(circle, var(--brand-orange) 0%, #c45b07 100%); color: white; padding: 60px 20px; text-align: center; margin-bottom: 40px; position: relative; max-width: 100%; }
         .hero h1 { font-size: 2.8rem; margin: 0; text-shadow: 2px 2px 10px rgba(0,0,0,0.3); letter-spacing: -1px; }
         .hero p { font-size: 1.2rem; opacity: 0.9; }
+        
         footer { background: var(--text-dark); color: #aaa; padding: 3rem 2rem; font-size: 0.9rem; }
         .footer-container { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; text-align: left; }
         .footer-col h5 { color: var(--white); margin-bottom: 15px; text-transform: uppercase; letter-spacing: 1px; }
@@ -65,8 +79,10 @@
         /* RIGHT SIDE: INFO & CONVERSION ACTIONS */
         .pdp-meta-container { background: var(--white); border-top: 5px solid var(--brand-red); border-radius: 10px; padding: 30px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
         .pdp-meta-container h2 { margin: 0 0 10px 0; font-size: 2.2rem; color: var(--text-dark); }
-        .pdp-prime-tagline { color: var(--brand-orange); font-weight: bold; margin: 0 0 15px 0; font-size: 1.1rem; }
-        .main-pdp-description { font-size: 1rem; color: #444; line-height: 1.6; margin-bottom: 25px; }
+        .pdp-prime-tagline { color: var(--brand-orange); font-weight: bold; margin: 0 0 15px 0; font-size: 1.1rem; text-align: left; }
+        
+        /* Clean Core Text Justification */
+        .main-pdp-description { font-size: 1rem; color: #444; line-height: 1.6; margin-bottom: 25px; text-align: justify; }
         
         /* ACTION CONVERSIONS */
         .cashfree-checkout-anchor { display: block; text-align: center; background: var(--brand-red); color: var(--white); font-weight: 800; text-decoration: none; padding: 16px; border-radius: 8px; font-size: 1.25rem; text-transform: uppercase; box-shadow: 0 4px 15px rgba(227,30,36,0.3); margin-bottom: 25px; letter-spacing: 0.5px; }
@@ -83,8 +99,8 @@
         .link-meesho { background-color: var(--meesho-color); color: var(--white); }
         
         .marketplace-pill-link img { height: 18px; object-fit: contain; }
-        .link-amazon img { filter: brightness(0); } /* Makes black amazon text pop clear on yellow */
-        .link-meesho img { filter: none; } /* Raw clean rendering for white logo asset */
+        .link-amazon img { filter: brightness(0); } 
+        .link-meesho img { filter: none; } 
 
         /* LOWER FULL-WIDTH SECTIONS */
         .pdp-bottom-details-stack { display: flex; flex-direction: column; gap: 30px; }
@@ -93,20 +109,41 @@
         .pdp-content-card.origin-card { border-left-color: var(--brand-yellow); background: linear-gradient(to right, #ffffff, #fffdfa); }
         
         .pdp-content-card h3 { color: var(--text-dark); font-size: 1.5rem; margin-top: 0; margin-bottom: 15px; font-weight: 700; }
+        
+        /* Justified text settings for Cards and Lists */
+        .pdp-content-card p { text-align: justify; }
         .pdp-content-card ul, .pdp-content-card ol { padding-left: 20px; margin: 0; }
-        .pdp-content-card li { margin-bottom: 15px; line-height: 1.6; }
+        .pdp-content-card li { margin-bottom: 15px; line-height: 1.6; text-align: justify; }
         .pdp-content-card li strong { color: #000; font-size: 1.05rem; }
         
         /* Recipe Meta Inline Utilities */
         .inline-recipe-metrics { display: flex; gap: 20px; background: var(--bg-cream); padding: 10px 15px; border-radius: 6px; margin-bottom: 20px; font-size: 0.9rem; font-weight: bold; border: 1px solid rgba(0,0,0,0.05); }
 
+        /* STRICT MOBILE VIEW LAYOUT OPTIMIZATION ENGINE */
         @media (max-width: 768px) {
-            .hero h1 { font-size: 1.8rem; }
+            .hero { padding: 40px 15px; margin-bottom: 25px; }
+            .hero h1 { font-size: 1.9rem; }
+            .hero p { font-size: 1rem; }
             .logo img { max-height: 80px; }
             .gstin-top-right { position: relative; top: 0; right: 0; text-align: center; margin-bottom: 10px; }
-            .pdp-top-split { grid-template-columns: 1fr; gap: 25px; }
-            .pdp-gallery-container { position: relative; top: 0; padding: 20px; }
-            .marketplace-flex-row { flex-direction: column; gap: 12px; }
+            
+            /* Closes gap spaces to maximize native narrow screen layout */
+            .pdp-main-wrapper { padding: 0 12px 30px 12px; }
+            .pdp-top-split { grid-template-columns: 1fr; gap: 20px; margin-bottom: 30px; }
+            .pdp-gallery-container { position: relative; top: 0; padding: 15px; }
+            .main-image-viewport { min-height: 260px; }
+            .main-image-viewport img { max-height: 280px; }
+            
+            .pdp-meta-container { padding: 20px; }
+            .pdp-meta-container h2 { font-size: 1.7rem; }
+            
+            .marketplace-flex-row { flex-direction: column; gap: 10px; }
+            .marketplace-pill-link { width: 100%; padding: 14px; }
+            
+            .pdp-bottom-details-stack { gap: 20px; }
+            .pdp-content-card { padding: 20px; }
+            .pdp-content-card h3 { font-size: 1.25rem; }
+            .inline-recipe-metrics { flex-wrap: wrap; gap: 10px; font-size: 0.8rem; }
         }
     </style>
 </head>
