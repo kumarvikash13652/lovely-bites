@@ -1,19 +1,8 @@
-// Debugging: Check if Firebase is loaded
-if (typeof firebase === 'undefined') {
-    console.error("CRITICAL ERROR: Firebase SDK load nahi hua hai!");
-} else {
-    console.log("Firebase SDK loaded successfully.");
-}
-
-
-
-
 // ==========================================
-// 1. ORIGINAL STYLES + LOGIN BUTTON STYLE
+// 1. STYLES & UI INJECTION
 // ==========================================
 const navStyles = document.createElement('style');
 navStyles.innerHTML = `
-    /* Tera Original CSS */
     .nav-wrapper { display: flex; align-items: center; justify-content: space-between; max-width: 1200px; margin: 0 auto; padding: 10px 20px 0 20px; position: relative; width: 100%; }
     .nav-menu { display: flex; list-style: none; margin: 0; padding: 0; gap: 30px; align-items: center; }
     .nav-item { position: relative; }
@@ -42,15 +31,11 @@ navStyles.innerHTML = `
         .nav-item-has-submenu > .nav-link::after { content: " ▾"; font-size: 0.85rem; display: inline-block; transition: transform 0.2s ease; }
         .nav-item-has-submenu.open-caret > .nav-link::after { transform: rotate(180deg); }
     }
-    /* New Login Button Style */
     .auth-btn { background: var(--brand-red); color: #fff; border: none; padding: 8px 20px; border-radius: 20px; font-weight: 700; cursor: pointer; transition: 0.3s; margin-left: 10px; }
     .auth-btn:hover { background: #b7171c; }
 `;
 document.head.appendChild(navStyles);
 
-// ==========================================
-// 2. HEADER INJECTION
-// ==========================================
 document.getElementById("global-header").innerHTML = `
     <div class="lang-bar"><button class="lang-btn" onclick="location.reload()">English</button><button class="lang-btn" onclick="changeLanguage('hi')">हिंदी</button><div id="google_translate_element"></div></div>
     <header>
@@ -74,12 +59,8 @@ document.getElementById("global-header").innerHTML = `
                 <li class="nav-item"><button id="auth-btn" class="auth-btn">Login</button></li>
             </ul>
         </div>
-    </header>
-`;
+    </header>`;
 
-// ==========================================
-// 3. FOOTER INJECTION (ORIGINAL)
-// ==========================================
 document.getElementById("global-footer").innerHTML = `
     <footer>
         <div class="footer-container">
@@ -88,17 +69,13 @@ document.getElementById("global-footer").innerHTML = `
             <div class="footer-col"><h5>Contact Us</h5><p>Shiv Kala Bhawan, Maharshi Menhi Nagar, Madhepura, Bihar 852113</p><p>Email: support@lovelybites.online</p></div>
             <div class="footer-bottom">&copy; 2026 Lovely Bites. All Rights Reserved.</div>
         </div>
-    </footer>
-`;
+    </footer>`;
 
-// ==========================================
-// 4. LOGIC & FIREBASE
-// ==========================================
+// Event Listeners (UI)
 document.getElementById('mobile-burger-trigger').addEventListener('click', () => {
     document.getElementById('navigation-drawer-menu').classList.toggle('active');
     document.getElementById('mobile-burger-trigger').classList.toggle('active');
 });
-
 document.getElementById('submenu-toggle-item').addEventListener('click', (e) => {
     if (window.innerWidth <= 768) {
         e.preventDefault();
@@ -107,21 +84,39 @@ document.getElementById('submenu-toggle-item').addEventListener('click', (e) => 
     }
 });
 
+// ==========================================
+// 2. FIREBASE & ADD TO CART LOGIC
+// ==========================================
+window.addToCart = async function(productName, price) {
+    if (typeof firebase === 'undefined' || !firebase.auth) {
+        alert("Firebase load ho raha hai, 2 second ruko...");
+        return;
+    }
+    try {
+        const auth = firebase.auth();
+        if (!auth.currentUser) await auth.signInWithPopup(new firebase.auth.GoogleAuthProvider());
+        
+        const qty = document.getElementById('pdp-qty') ? document.getElementById('pdp-qty').value : 1;
+        await firebase.firestore().collection("users").doc(auth.currentUser.uid).collection("cart").add({
+            productName, price, qty: parseInt(qty), timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        window.location.href = "checkout.html";
+    } catch (e) { alert("Error: " + e.message); }
+};
 
-
-// Firebase Dynamic Loader (Updated)
 const scriptUrls = [
     "https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js",
     "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js",
     "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"
 ];
 
+let loaded = 0;
 scriptUrls.forEach(url => {
     const s = document.createElement('script');
     s.src = url;
     s.onload = () => {
-        // Sirf jab teeno load ho jayein tabhi initialize karo
-        if (typeof firebase !== 'undefined' && !firebase.apps.length) {
+        loaded++;
+        if (loaded === scriptUrls.length) {
             firebase.initializeApp({
                 apiKey: "AIzaSyDVE5gYyGCgAlfHw82Apna6DsMY9zE2bGs",
                 authDomain: "lovelybites-e4d35.firebaseapp.com",
@@ -130,8 +125,7 @@ scriptUrls.forEach(url => {
                 messagingSenderId: "650974633550",
                 appId: "1:650974633550:web:14e277c8aef5db9ff4ed1f"
             });
-            
-            // Login button ka logic
+            console.log("Firebase SDK loaded successfully.");
             const authBtn = document.getElementById('auth-btn');
             if(authBtn) {
                 firebase.auth().onAuthStateChanged(u => authBtn.innerText = u ? "Logout" : "Login");
