@@ -117,37 +117,42 @@ const transScript = document.createElement('script'); transScript.src = '//trans
 
 
 
+// theme.js file ka content
 window.addToCart = async function(productName, price) {
-    const user = firebase.auth().currentUser;
+    const db = firebase.firestore();
+    const auth = firebase.auth();
+    const user = auth.currentUser;
 
-    // 1. Agar login nahi hai, toh pehle Login Popup kholo
+    // 1. Login check
     if (!user) {
         try {
-            await firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider());
+            const provider = new firebase.auth.GoogleAuthProvider();
+            await auth.signInWithPopup(provider);
         } catch (error) {
-            alert("Login zaroori hai bhai! Error: " + error.message);
+            console.error("Login Error:", error);
+            alert("Login nahi ho paya.");
             return;
         }
     }
 
-    // 2. Quantity aur Data uthao
+    // 2. Qty uthao
     const qty = document.getElementById('pdp-qty').value;
     const total = qty * price;
 
-    // 3. Firestore mein Cart entry banao
-    firebase.firestore().collection("users").doc(firebase.auth().currentUser.uid)
-    .collection("cart").add({
-        productName: productName,
-        price: price,
-        qty: parseInt(qty),
-        total: total,
-        timestamp: firebase.firestore.FieldValue.serverTimestamp()
-    })
-    .then(() => {
-        // 4. Success hone par Checkout page par redirect karo
+    // 3. Firestore me save
+    try {
+        await db.collection("users").doc(auth.currentUser.uid).collection("cart").add({
+            productName: productName,
+            price: price,
+            qty: parseInt(qty),
+            total: total,
+            timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        
+        // 4. Redirect
         window.location.href = "checkout.html";
-    })
-    .catch((err) => {
-        alert("Error: " + err.message);
-    });
+    } catch (err) {
+        console.error("Firestore Error:", err);
+        alert("Cart update nahi ho paya!");
+    }
 };
