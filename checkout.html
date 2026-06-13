@@ -10,6 +10,7 @@
         .checkout-box { max-width: 500px; margin: auto; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
         input { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 8px; }
         button { width: 100%; padding: 15px; background: var(--brand-red); color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 20px; }
+        button:disabled { background: #ccc; }
     </style>
 </head>
 <body>
@@ -32,7 +33,6 @@
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 
 <script>
-    // Initialize Firebase
     if (!firebase.apps.length) {
         firebase.initializeApp({
             apiKey: "AIzaSyDVE5gYyGCgAlfHw82Apna6DsMY9zE2bGs",
@@ -44,13 +44,18 @@
         });
     }
 
-async function placeOrder() {
-        // SAHI TAREEKA: Current user ko aise get karo
-        const user = firebase.auth().currentUser;
+    let authUser = null;
 
-        if (!user) { 
+    // FIX: Page load hote hi Auth check ka wait karo
+    firebase.auth().onAuthStateChanged((user) => {
+        authUser = user;
+    });
+
+    async function placeOrder() {
+        // Agar user null hai, toh hi redirect karo
+        if (!authUser) { 
             alert("Please login first!"); 
-            window.location.href = "login.html?redirect=checkout"; // Login page pe bhejo
+            window.location.href = "login.html?redirect=checkout"; 
             return; 
         }
 
@@ -69,7 +74,7 @@ async function placeOrder() {
 
         try {
             const db = firebase.firestore();
-            const cartRef = db.collection("users").doc(user.uid).collection("cart");
+            const cartRef = db.collection("users").doc(authUser.uid).collection("cart");
             const cartSnapshot = await cartRef.get();
             
             if (cartSnapshot.empty) { 
@@ -96,7 +101,7 @@ async function placeOrder() {
             });
 
             await db.collection("orders").add({
-                userId: user.uid, // Ab user.uid sahi se kaam karega
+                userId: authUser.uid,
                 name: name,
                 email: email,
                 phone: phone,
