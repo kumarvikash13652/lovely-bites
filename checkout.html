@@ -5,53 +5,49 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Checkout | Lovely Bites</title>
     <style>
-        :root { --brand-red: #e31e24; --brand-yellow: #ffcb05; --brand-blue: #0054a6; --brand-orange: #f58220; --bg-cream: #fffdf5; --text-dark: #2d2926; --white: #ffffff; }
-        * { box-sizing: border-box; }
-        body { font-family: 'Inter', sans-serif; background: var(--bg-cream); margin: 0; }
-        header { background: var(--white); padding: 1rem 2rem; text-align: center; border-bottom: 4px solid var(--brand-red); }
-        footer { background: var(--text-dark); color: #aaa; padding: 3rem 2rem; text-align: center; }
-        
-        .checkout-box { max-width: 500px; margin: 40px auto; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
-        h2 { text-align: center; color: var(--brand-red); margin-bottom: 25px; }
+        :root { --brand-red: #e31e24; --bg-cream: #fffdf5; }
+        body { font-family: sans-serif; background: var(--bg-cream); padding: 20px; }
+        .checkout-box { max-width: 500px; margin: auto; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
         input { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 8px; }
         button { width: 100%; padding: 15px; background: var(--brand-red); color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 20px; }
-        button:disabled { background: #ccc; cursor: not-allowed; }
     </style>
 </head>
 <body>
-
-<header>
-    <div class="logo"><a href="index.html"><img src="https://i.ibb.co/mFyGcMzs/Whats-App-Image-2026-04-21-at-12-22-57-removebg-preview.png" style="max-height:80px;"></a></div>
-</header>
 
 <main class="checkout-box">
     <h2>Delivery Details</h2>
     <input type="text" id="name" placeholder="Full Name" required>
     <input type="email" id="email" placeholder="Email Address" required>
-    <input type="text" id="address1" placeholder="Flat/House No, Area" required>
+    <input type="text" id="address1" placeholder="Flat/House No" required>
     <input type="text" id="address2" placeholder="Street/Locality" required>
     <input type="text" id="city" placeholder="City" required>
     <input type="number" id="pincode" placeholder="Pincode" required>
     <input type="number" id="phone" placeholder="Mobile Number" required>
     
-    <button onclick="placeOrderAndPay()">Place Order</button>
+    <button id="order-btn" onclick="placeOrder()">PLACE ORDER</button>
 </main>
-
-<footer>
-    <p>&copy; 2026 Lovely Bites. All Rights Reserved.</p>
-</footer>
 
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 
-
 <script>
+    // Initialize Firebase
+    if (!firebase.apps.length) {
+        firebase.initializeApp({
+            apiKey: "AIzaSyDVE5gYyGCgAlfHw82Apna6DsMY9zE2bGs",
+            authDomain: "lovelybites-e4d35.firebaseapp.com",
+            projectId: "lovelybites-e4d35",
+            storageBucket: "lovelybites-e4d35.firebasestorage.app",
+            messagingSenderId: "650974633550",
+            appId: "1:650974633550:web:14e277c8aef5db9ff4ed1f"
+        });
+    }
+
     async function placeOrder() {
         const user = firebase.auth().currentUser;
         if (!user) { alert("Please login first!"); return; }
 
-        // Form Validation
         const name = document.getElementById('name').value;
         const email = document.getElementById('email').value;
         const phone = document.getElementById('phone').value;
@@ -65,25 +61,23 @@
         btn.disabled = true;
         btn.innerText = "Placing Order...";
 
-        const db = firebase.firestore();
-        const cartRef = db.collection("users").doc(user.uid).collection("cart");
-        const cartSnapshot = await cartRef.get();
-        
-        if (cartSnapshot.empty) { 
-            alert("Aapka cart khaali hai!"); 
-            btn.disabled = false;
-            btn.innerText = "PLACE ORDER";
-            return; 
-        }
-
-        let orderItems = [], totalAmount = 0;
-        cartSnapshot.forEach(doc => {
-            const item = doc.data();
-            orderItems.push({ productName: item.productName, qty: item.qty, price: item.price });
-            totalAmount += (item.price * item.qty);
-        });
-
         try {
+            const db = firebase.firestore();
+            const cartRef = db.collection("users").doc(user.uid).collection("cart");
+            const cartSnapshot = await cartRef.get();
+            
+            if (cartSnapshot.empty) { 
+                alert("Aapka cart khaali hai!"); 
+                btn.disabled = false; btn.innerText = "PLACE ORDER"; return; 
+            }
+
+            let orderItems = [], totalAmount = 0;
+            cartSnapshot.forEach(doc => {
+                const item = doc.data();
+                orderItems.push({ productName: item.productName, qty: item.qty, price: item.price });
+                totalAmount += (item.price * item.qty);
+            });
+
             await db.collection("orders").add({
                 userId: user.uid,
                 name: name,
@@ -103,34 +97,12 @@
             alert("Order Successfully Placed!");
             window.location.href = "index.html"; 
         } catch (e) { 
+            console.error(e);
             alert("Error: " + e.message); 
             btn.disabled = false;
             btn.innerText = "PLACE ORDER";
         }
     }
 </script>
-
-
-
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
-<script>
-    if (!firebase.apps.length) {
-        firebase.initializeApp({
-            apiKey: "AIzaSyDVE5gYyGCgAlfHw82Apna6DsMY9zE2bGs",
-            authDomain: "lovelybites-e4d35.firebaseapp.com",
-            projectId: "lovelybites-e4d35",
-            storageBucket: "lovelybites-e4d35.firebasestorage.app",
-            messagingSenderId: "650974633550",
-            appId: "1:650974633550:web:14e277c8aef5db9ff4ed1f"
-        });
-        console.log("Firebase initialized successfully on Checkout page!");
-    }
-</script>
-
-<script src="checkout-logic.js"></script>
-
-
-
 </body>
 </html>
