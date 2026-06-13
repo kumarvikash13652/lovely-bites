@@ -1,3 +1,13 @@
+// Header aur Footer ko inject karne ka safe tareeka
+function injectUI(id, html) {
+    const element = document.getElementById(id);
+    if (element) {
+        element.innerHTML = html;
+    }
+}
+
+
+
 // ==========================================
 // 1. STYLES & UI INJECTION
 // ==========================================
