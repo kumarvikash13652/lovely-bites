@@ -11,7 +11,6 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <!-- FIXED: Canonical now strictly pointing to its own page for perfect indexing -->
     <link rel="canonical" href="https://lovelybites.online/makhana.html" />
     <link rel="icon" type="image/png" href="https://i.ibb.co/mFyGcMzs/Whats-App-Image-2026-04-21-at-12-22-57-removebg-preview.png">
     
@@ -146,11 +145,13 @@
             .pdp-content-card h3 { font-size: 1.25rem; }
             .inline-recipe-metrics { flex-wrap: wrap; gap: 10px; font-size: 0.8rem; }
         }
+        /* INJECTED CART CSS */
+        .cart-box { background: #fdfdfd; padding: 15px; border: 1px solid #eee; border-radius: 8px; margin-bottom: 20px; }
+        .add-to-cart-btn { background: var(--brand-blue); color: white; border: none; padding: 12px; width: 100%; border-radius: 6px; cursor: pointer; font-weight: bold; margin-top: 10px; }
     </style>
 </head>
 <body>
 
-<!-- Global Layout Targets -->
 <div id="global-header"></div>
 
 <section class="hero">
@@ -158,26 +159,20 @@
     <p>Easy culinary ideas made using native pure ingredients</p>
 </section>
 
-<!-- MAIN PRODUCT DETAIL ARCHITECTURE CONTAINER -->
 <main class="pdp-main-wrapper">
     
-    <!-- TOP PIECE: LEFT GALLERY & RIGHT SPECIFICATIONS SYSTEM -->
     <div class="pdp-top-split">
         
-        <!-- LEFT SIDE BLOCK: Sticky Media Slider Center Component -->
         <div class="pdp-gallery-container">
             <div class="main-image-viewport">
-                <!-- Main Core Active Asset Hook -->
                 <img id="pdp-target-viewer" src="https://i.ibb.co/wFcZdWZw/Gemini-Generated-Image-4ltfp64ltfp64ltf.png" alt="Premium Popped Mithila Makhana Pack">
             </div>
-            <!-- Slider Dots Control UI Indicators for Scrolling Option -->
             <div class="slider-dots-navigation">
                 <button class="slider-dot active" onclick="document.getElementById('pdp-target-viewer').src='https://i.ibb.co/wFcZdWZw/Gemini-Generated-Image-4ltfp64ltfp64ltf.png'; document.querySelectorAll('.slider-dot').forEach(d => d.classList.remove('active')); this.classList.add('active');" title="Image asset view 1"></button>
                 <button class="slider-dot" onclick="document.getElementById('pdp-target-viewer').src='https://i.ibb.co/mFyGcMzs/Whats-App-Image-2026-04-21-at-12-22-57-removebg-preview.png'; document.querySelectorAll('.slider-dot').forEach(d => d.classList.remove('active')); this.classList.add('active');" title="Image asset view 2"></button>
             </div>
         </div>
 
-        <!-- RIGHT SIDE BLOCK: Meta Target Descriptions & Purchase Funnels -->
         <div class="pdp-meta-container">
             <h2>Premium Mithila Makhana</h2>
             <p class="pdp-prime-tagline">100% Organic Hand-Picked Popped Fox Nuts</p>
@@ -186,10 +181,21 @@
                 Sourced directly from the sustainable wetland ecosystems of Bihar, our premium Makhana (Gorgon Nuts / Fox Nuts) are individually harvested and hand-picked by traditional local farmers. Each seed undergoes painstaking sorting to ensure only the crispest, largest puff profiles reach your kitchen.
             </p>
             
-            <!-- CORE CONVERSION ACTION POINT (CASHFREE LINK INTEGRATION) -->
+            <div class="cart-box">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <strong style="font-size: 1.2rem;">MRP: ₹200</strong>
+                    <select id="pdp-qty" style="padding: 5px;">
+                        <option value="1">Qty: 1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                    </select>
+                </div>
+                <button class="add-to-cart-btn" onclick="addToCart('Premium Mithila Makhana', 200)">ADD TO CART</button>
+            </div>
+
             <a href="https://payments.cashfree.com/forms/makhana-200" class="cashfree-checkout-anchor">Buy Now (Direct Checkout)</a>
             
-            <!-- EXTERNAL SECONDARY CONVERSION LINKS MATRIX WITH BRAND COLORS -->
             <div class="external-platforms-title">Other Buying Options</div>
             <div class="marketplace-flex-row">
                 <a href="https://www.meesho.com/LovelyBites?_ms=3.0.1" target="_blank" class="marketplace-pill-link link-amazon">
@@ -203,10 +209,8 @@
         
     </div>
 
-    <!-- BOTTOM PIECE: FULL DEPTH DETAILS SPECIFICATION TRACKS -->
     <div class="pdp-bottom-details-stack">
         
-        <!-- BENEFITS ACCORDION SECTION -->
         <div class="pdp-content-card">
             <h3>Health Benefits & Ingredients</h3>
             <p style="margin-top:0; font-weight: bold; color: #555;">Ingredients: 100% Raw Popped Fox Nut Seeds (Euryale ferox). No synthetic chemicals or sodium added.</p>
@@ -218,7 +222,6 @@
             </ul>
         </div>
 
-        <!-- VERSATILE RECIPES & USES SECTION -->
         <div class="pdp-content-card recipe-card">
             <h3>How to Use: Versatile Kitchen Recipes</h3>
             <div class="inline-recipe-metrics">
@@ -240,7 +243,7 @@
                 </li>
                 <li>
                     <strong>Use in Dal Tadka & Curries:</strong> 
-                    Apni regular Dal Tadka ya Shahi Paneer gravy me thode se pure roasted makhane upar se add karein. Yeh gravy ke extra oil/moisture ko absorb karke dish ko ek rich, premium restaurant-style texture aur crunch deta hai.
+                    Apni regular Dal Tadka ya Shahi Paneer gravy me thode se pure roasted makhane upar se add karein. Yeh gravy ke extra oil/moisture ko absorb karke dish ko ek rich, premium restaurant-style texture aur crunch देता है.
                 </li>
                 <li>
                     <strong>Use in Prasad & Fasting (Vrat):</strong> 
@@ -249,7 +252,6 @@
             </ul>
         </div>
 
-        <!-- MITHILA ORIGIN DEEP DOCUMENTARY LOG -->
         <div class="pdp-content-card origin-card">
             <h3>The Authentic Geographic Origin: Mithila, Bihar</h3>
             <p style="margin-top: 0;">
@@ -265,7 +267,25 @@
 
 <div id="global-footer"></div>
 
-<!-- Engine Source connection -->
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+
+<script>
+  // Tera Configuration
+  const firebaseConfig = {
+    apiKey: "AIzaSyDVE5gYyGCgAlfHw82Apna6DsMY9zE2bGs",
+    authDomain: "lovelybites-e4d35.firebaseapp.com",
+    projectId: "lovelybites-e4d35",
+    storageBucket: "lovelybites-e4d35.firebasestorage.app",
+    messagingSenderId: "650974633550",
+    appId: "1:650974633550:web:14e277c8aef5db9ff4ed1f"
+  };
+  firebase.initializeApp(firebaseConfig);
+</script>
+
+
+
 <script src="theme.js"></script>
 </body>
 </html>
