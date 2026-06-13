@@ -1,3 +1,12 @@
+// theme.js ke sabse upar ye daalo
+if (window.location.pathname.includes('checkout.html')) {
+    console.log("Checkout page detected, skipping UI injection.");
+} else {
+    // Tumhara baaki ka pura code yahan rahega
+    // (Header/Footer injection, etc.)
+}
+
+
 // Header aur Footer ko inject karne ka safe tareeka
 function injectUI(id, html) {
     const element = document.getElementById(id);

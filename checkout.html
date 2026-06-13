@@ -112,7 +112,25 @@
 
 <script src="theme.js"></script>
 
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+<script>
+    if (!firebase.apps.length) {
+        firebase.initializeApp({
+            apiKey: "AIzaSyDVE5gYyGCgAlfHw82Apna6DsMY9zE2bGs",
+            authDomain: "lovelybites-e4d35.firebaseapp.com",
+            projectId: "lovelybites-e4d35",
+            storageBucket: "lovelybites-e4d35.firebasestorage.app",
+            messagingSenderId: "650974633550",
+            appId: "1:650974633550:web:14e277c8aef5db9ff4ed1f"
+        });
+        console.log("Firebase initialized successfully on Checkout page!");
+    }
+</script>
+
 <script src="checkout-logic.js"></script>
+
+
 
 </body>
 </html>
