@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login / Signup</title>
+</head>
+<body>
+    <h2>Lovely Bites Login</h2>
+    <input type="email" id="email" placeholder="Email">
+    <input type="password" id="password" placeholder="Password">
+    
+    <button onclick="handleLogin()">Login</button>
+    <button onclick="handleSignup()">Sign Up</button>
+
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script>
+        const firebaseConfig = { /* Wahi puraana config jo makhana.html mein hai */ };
+        firebase.initializeApp(firebaseConfig);
+
+        function handleSignup() {
+            const email = document.getElementById('email').value;
+            const pass = document.getElementById('password').value;
+            firebase.auth().createUserWithEmailAndPassword(email, pass)
+                .then(() => alert("Account ban gaya!"))
+                .catch(e => alert(e.message));
+        }
+
+        function handleLogin() {
+            const email = document.getElementById('email').value;
+            const pass = document.getElementById('password').value;
+            firebase.auth().signInWithEmailAndPassword(email, pass)
+                .then(() => {
+                    alert("Login Successful!");
+                    window.location.href = "makhana.html"; // Login ke baad product page par bhej do
+                })
+                .catch(e => alert(e.message));
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,35 @@
+<h2 id="pdp-title">Loading...</h2>
+<p id="pdp-price" data-base-price="0">Price: ₹--</p>
+
+<label>Qty:</label>
+<input type="number" id="pdp-qty" value="1" min="1" oninput="calculateTotal()">
+<p>Total: ₹<span id="pdp-total">0</span></p>
+
+<button onclick="handleAddToCart()">ADD TO CART & CHECKOUT</button>
+
+<script>
+    // 1. Data Store
+    const products = {
+        'makhana': { name: 'Premium Mithila Makhana', price: 200 },
+        'sattu': { name: 'Pure Chana Sattu', price: 150 }
+    };
+
+    // 2. Load Data from URL
+    const id = new URLSearchParams(window.location.search).get('id');
+    const item = products[id];
+
+    if (item) {
+        document.getElementById('pdp-title').innerText = item.name;
+        document.getElementById('pdp-price').innerText = "Price: ₹" + item.price;
+        document.getElementById('pdp-price').setAttribute('data-base-price', item.price);
+        // Initial total calculation
+        calculateTotal(); 
+    }
+
+    // 3. Calculation function
+    function calculateTotal() {
+        const qty = document.getElementById('pdp-qty').value;
+        const price = document.getElementById('pdp-price').getAttribute('data-base-price');
+        document.getElementById('pdp-total').innerText = qty * price;
+    }
+</script>

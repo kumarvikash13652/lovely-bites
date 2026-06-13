@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<body>
+    <h2>Checkout</h2>
+    <input type="text" id="name" placeholder="Full Name" required><br>
+    <input type="text" id="address" placeholder="Delivery Address" required><br>
+    <input type="text" id="phone" placeholder="Phone Number" required><br>
+    
+    <button onclick="placeOrder()">PLACE ORDER</button>
+
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <script src="theme.js"></script> <script>
+        function placeOrder() {
+            const user = firebase.auth().currentUser;
+            const db = firebase.firestore();
+            
+            db.collection("orders").add({
+                userId: user.uid,
+                name: document.getElementById('name').value,
+                address: document.getElementById('address').value,
+                phone: document.getElementById('phone').value,
+                status: "Pending",
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            }).then(() => {
+                alert("Order Successfully Placed!");
+                window.location.href = "index.html"; // Wapas home page bhejo
+            });
+        }
+    </script>
+</body>
+</html>

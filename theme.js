@@ -113,66 +113,41 @@ function googleTranslateElementInit() { new google.translate.TranslateElement({p
 function changeLanguage(lang) { var selectField = document.querySelector("select.goog-te-combo"); if (selectField) { selectField.value = lang; selectField.dispatchEvent(new Event('change')); } }
 const transScript = document.createElement('script'); transScript.src = '//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit'; document.body.appendChild(transScript);
 
-/**
- * ADD TO CART FUNCTIONALITY
- * Injects product data into Firebase Firestore
- */
-function addToCart(productName, price) {
-    // 1. Firebase Auth Check
+
+
+
+
+window.addToCart = async function(productName, price) {
     const user = firebase.auth().currentUser;
+
+    // 1. Agar login nahi hai, toh pehle Login Popup kholo
     if (!user) {
-        alert("Bhai, pehle login kar lo!");
-        // Yahan tum apna login modal ya redirect page call kar sakte ho
-        return;
+        try {
+            await firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider());
+        } catch (error) {
+            alert("Login zaroori hai bhai! Error: " + error.message);
+            return;
+        }
     }
 
-    // 2. Quantity Selector se value fetch karo
-    const qtyElement = document.getElementById('pdp-qty');
-    const qty = qtyElement ? parseInt(qtyElement.value) : 1;
+    // 2. Quantity aur Data uthao
+    const qty = document.getElementById('pdp-qty').value;
+    const total = qty * price;
 
-    // 3. Firestore Reference
-    const db = firebase.firestore();
-    
-    // 4. Cart Collection mein data push karo
-    db.collection("users").doc(user.uid).collection("cart").add({
+    // 3. Firestore mein Cart entry banao
+    firebase.firestore().collection("users").doc(firebase.auth().currentUser.uid)
+    .collection("cart").add({
         productName: productName,
         price: price,
-        quantity: qty,
-        addedAt: firebase.firestore.FieldValue.serverTimestamp()
-    })
-    .then(() => {
-        alert(productName + " (" + qty + " units) cart mein add ho gaya!");
-    })
-    .catch((error) => {
-        console.error("Error adding to cart: ", error);
-        alert("Something went wrong, please try again.");
-    });
-}
-
-
-
-
-function addToCart(productName, price) {
-    const user = firebase.auth().currentUser;
-    if (!user) {
-        alert("Bhai, pehle login kar lo!");
-        return;
-    }
-
-    const qty = document.getElementById('pdp-qty').value;
-    const db = firebase.firestore();
-
-    db.collection("users").doc(user.uid).collection("cart").add({
-        name: productName,
-        price: price,
         qty: parseInt(qty),
+        total: total,
         timestamp: firebase.firestore.FieldValue.serverTimestamp()
     })
     .then(() => {
-        alert("Success! Cart mein add ho gaya.");
+        // 4. Success hone par Checkout page par redirect karo
+        window.location.href = "checkout.html";
     })
-    .catch((error) => {
-        console.error("Error:", error);
-        alert("Error aa raha hai, console check kar.");
+    .catch((err) => {
+        alert("Error: " + err.message);
     });
-}
+};
