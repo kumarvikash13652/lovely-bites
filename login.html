@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Login / Signup</title>
+    <title>Login / Signup | Lovely Bites</title>
 </head>
 <body>
     <h2>Lovely Bites Login</h2>
@@ -11,17 +11,27 @@
     <button onclick="handleLogin()">Login</button>
     <button onclick="handleSignup()">Sign Up</button>
 
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
     <script>
-        const firebaseConfig = { /* Wahi puraana config jo makhana.html mein hai */ };
+        const firebaseConfig = { 
+            apiKey: "AIzaSyDVE5gYyGCgAlfHw82Apna6DsMY9zE2bGs",
+            authDomain: "lovelybites-e4d35.firebaseapp.com",
+            projectId: "lovelybites-e4d35",
+            storageBucket: "lovelybites-e4d35.firebasestorage.app",
+            messagingSenderId: "650974633550",
+            appId: "1:650974633550:web:14e277c8aef5db9ff4ed1f"
+        };
         firebase.initializeApp(firebaseConfig);
 
         function handleSignup() {
             const email = document.getElementById('email').value;
             const pass = document.getElementById('password').value;
             firebase.auth().createUserWithEmailAndPassword(email, pass)
-                .then(() => alert("Account ban gaya!"))
+                .then(() => {
+                    alert("Account ban gaya!");
+                    redirectUser();
+                })
                 .catch(e => alert(e.message));
         }
 
@@ -31,9 +41,21 @@
             firebase.auth().signInWithEmailAndPassword(email, pass)
                 .then(() => {
                     alert("Login Successful!");
-                    window.location.href = "makhana.html"; // Login ke baad product page par bhej do
+                    redirectUser();
                 })
                 .catch(e => alert(e.message));
+        }
+
+        // Smart Redirect Function
+        function redirectUser() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const redirect = urlParams.get('redirect');
+            
+            if (redirect === 'checkout') {
+                window.location.href = "checkout.html";
+            } else {
+                window.location.href = "index.html";
+            }
         }
     </script>
 </body>
