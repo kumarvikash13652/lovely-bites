@@ -1,32 +1,91 @@
 <!DOCTYPE html>
-<html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <title>Checkout | Lovely Bites</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #f9f9f9; padding: 20px; }
+        .checkout-box { max-width: 500px; margin: 40px auto; background: #fff; padding: 30px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        h2 { text-align: center; color: #b7171c; margin-bottom: 25px; }
+        input { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
+        button { width: 100%; padding: 15px; background: #b7171c; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 20px; transition: 0.3s; }
+        button:hover { background: #961317; }
+    </style>
+</head>
 <body>
-    <h2>Checkout</h2>
-    <input type="text" id="name" placeholder="Full Name" required><br>
-    <input type="text" id="address" placeholder="Delivery Address" required><br>
-    <input type="text" id="phone" placeholder="Phone Number" required><br>
+
+<div class="checkout-box">
+    <h2>Delivery Details</h2>
+    <input type="text" id="name" placeholder="Full Name" required>
+    <input type="text" id="address1" placeholder="Flat/House No, Area" required>
+    <input type="text" id="address2" placeholder="Street/Locality" required>
+    <input type="text" id="city" placeholder="City" required>
+    <input type="number" id="pincode" placeholder="Pincode" required>
+    <input type="number" id="phone" placeholder="Mobile Number" required>
     
     <button onclick="placeOrder()">PLACE ORDER</button>
+</div>
 
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
-    <script src="theme.js"></script> <script>
-        function placeOrder() {
-            const user = firebase.auth().currentUser;
-            const db = firebase.firestore();
-            
-            db.collection("orders").add({
-                userId: user.uid,
-                name: document.getElementById('name').value,
-                address: document.getElementById('address').value,
-                phone: document.getElementById('phone').value,
-                status: "Pending",
-                timestamp: firebase.firestore.FieldValue.serverTimestamp()
-            }).then(() => {
-                alert("Order Successfully Placed!");
-                window.location.href = "index.html"; // Wapas home page bhejo
-            });
-        }
-    </script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+<script src="theme.js"></script>
+
+<script>
+    async function placeOrder() {
+    const user = firebase.auth().currentUser;
+    if (!user) { alert("Please login first!"); return; }
+
+    const db = firebase.firestore();
+    const cartRef = db.collection("users").doc(user.uid).collection("cart");
+    
+    // 1. Cart ka saara data fetch karo
+    const cartSnapshot = await cartRef.get();
+    if (cartSnapshot.empty) {
+        alert("Aapka cart khaali hai!");
+        return;
+    }
+
+    let orderItems = [];
+    let totalAmount = 0;
+
+    cartSnapshot.forEach(doc => {
+        const item = doc.data();
+        orderItems.push({
+            productName: item.productName,
+            qty: item.qty,
+            price: item.price
+        });
+        totalAmount += (item.price * item.qty);
+    });
+
+    // 2. Order details object
+    const orderData = {
+        userId: user.uid,
+        name: document.getElementById('name').value,
+        address: `${document.getElementById('address1').value}, ${document.getElementById('address2').value}, ${document.getElementById('city').value} - ${document.getElementById('pincode').value}`,
+        phone: document.getElementById('phone').value,
+        items: orderItems, // Yahan saare products aa jayenge
+        total: totalAmount,
+        status: "Pending",
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+    };
+
+    // 3. Database mein save karo
+    try {
+        await db.collection("orders").add(orderData);
+        
+        // 4. Cart khali karo (Database cleanup)
+        const batch = db.batch();
+        cartSnapshot.forEach(doc => batch.delete(doc.ref));
+        await batch.commit();
+
+        alert("Order Successfully Placed!");
+        window.location.href = "index.html"; 
+    } catch (e) {
+        alert("Error: " + e.message);
+    }
+}
+</script>
 </body>
 </html>
