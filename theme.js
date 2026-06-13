@@ -1,3 +1,13 @@
+// Debugging: Check if Firebase is loaded
+if (typeof firebase === 'undefined') {
+    console.error("CRITICAL ERROR: Firebase SDK load nahi hua hai!");
+} else {
+    console.log("Firebase SDK loaded successfully.");
+}
+
+
+
+
 // ==========================================
 // 1. ORIGINAL STYLES + LOGIN BUTTON STYLE
 // ==========================================
