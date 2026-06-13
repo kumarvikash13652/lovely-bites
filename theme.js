@@ -107,62 +107,37 @@ document.getElementById('submenu-toggle-item').addEventListener('click', (e) => 
     }
 });
 
-// Firebase Auth
-const s = document.createElement('script');
-s.src = "https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js";
-s.onload = () => {
-    firebase.initializeApp({apiKey: "AIzaSyDVE5gYyGCgAlfHw82Apna6DsMY9zE2bGs", authDomain: "lovelybites-e4d35.firebaseapp.com", projectId: "lovelybites-e4d35", storageBucket: "lovelybites-e4d35.firebasestorage.app", messagingSenderId: "650974633550", appId: "1:650974633550:web:14e277c8aef5db9ff4ed1f"});
-    const authBtn = document.getElementById('auth-btn');
-    firebase.auth().onAuthStateChanged(u => authBtn.innerText = u ? "Logout" : "Login");
-    authBtn.onclick = () => firebase.auth().currentUser ? firebase.auth().signOut() : firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider());
-};
-document.head.appendChild(s);
-
-// Translate & Other Functions (Original)
-function googleTranslateElementInit() { new google.translate.TranslateElement({pageLanguage: 'en'}, 'google_translate_element'); }
-function changeLanguage(lang) { var selectField = document.querySelector("select.goog-te-combo"); if (selectField) { selectField.value = lang; selectField.dispatchEvent(new Event('change')); } }
-const transScript = document.createElement('script'); transScript.src = '//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit'; document.body.appendChild(transScript);
 
 
+// Firebase Dynamic Loader (Updated)
+const scriptUrls = [
+    "https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js",
+    "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js",
+    "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"
+];
 
-
-
-// theme.js file ka content
-window.addToCart = async function(productName, price) {
-    const db = firebase.firestore();
-    const auth = firebase.auth();
-    const user = auth.currentUser;
-
-    // 1. Login check
-    if (!user) {
-        try {
-            const provider = new firebase.auth.GoogleAuthProvider();
-            await auth.signInWithPopup(provider);
-        } catch (error) {
-            console.error("Login Error:", error);
-            alert("Login nahi ho paya.");
-            return;
+scriptUrls.forEach(url => {
+    const s = document.createElement('script');
+    s.src = url;
+    s.onload = () => {
+        // Sirf jab teeno load ho jayein tabhi initialize karo
+        if (typeof firebase !== 'undefined' && !firebase.apps.length) {
+            firebase.initializeApp({
+                apiKey: "AIzaSyDVE5gYyGCgAlfHw82Apna6DsMY9zE2bGs",
+                authDomain: "lovelybites-e4d35.firebaseapp.com",
+                projectId: "lovelybites-e4d35",
+                storageBucket: "lovelybites-e4d35.firebasestorage.app",
+                messagingSenderId: "650974633550",
+                appId: "1:650974633550:web:14e277c8aef5db9ff4ed1f"
+            });
+            
+            // Login button ka logic
+            const authBtn = document.getElementById('auth-btn');
+            if(authBtn) {
+                firebase.auth().onAuthStateChanged(u => authBtn.innerText = u ? "Logout" : "Login");
+                authBtn.onclick = () => firebase.auth().currentUser ? firebase.auth().signOut() : firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider());
+            }
         }
-    }
-
-    // 2. Qty uthao
-    const qty = document.getElementById('pdp-qty').value;
-    const total = qty * price;
-
-    // 3. Firestore me save
-    try {
-        await db.collection("users").doc(auth.currentUser.uid).collection("cart").add({
-            productName: productName,
-            price: price,
-            qty: parseInt(qty),
-            total: total,
-            timestamp: firebase.firestore.FieldValue.serverTimestamp()
-        });
-        
-        // 4. Redirect
-        window.location.href = "checkout.html";
-    } catch (err) {
-        console.error("Firestore Error:", err);
-        alert("Cart update nahi ho paya!");
-    }
-};
+    };
+    document.head.appendChild(s);
+});
