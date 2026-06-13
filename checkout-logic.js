@@ -1,59 +1,29 @@
-// checkout-logic.js
-
-// 1. Firebase Ready hai ya nahi, check karne ka helper
-async function getFirebase() {
-    return new Promise((resolve) => {
-        if (typeof firebase !== 'undefined' && firebase.apps.length > 0) {
-            resolve(firebase);
-        } else {
-            // Agar abhi load nahi hua, toh thoda wait karo
-            const interval = setInterval(() => {
-                if (typeof firebase !== 'undefined' && firebase.apps.length > 0) {
-                    clearInterval(interval);
-                    resolve(firebase);
-                }
-            }, 200);
-        }
-    });
-}
-
-// 2. Final Main Function
 async function placeOrderAndPay() {
-    // Input fields check karo
-    const nameInput = document.getElementById('name')?.value;
-    const addressInput = document.getElementById('address')?.value;
-    const phoneInput = document.getElementById('phone')?.value;
+    console.log("Button click hua!");
 
-    if (!nameInput || !addressInput || !phoneInput) {
-        alert("Bhai, Name, Address aur Phone sab bharna zaroori hai!");
+    const name = document.getElementById('name')?.value;
+    const address = document.getElementById('address')?.value;
+    const phone = document.getElementById('phone')?.value;
+
+    if (!name || !address || !phone) {
+        alert("Bhai, saari details bharo!");
         return;
     }
 
     try {
-        // Firebase ke ready hone ka wait karo
-        const fb = await getFirebase();
-        const db = fb.firestore();
-
-        // Data pack karo
-        const customerData = {
-            name: nameInput,
-            address: addressInput,
-            phone: phoneInput,
+        const db = firebase.firestore();
+        const docRef = await db.collection("orders").add({
+            name: name,
+            address: address,
+            phone: phone,
             total: document.getElementById('order-total')?.innerText || "0",
             status: "pending",
-            createdAt: fb.firestore.FieldValue.serverTimestamp()
-        };
+            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
 
-        // Firebase mein save karo
-        // Check kar ki docRef.id print ho raha hai ya nahi
-            const docRef = await db.collection("orders").add({ ... });
-            console.log("Order ID:", docRef.id);
-        
-        // Success page par redirect
         window.location.href = `success.html?orderId=${docRef.id}`;
-        
     } catch (e) {
-        console.error("Error saving order: ", e);
-        alert("Error: " + e.message + ". Check karo ki Firebase init hua hai ya nahi.");
+        console.error("Error saving:", e);
+        alert("Error: " + e.message);
     }
 }
