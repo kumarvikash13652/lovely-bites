@@ -45,9 +45,9 @@ async function placeOrderAndPay() {
         };
 
         // Firebase mein save karo
-        const docRef = await db.collection("orders").add(customerData);
-        
-        console.log("Order saved successfully with ID: ", docRef.id);
+        // Check kar ki docRef.id print ho raha hai ya nahi
+            const docRef = await db.collection("orders").add({ ... });
+            console.log("Order ID:", docRef.id);
         
         // Success page par redirect
         window.location.href = `success.html?orderId=${docRef.id}`;
