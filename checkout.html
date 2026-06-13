@@ -34,7 +34,7 @@
     <input type="number" id="pincode" placeholder="Pincode" required>
     <input type="number" id="phone" placeholder="Mobile Number" required>
     
-    <button id="order-btn" onclick="placeOrder()">PLACE ORDER</button>
+    <button id="place-order-btn" onclick="processMyOrder()">Place Order</button>
 </main>
 
 <footer>
@@ -44,7 +44,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
-<script src="theme.js"></script>
+<script src="theme.js" defer></script>
 
 <script>
     async function placeOrder() {
@@ -109,6 +109,10 @@
         }
     }
 </script>
+
+<script src="theme.js"></script>
+
+<script src="checkout-logic.js"></script>
 
 </body>
 </html>
