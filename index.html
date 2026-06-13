@@ -6,7 +6,6 @@
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
-
       gtag('config', 'G-Q7KE84LF36');
     </script>
 
@@ -16,324 +15,75 @@
     <link rel="icon" type="image/png" href="https://i.ibb.co/mFyGcMzs/Whats-App-Image-2026-04-21-at-12-22-57-removebg-preview.png">
     
     <title>Lovely Bites | Authentic Bihar Snacks</title>
-    
     <meta name="description" content="Discover Lovely Bites for authentic Bihar food products. 100% natural Mithila Makhana, Bhagalpuri Katarni Poha, and premium Chana Sattu.">
 
     <style>
         :root {
-            /* Vibrant Snack Brand Palette */
-            --brand-red: #e31e24;      /* Lays-style Red */
-            --brand-yellow: #ffcb05;   /* Energetic Yellow */
-            --brand-blue: #0054a6;     /* Logo Blue */
-            --brand-orange: #f58220;   /* Logo Orange */
+            --brand-red: #e31e24;      
+            --brand-yellow: #ffcb05;   
+            --brand-blue: #0054a6;     
+            --brand-orange: #f58220;   
             --bg-cream: #fffdf5;       
             --text-dark: #2d2926;
             --white: #ffffff;
         }
-
         * { box-sizing: border-box; transition: all 0.3s ease; } 
-
-        body { 
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; 
-            margin: 0; 
-            background: var(--bg-cream); 
-            color: var(--text-dark); 
-            line-height: 1.6;
-        }
-
-        /* Language Bar - Cleaned Up */
-        .lang-bar { 
-            background: var(--brand-blue); 
-            padding: 8px; 
-            text-align: center; 
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 10px;
-        }
-        .lang-btn { 
-            background: rgba(255,255,255,0.2); 
-            border: 1px solid white; 
-            color: white; 
-            padding: 4px 12px; 
-            cursor: pointer; 
-            font-size: 12px;
-            border-radius: 20px; 
-        }
+        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; margin: 0; background: var(--bg-cream); color: var(--text-dark); line-height: 1.6; }
+        .lang-bar { background: var(--brand-blue); padding: 8px; text-align: center; display: flex; justify-content: center; align-items: center; gap: 10px; }
+        .lang-btn { background: rgba(255,255,255,0.2); border: 1px solid white; color: white; padding: 4px 12px; cursor: pointer; font-size: 12px; border-radius: 20px; }
         .lang-btn:hover { background: white; color: var(--brand-blue); }
-
-        /* Modern Header */
-        header { 
-            background: var(--white); 
-            padding: 1rem 2rem; 
-            text-align: center; 
-            position: relative; 
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            border-bottom: 4px solid var(--brand-red);
-        }
-
-        /* THE LOGO FIX: Removing bg feel & adding stroke */
-        .logo img { 
-            max-height: 110px; 
-            width: auto;
-            filter: drop-shadow(2px 2px 0px var(--brand-blue)) drop-shadow(-2px -2px 0px var(--brand-orange));
-            padding: 5px;
-        }
-
-        .gstin-top-right { 
-            position: absolute; 
-            top: 20px; 
-            right: 20px; 
-            color: #777; 
-            font-size: 0.7rem; 
-            text-align: right; 
-            font-family: monospace;
-        }
-
-        /* Hero Section - "Snack Style" */
-        .hero { 
-            background: radial-gradient(circle, var(--brand-red) 0%, #a31115 100%);
-            color: white;
-            padding: 60px 20px;
-            text-align: center;
-            clip-path: ellipse(150% 100% at 50% 0%); /* Modern Curve */
-            margin-bottom: 40px;
-        }
+        header { background: var(--white); padding: 1rem 2rem; text-align: center; position: relative; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border-bottom: 4px solid var(--brand-red); }
+        .logo img { max-height: 110px; width: auto; filter: drop-shadow(2px 2px 0px var(--brand-blue)) drop-shadow(-2px -2px 0px var(--brand-orange)); padding: 5px; }
+        .gstin-top-right { position: absolute; top: 20px; right: 20px; color: #777; font-size: 0.7rem; text-align: right; font-family: monospace; }
+        .hero { background: radial-gradient(circle, var(--brand-red) 0%, #a31115 100%); color: white; padding: 60px 20px; text-align: center; clip-path: ellipse(150% 100% at 50% 0%); margin-bottom: 40px; }
         .hero h1 { font-size: 2.8rem; margin: 0; text-shadow: 2px 2px 10px rgba(0,0,0,0.3); letter-spacing: -1px; }
         .hero p { font-size: 1.2rem; opacity: 0.9; }
-
-        /* Make in Bharat Banner */
-        .make-in-bharat { 
-            background: var(--brand-yellow); 
-            padding: 10px; 
-            font-weight: 900; 
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            text-align: center;
-            transform: rotate(-1deg);
-            width: fit-content;
-            margin: -20px auto 30px;
-            box-shadow: 5px 5px 0px var(--brand-blue);
-        }
-
-        /* Product Grid */
-        .product-grid { 
-            display: grid; 
-            grid-template-columns: repeat(4, 1fr); 
-            gap: 25px; 
-            padding: 20px; 
-            max-width: 1200px; 
-            margin: auto; 
-        }
-        
-        .product-card { 
-            background: var(--white);
-            border-radius: 20px;
-            padding: 20px;
-            text-align: center;
-            border: 2px solid transparent;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
-            position: relative;
-            overflow: visible;
-        }
-        .product-card:hover { 
-            border-color: var(--brand-yellow);
-            transform: translateY(-10px);
-            box-shadow: 0 15px 30px rgba(227, 30, 36, 0.15);
-        }
-
-        /* Product Slider Styles */
-        .slider-container {
-            position: relative;
-            width: 100%;
-            height: 220px;
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-        }
-
-        .slider-container img { 
-            width: 100%; 
-            height: 100%; 
-            object-fit: contain; 
-            filter: drop-shadow(0 10px 10px rgba(0,0,0,0.1));
-            position: absolute;
-            z-index: 1;
-        }
-
-        .slider-btn {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            background: rgba(255, 255, 255, 0.8);
-            border: 1px solid #ddd;
-            color: var(--brand-blue);
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            cursor: pointer;
-            z-index: 5;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            font-size: 18px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-
+        .make-in-bharat { background: var(--brand-yellow); padding: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: 2px; text-align: center; transform: rotate(-1deg); width: fit-content; margin: -20px auto 30px; box-shadow: 5px 5px 0px var(--brand-blue); }
+        .product-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 25px; padding: 20px; max-width: 1200px; margin: auto; }
+        .product-card { background: var(--white); border-radius: 20px; padding: 20px; text-align: center; border: 2px solid transparent; box-shadow: 0 10px 20px rgba(0,0,0,0.05); position: relative; overflow: visible; }
+        .product-card:hover { border-color: var(--brand-yellow); transform: translateY(-10px); box-shadow: 0 15px 30px rgba(227, 30, 36, 0.15); }
+        .slider-container { position: relative; width: 100%; height: 220px; margin-bottom: 15px; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        .slider-container img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 10px 10px rgba(0,0,0,0.1)); position: absolute; z-index: 1; }
+        .slider-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(255, 255, 255, 0.8); border: 1px solid #ddd; color: var(--brand-blue); width: 30px; height: 30px; border-radius: 50%; cursor: pointer; z-index: 5; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 18px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
         .slider-btn:hover { background: var(--brand-yellow); border-color: var(--brand-yellow); }
         .prev { left: 5px; }
         .next { right: 5px; }
-
-        .bestseller-badge {
-            position: absolute; 
-            top: 10px; 
-            right: 10px; 
-            background: var(--brand-red); 
-            color: white; 
-            padding: 5px 10px; 
-            border-radius: 10px; 
-            font-size: 12px; 
-            font-weight: bold;
-            z-index: 10; 
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-        }
-
-        .product-card h4 { 
-            color: var(--brand-red); 
-            font-size: 1.4rem; 
-            margin: 10px 0;
-            font-weight: 800;
-            position: relative;
-            z-index: 2;
-        }
-
-        .btn { 
-            display: block; 
-            padding: 12px; 
-            background: var(--brand-blue); 
-            color: white; 
-            text-decoration: none; 
-            border-radius: 30px; 
-            font-weight: bold; 
-            text-transform: uppercase;
-            box-shadow: 0 4px 0px #003d7a;
-            position: relative;
-            z-index: 2;
-        }
+        .bestseller-badge { position: absolute; top: 10px; right: 10px; background: var(--brand-red); color: white; padding: 5px 10px; border-radius: 10px; font-size: 12px; font-weight: bold; z-index: 10; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+        .product-card h4 { color: var(--brand-red); font-size: 1.4rem; margin: 10px 0; font-weight: 800; position: relative; z-index: 2; }
+        .btn { display: block; padding: 12px; background: var(--brand-blue); color: white; text-decoration: none; border-radius: 30px; font-weight: bold; text-transform: uppercase; box-shadow: 0 4px 0px #003d7a; position: relative; z-index: 2; }
         .btn:active { transform: translateY(2px); box-shadow: none; }
         .btn:hover { background: var(--brand-orange); }
-
-        /* Blog/Why Choose Section */
         .blog-section { padding: 60px 20px; background: #fff; }
-        .blog-tile { 
-            background: var(--bg-cream); 
-            border-left: 5px solid var(--brand-red); 
-            border-radius: 10px;
-            min-width: 280px;
-            padding: 25px;
-        }
+        .blog-tile { background: var(--bg-cream); border-left: 5px solid var(--brand-red); border-radius: 10px; min-width: 280px; padding: 25px; }
         .blog-tile h4 { color: var(--brand-blue); font-size: 1.2rem; }
-
-        /* UPDATED FOOTER STYLES */
-        footer { 
-            background: var(--text-dark); 
-            color: #aaa; 
-            padding: 3rem 2rem; 
-            font-size: 0.9rem;
-        }
-        .footer-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 40px;
-            text-align: left;
-        }
-        .footer-col h5 {
-            color: var(--white);
-            margin-bottom: 15px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        .footer-platforms {
-            margin: 10px 0;
-            display: flex;
-            justify-content: flex-start;
-            align-items: center;
-            gap: 15px;
-            flex-wrap: wrap;
-        }
-        .platform-link img {
-            height: 25px;
-            filter: grayscale(1) brightness(2);
-            opacity: 0.7;
-            transition: 0.3s;
-        }
-        .platform-link:hover img {
-            filter: grayscale(0) brightness(1);
-            opacity: 1;
-        }
-        .msme-logo {
-            height: 60px !important;
-            filter: none !important;
-            opacity: 1 !important;
-            margin-top: 10px;
-        }
-        .footer-bottom {
-            grid-column: 1 / -1;
-            text-align: center;
-            margin-top: 40px;
-            padding-top: 20px;
-            border-top: 1px solid rgba(255,255,255,0.1);
-            font-size: 11px;
-            opacity: 0.5;
-        }
+        footer { background: var(--text-dark); color: #aaa; padding: 3rem 2rem; font-size: 0.9rem; }
+        .footer-container { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; text-align: left; }
+        .footer-col h5 { color: var(--white); margin-bottom: 15px; text-transform: uppercase; letter-spacing: 1px; }
+        .footer-platforms { margin: 10px 0; display: flex; justify-content: flex-start; align-items: center; gap: 15px; flex-wrap: wrap; }
+        .platform-link img { height: 25px; filter: grayscale(1) brightness(2); opacity: 0.7; transition: 0.3s; }
+        .platform-link:hover img { filter: grayscale(0) brightness(1); opacity: 1; }
+        .msme-logo { height: 60px !important; filter: none !important; opacity: 1 !important; margin-top: 10px; }
+        .footer-bottom { grid-column: 1 / -1; text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); font-size: 11px; opacity: 0.5; }
 
         @media (max-width: 768px) {
             .hero h1 { font-size: 1.8rem; }
             .logo img { max-height: 80px; }
             .gstin-top-right { position: relative; top: 0; right: 0; text-align: center; margin-bottom: 10px; }
-            
-            .product-grid { 
-                grid-template-columns: repeat(2, 1fr); 
-                gap: 12px; 
-                padding: 10px;
-            }
+            .product-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; padding: 10px; }
             .product-card { padding: 12px; border-radius: 15px; }
             .slider-container { height: 140px; }
             .product-card h4 { font-size: 1rem; }
             .btn { padding: 8px; font-size: 0.8rem; }
             .bestseller-badge { font-size: 10px; padding: 3px 7px; top: 5px; right: 5px; }
-
-            /* Footer Mobile View */
-            .footer-container {
-                grid-template-columns: 1fr;
-                text-align: center;
-                gap: 30px;
-            }
-            .footer-platforms {
-                justify-content: center;
-            }
+            .footer-container { grid-template-columns: 1fr; text-align: center; gap: 30px; }
+            .footer-platforms { justify-content: center; }
         }
     </style>
 </head>
 <body>
 
-<div class="lang-bar">
-    <button class="lang-btn" onclick="location.reload()">English</button>
-    <button class="lang-btn" onclick="changeLanguage('hi')">हिंदी</button>
-    <div id="google_translate_element"></div>
-</div>
-
-<header>
-    <div class="gstin-top-right">K L ENTERPRISE | GSTIN: 10JQBPK5246N1ZO</div>
-    <div class="logo">
-        <img src="https://i.ibb.co/mFyGcMzs/Whats-App-Image-2026-04-21-at-12-22-57-removebg-preview.png" alt="Lovely Bites Logo"> 
-    </div>
-</header>
+<!-- Dynamic Appends Hook Header -->
+<div id="global-header"></div>
 
 <section class="hero">
     <h1>The Essence of Mithila, <br>A Gift of Purity.</h1> 
@@ -409,68 +159,10 @@
     </div>
 </section>
 
-<footer>
-    <div class="footer-container">
-        <div class="footer-col">
-            <h5>Quality & Certification</h5>
-            <p><strong>FSSAI: 20426290000095</strong></p>
-            <img src="https://i.ibb.co/ds7NhrHf/New-Project-5.png" alt="MSME Member" class="msme-logo">
-        </div>
+<!-- Dynamic Appends Hook Footer -->
+<div id="global-footer"></div>
 
-        <div class="footer-col">
-            <h5>Shop Online</h5>
-            <p>Find us on Marketplaces:</p>
-            <div class="footer-platforms">
-                <a href="#" class="platform-link"><img src="https://i.ibb.co/hRB8h7zS/Amazon-Logo-White-PNG.png" alt="Amazon"></a>
-                <a href="#" class="platform-link"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/33/Meesho_logo.png/250px-Meesho_logo.png" alt="Meesho"></a>
-                <a href="#" class="platform-link"><img src="https://i.ibb.co/HT14SWjR/tradeindia-logo-rounded-glossy-icon-with-transparent-background-free-png.webp" alt="TradeIndia"></a>
-            </div>
-        </div>
-
-        <div class="footer-col">
-            <h5>Contact Us</h5>
-            <p>Shiv Kala Bhawan, Maharshi Menhi Nagar, Madhepura, Bihar 852113</p>
-            <p>Email: support@lovelybites.online</p>
-        </div>
-
-        <div class="footer-bottom">
-            &copy; 2026 Lovely Bites. All Rights Reserved.
-        </div>
-    </div>
-</footer>
-
-<script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
-<script type="text/javascript">
-    function googleTranslateElementInit() {
-        new google.translate.TranslateElement({pageLanguage: 'en'}, 'google_translate_element');
-    }
-    function changeLanguage(lang) {
-        var selectField = document.querySelector("select.goog-te-combo");
-        if (selectField) {
-            selectField.value = lang;
-            selectField.dispatchEvent(new Event('change'));
-        }
-    }
-
-    // Product Slider Logic
-    function changeImage(btn, direction) {
-        const container = btn.parentElement;
-        const images = JSON.parse(container.getAttribute('data-images'));
-        let currentIndex = parseInt(container.getAttribute('data-index'));
-        const imgElement = container.querySelector('img');
-
-        currentIndex += direction;
-
-        if (currentIndex >= images.length) {
-            currentIndex = 0;
-        } else if (currentIndex < 0) {
-            currentIndex = images.length - 1;
-        }
-
-        container.setAttribute('data-index', currentIndex);
-        imgElement.src = images[currentIndex];
-    }
-</script>
-
+<!-- Local Script File Integration -->
+<script src="theme.js"></script>
 </body>
 </html>

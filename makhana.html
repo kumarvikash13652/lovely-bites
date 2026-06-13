@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-Q7KE84LF36"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-Q7KE84LF36');
+    </script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="canonical" href="https://lovelybites.online/recipes.html" />
+    <link rel="icon" type="image/png" href="https://i.ibb.co/mFyGcMzs/Whats-App-Image-2026-04-21-at-12-22-57-removebg-preview.png">
+    
+    <title>Premium Mithila Makhana | Lovely Bites</title>
+    <meta name="description" content="Learn traditional recipes using Mithila Makhana, Katarni Poha, and Chana Sattu.">
+
+    <style>
+        :root {
+            --brand-red: #e31e24;      
+            --brand-yellow: #ffcb05;   
+            --brand-blue: #0054a6;     
+            --brand-orange: #f58220;   
+            --bg-cream: #fffdf5;       
+            --text-dark: #2d2926;
+            --white: #ffffff;
+            /* Marketplace Colors */
+            --amazon-color: #FF9900;
+            --meesho-color: #E71A65;
+        }
+        * { box-sizing: border-box; transition: all 0.3s ease; } 
+        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; margin: 0; background: var(--bg-cream); color: var(--text-dark); line-height: 1.6; }
+        .lang-bar { background: var(--brand-blue); padding: 8px; text-align: center; display: flex; justify-content: center; align-items: center; gap: 10px; }
+        .lang-btn { background: rgba(255,255,255,0.2); border: 1px solid white; color: white; padding: 4px 12px; cursor: pointer; font-size: 12px; border-radius: 20px; }
+        .lang-btn:hover { background: white; color: var(--brand-blue); }
+        header { background: var(--white); padding: 1rem 2rem; text-align: center; position: relative; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border-bottom: 4px solid var(--brand-red); }
+        .logo img { max-height: 110px; width: auto; filter: drop-shadow(2px 2px 0px var(--brand-blue)) drop-shadow(-2px -2px 0px var(--brand-orange)); padding: 5px; }
+        .gstin-top-right { position: absolute; top: 20px; right: 20px; color: #777; font-size: 0.7rem; text-align: right; font-family: monospace; }
+        .hero { background: radial-gradient(circle, var(--brand-orange) 0%, #c45b07 100%); color: white; padding: 60px 20px; text-align: center; clip-path: ellipse(150% 100% at 50% 0%); margin-bottom: 40px; }
+        .hero h1 { font-size: 2.8rem; margin: 0; text-shadow: 2px 2px 10px rgba(0,0,0,0.3); letter-spacing: -1px; }
+        .hero p { font-size: 1.2rem; opacity: 0.9; }
+        footer { background: var(--text-dark); color: #aaa; padding: 3rem 2rem; font-size: 0.9rem; }
+        .footer-container { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; text-align: left; }
+        .footer-col h5 { color: var(--white); margin-bottom: 15px; text-transform: uppercase; letter-spacing: 1px; }
+        .footer-platforms { margin: 10px 0; display: flex; justify-content: flex-start; align-items: center; gap: 15px; flex-wrap: wrap; }
+        .platform-link img { height: 25px; filter: grayscale(1) brightness(2); opacity: 0.7; transition: 0.3s; }
+        .platform-link:hover img { filter: grayscale(0) brightness(1); opacity: 1; }
+        .msme-logo { height: 60px !important; filter: none !important; opacity: 1 !important; margin-top: 10px; }
+        .footer-bottom { grid-column: 1 / -1; text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); font-size: 11px; opacity: 0.5; }
+
+        /* ADVANCED PDP LAYOUT ENGINE */
+        .pdp-main-wrapper { max-width: 1200px; margin: auto; padding: 0 20px 40px 20px; }
+        .pdp-top-split { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 40px; margin-bottom: 50px; align-items: start; }
+        
+        /* LEFT SIDE: MULTIPLE IMAGE SCROLL SLIDER */
+        .pdp-gallery-container { position: sticky; top: 20px; background: var(--white); border-radius: 12px; padding: 30px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); text-align: center; }
+        .main-image-viewport { min-height: 350px; display: flex; justify-content: center; align-items: center; }
+        .main-image-viewport img { max-width: 100%; height: auto; max-height: 380px; object-fit: contain; }
+        .slider-dots-navigation { display: flex; justify-content: center; gap: 8px; margin-top: 20px; }
+        .slider-dot { width: 10px; height: 10px; border-radius: 50%; background: #ddd; cursor: pointer; border: none; padding: 0; }
+        .slider-dot.active { background: var(--brand-blue); transform: scale(1.2); }
+
+        /* RIGHT SIDE: INFO & CONVERSION ACTIONS */
+        .pdp-meta-container { background: var(--white); border-top: 5px solid var(--brand-red); border-radius: 10px; padding: 30px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
+        .pdp-meta-container h2 { margin: 0 0 10px 0; font-size: 2.2rem; color: var(--text-dark); }
+        .pdp-prime-tagline { color: var(--brand-orange); font-weight: bold; margin: 0 0 15px 0; font-size: 1.1rem; }
+        .main-pdp-description { font-size: 1rem; color: #444; line-height: 1.6; margin-bottom: 25px; }
+        
+        /* ACTION CONVERSIONS */
+        .cashfree-checkout-anchor { display: block; text-align: center; background: var(--brand-red); color: var(--white); font-weight: 800; text-decoration: none; padding: 16px; border-radius: 8px; font-size: 1.25rem; text-transform: uppercase; box-shadow: 0 4px 15px rgba(227,30,36,0.3); margin-bottom: 25px; letter-spacing: 0.5px; }
+        .cashfree-checkout-anchor:hover { background: #b81419; transform: translateY(-2px); }
+        
+        /* BRANDED OTHER BUYING OPTIONS */
+        .external-platforms-title { font-size: 0.9rem; font-weight: 700; text-transform: uppercase; color: #777; border-bottom: 1px dashed #ddd; padding-bottom: 5px; margin-bottom: 15px; }
+        .marketplace-flex-row { display: flex; gap: 15px; }
+        .marketplace-pill-link { flex: 1; display: flex; align-items: center; justify-content: center; gap: 10px; border: none; border-radius: 8px; padding: 12px; text-decoration: none; font-weight: 800; font-size: 0.95rem; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .marketplace-pill-link:hover { transform: translateY(-2px); box-shadow: 0 6px 12px rgba(0,0,0,0.12); }
+        
+        /* Custom Branded Color Overrides */
+        .link-amazon { background-color: var(--amazon-color); color: #111111; }
+        .link-meesho { background-color: var(--meesho-color); color: var(--white); }
+        
+        .marketplace-pill-link img { height: 18px; object-fit: contain; }
+        .link-amazon img { filter: brightness(0); } /* Makes black amazon text pop clear on yellow */
+        .link-meesho img { filter: none; } /* Raw clean rendering for white logo asset */
+
+        /* LOWER FULL-WIDTH SECTIONS */
+        .pdp-bottom-details-stack { display: flex; flex-direction: column; gap: 30px; }
+        .pdp-content-card { background: var(--white); border-radius: 10px; padding: 30px; box-shadow: 0 10px 20px rgba(0,0,0,0.04); border-left: 5px solid var(--brand-blue); }
+        .pdp-content-card.recipe-card { border-left-color: var(--brand-orange); }
+        .pdp-content-card.origin-card { border-left-color: var(--brand-yellow); background: linear-gradient(to right, #ffffff, #fffdfa); }
+        
+        .pdp-content-card h3 { color: var(--text-dark); font-size: 1.5rem; margin-top: 0; margin-bottom: 15px; font-weight: 700; }
+        .pdp-content-card ul, .pdp-content-card ol { padding-left: 20px; margin: 0; }
+        .pdp-content-card li { margin-bottom: 15px; line-height: 1.6; }
+        .pdp-content-card li strong { color: #000; font-size: 1.05rem; }
+        
+        /* Recipe Meta Inline Utilities */
+        .inline-recipe-metrics { display: flex; gap: 20px; background: var(--bg-cream); padding: 10px 15px; border-radius: 6px; margin-bottom: 20px; font-size: 0.9rem; font-weight: bold; border: 1px solid rgba(0,0,0,0.05); }
+
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 1.8rem; }
+            .logo img { max-height: 80px; }
+            .gstin-top-right { position: relative; top: 0; right: 0; text-align: center; margin-bottom: 10px; }
+            .pdp-top-split { grid-template-columns: 1fr; gap: 25px; }
+            .pdp-gallery-container { position: relative; top: 0; padding: 20px; }
+            .marketplace-flex-row { flex-direction: column; gap: 12px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Global Layout Targets -->
+<div id="global-header"></div>
+
+<section class="hero">
+    <h1>Traditional Delicacies</h1> 
+    <p>Easy culinary ideas made using native pure ingredients</p>
+</section>
+
+<!-- MAIN PRODUCT DETAIL ARCHITECTURE CONTAINER -->
+<main class="pdp-main-wrapper">
+    
+    <!-- TOP PIECE: LEFT GALLERY & RIGHT SPECIFICATIONS SYSTEM -->
+    <div class="pdp-top-split">
+        
+        <!-- LEFT SIDE BLOCK: Sticky Media Slider Center Component -->
+        <div class="pdp-gallery-container">
+            <div class="main-image-viewport">
+                <!-- Main Core Active Asset Hook -->
+                <img id="pdp-target-viewer" src="https://i.ibb.co/wFcZdWZw/Gemini-Generated-Image-4ltfp64ltfp64ltf.png" alt="Premium Popped Mithila Makhana Pack">
+            </div>
+            <!-- Slider Dots Control UI Indicators for Scrolling Option -->
+            <div class="slider-dots-navigation">
+                <button class="slider-dot active" onclick="document.getElementById('pdp-target-viewer').src='https://i.ibb.co/wFcZdWZw/Gemini-Generated-Image-4ltfp64ltfp64ltf.png'; document.querySelectorAll('.slider-dot').forEach(d => d.classList.remove('active')); this.classList.add('active');" title="Image asset view 1"></button>
+                <button class="slider-dot" onclick="document.getElementById('pdp-target-viewer').src='https://i.ibb.co/mFyGcMzs/Whats-App-Image-2026-04-21-at-12-22-57-removebg-preview.png'; document.querySelectorAll('.slider-dot').forEach(d => d.classList.remove('active')); this.classList.add('active');" title="Image asset view 2"></button>
+            </div>
+        </div>
+
+        <!-- RIGHT SIDE BLOCK: Meta Target Descriptions & Purchase Funnels -->
+        <div class="pdp-meta-container">
+            <h2>Premium Mithila Makhana</h2>
+            <p class="pdp-prime-tagline">100% Organic Hand-Picked Popped Fox Nuts</p>
+            
+            <p class="main-pdp-description">
+                Sourced directly from the sustainable wetland ecosystems of Bihar, our premium Makhana (Gorgon Nuts / Fox Nuts) are individually harvested and hand-picked by traditional local farmers. Each seed undergoes painstaking sorting to ensure only the crispest, largest puff profiles reach your kitchen.
+            </p>
+            
+            <!-- CORE CONVERSION ACTION POINT (CASHFREE LINK INTEGRATION) -->
+            <a href="https://payments.cashfree.com/forms/makhana-200" class="cashfree-checkout-anchor">Buy Now (Direct Checkout)</a>
+            
+            <!-- EXTERNAL SECONDARY CONVERSION LINKS MATRIX WITH BRAND COLORS -->
+            <div class="external-platforms-title">Other Buying Options</div>
+            <div class="marketplace-flex-row">
+                <a href="https://www.meesho.com/LovelyBites?_ms=3.0.1" target="_blank" class="marketplace-pill-link link-amazon">
+                    <img src="https://i.ibb.co/hRB8h7zS/Amazon-Logo-White-PNG.png" alt="Amazon Logo"> Buy on Amazon
+                </a>
+                <a href="https://www.meesho.com/LovelyBites?_ms=3.0.1" target="_blank" class="marketplace-pill-link link-meesho">
+                    <img src="https://i.ibb.co/v4m0fXN7/meesho-white-logo.png" alt="Meesho Logo"> Buy on Meesho
+                </a>
+            </div>
+        </div>
+        
+    </div>
+
+    <!-- BOTTOM PIECE: FULL DEPTH DETAILS SPECIFICATION TRACKS -->
+    <div class="pdp-bottom-details-stack">
+        
+        <!-- BENEFITS ACCORDION SECTION -->
+        <div class="pdp-content-card">
+            <h3>Health Benefits & Ingredients</h3>
+            <p style="margin-top:0; font-weight: bold; color: #555;">Ingredients: 100% Raw Popped Fox Nut Seeds (Euryale ferox). No synthetic chemicals or sodium added.</p>
+            <ul>
+                <li><strong>Heart-Healthy Profile:</strong> High in magnesium and potassium, with low natural sodium content.</li>
+                <li><strong>Low Glycemic Index (GI):</strong> Clean carbohydrate engine that helps safely manage blood glucose spikes.</li>
+                <li><strong>Natural Anti-Aging Parameters:</strong> Rich in antioxidants like epicatechin, which combat cellular oxidation.</li>
+                <li><strong>Gluten-Free Protein:</strong> Outstanding plant-based complete clean protein matrix for daily recovery.</li>
+            </ul>
+        </div>
+
+        <!-- VERSATILE RECIPES & USES SECTION -->
+        <div class="pdp-content-card recipe-card">
+            <h3>How to Use: Versatile Kitchen Recipes</h3>
+            <div class="inline-recipe-metrics">
+                <span>100% Natural Diet</span> | <span>Easy to Cook</span> | <span>Superfood for All Ages</span>
+            </div>
+            
+            <ul>
+                <li>
+                    <strong>Use as Daily Healthy Snacks:</strong> 
+                    Ghee ya olive oil me thoda sa haldi, namak aur kali mirch dalkar low flame par 5-7 minutes tak dry roast karein. Yeh ek perfect crisp, low-calorie teatime snack ban jata hai.
+                </li>
+                <li>
+                    <strong>Use in Kheer & Desserts:</strong> 
+                    Makhana ko halke ghee me bhun kar thoda crush kar lein. Kadhai me doodh ubaalkar badam, pista aur roasted makhana dalein aur dhime aanch par pakayein. Tyoharo ke liye lajawab multi-nutrient Kheer taiyar hai.
+                </li>
+                <li>
+                    <strong>Use in Baby Food Supplement Powder:</strong> 
+                    Makhana ko bina ghee ke dry roast karein aur grinder me pees kar ek fine powder bana lein. Is homemade protein powder ko aap bacchon ke doodh, cerelac ya dal ki purée me mila kar unki immunity aur bones ko strong bana sakte hain.
+                </li>
+                <li>
+                    <strong>Use in Dal Tadka & Curries:</strong> 
+                    Apni regular Dal Tadka ya Shahi Paneer gravy me thode se pure roasted makhane upar se add karein. Yeh gravy ke extra oil/moisture ko absorb karke dish ko ek rich, premium restaurant-style texture aur crunch deta hai.
+                </li>
+                <li>
+                    <strong>Use in Prasad & Fasting (Vrat):</strong> 
+                    Pure aur satvik hone ke karan, ise Navratri, Ekadashi ya kisi bhi puja me bhog ke roop me charhaya jata hai. Sendha namak ke sath ghee me roast karke yeh upvaas ka sabse badiya energy booster hai.
+                </li>
+            </ul>
+        </div>
+
+        <!-- MITHILA ORIGIN DEEP DOCUMENTARY LOG -->
+        <div class="pdp-content-card origin-card">
+            <h3>The Authentic Geographic Origin: Mithila, Bihar</h3>
+            <p style="margin-top: 0;">
+                Our Makhana isn't just a snack—it is part of an ancient ecological lineage. Over 80% of the world's premium aquatic foxnut production comes directly from the unique perennial water bodies and wetlands of the <strong>Mithila region in Bihar, India</strong>. 
+            </p>
+            <p style="margin-bottom: 0;">
+                The special heavy clay-loam waterbeds of Mithila naturally feed the crops with dense biological micro-nutrients. Local farmers have preserved these non-destructive harvesting methods for generations, manually handling the seeds from deep underwater without any automated industrial chemicals. Choosing this product directly preserves these natural setups and guarantees pure quality.
+            </p>
+        </div>
+
+    </div>
+</main>
+
+<div id="global-footer"></div>
+
+<!-- Engine Source connection -->
+<script src="theme.js"></script>
+</body>
+</html>
