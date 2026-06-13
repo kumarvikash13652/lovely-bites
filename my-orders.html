@@ -1,0 +1,34 @@
+<div id="orders-container">
+    <h2>My Order History</h2>
+    </div>
+
+<script>
+    const db = firebase.firestore();
+    const user = firebase.auth().currentUser;
+
+    // Sirf login user ke orders nikaal rahe hain
+    db.collection("orders")
+      .where("userId", "==", user.uid)
+      .orderBy("timestamp", "desc")
+      .get()
+      .then((snapshot) => {
+        const container = document.getElementById('orders-container');
+        snapshot.forEach((doc) => {
+            let order = doc.data();
+            
+            // Har order ke liye ek card
+            let orderHtml = `<div class="order-card" style="border:1px solid #ccc; padding:10px; margin:10px 0;">
+                <p><strong>Order Date:</strong> ${order.timestamp.toDate().toDateString()}</p>
+                <p><strong>Total:</strong> ₹${order.total}</p>
+                <ul>`;
+            
+            // Items ka loop (Yahan humne subtotal use kiya hai)
+            order.items.forEach(item => {
+                orderHtml += `<li>${item.productName} (x${item.qty}) - ₹${item.subtotal}</li>`;
+            });
+            
+            orderHtml += `</ul></div>`;
+            container.innerHTML += orderHtml;
+        });
+    });
+</script>
