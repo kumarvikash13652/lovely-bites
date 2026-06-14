@@ -26,7 +26,7 @@ window.addEventListener('load', () => {
         cartLi.innerHTML = `<span class="nav-link">🛒 Cart (<span id="cart-count">0</span>)</span>`;
         cartLi.onclick = toggleSidebar;
         navList.appendChild(cartLi);
-    }
+    
 
     // My Orders Link
         const ordersLi = document.createElement('li');
