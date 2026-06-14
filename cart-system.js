@@ -28,6 +28,13 @@ window.addEventListener('load', () => {
         navList.appendChild(cartLi);
     }
 
+    // My Orders Link
+        const ordersLi = document.createElement('li');
+        ordersLi.className = "nav-item";
+        ordersLi.innerHTML = `<a href="orders.html" class="nav-link">📦 My Orders</a>`;
+        navList.appendChild(ordersLi);
+    }
+
     // 3. FIX: Auth State ka wait karo, tabhi cart load karo
     firebase.auth().onAuthStateChanged((user) => {
         if (user) {
