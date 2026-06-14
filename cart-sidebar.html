@@ -1,0 +1,12 @@
+<div id="cart-sidebar" class="sidebar">
+    <div class="sidebar-header">
+        <h3>Your Cart</h3>
+        <button onclick="toggleSidebar()">Close</button>
+    </div>
+    <div id="cart-container"></div>
+    <button onclick="window.location.href='checkout.html'">Checkout</button>
+</div>
+<style>
+    .sidebar { position: fixed; right: -350px; top: 0; width: 350px; height: 100%; background: white; z-index: 1000; transition: 0.3s; padding: 20px; box-shadow: -2px 0 5px rgba(0,0,0,0.2); }
+    .sidebar.active { right: 0; }
+</style>
