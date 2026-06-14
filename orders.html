@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Orders | Lovely Bites</title>
+    <style>
+        .order-card { border: 1px solid #ddd; padding: 20px; margin: 20px 0; border-radius: 10px; background: #fff; }
+        .order-item { display: flex; justify-content: space-between; border-bottom: 1px solid #eee; padding: 5px 0; }
+    </style>
+</head>
+<body>
+
+<h2>My Orders</h2>
+<div id="orders-container">Loading your orders...</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
+<script>
+    // Firebase Init yahan karo (jaise pehle kiya tha)
+    
+    firebase.auth().onAuthStateChanged(user => {
+        if (!user) { window.location.href = "login.html"; return; }
+
+        const db = firebase.firestore();
+        db.collection("orders").where("userId", "==", user.uid)
+          .orderBy("timestamp", "desc") // Naye orders upar dikhenge
+          .onSnapshot(snapshot => {
+              const container = document.getElementById('orders-container');
+              container.innerHTML = "";
+              
+              if(snapshot.empty) { container.innerHTML = "No orders found."; return; }
+
+              snapshot.forEach(doc => {
+                  const order = doc.data();
+                  let itemsHtml = order.items.map(item => `
+                      <div class="order-item">
+                          <span>${item.productName} (x${item.qty})</span>
+                          <span>₹${item.subtotal}</span>
+                      </div>
+                  `).join('');
+
+                  container.innerHTML += `
+                      <div class="order-card">
+                          <h3>Order ID: ${doc.id}</h3>
+                          <p>Status: <strong>${order.status}</strong></p>
+                          <div>${itemsHtml}</div>
+                          <p><strong>Total Amount: ₹${order.total}</strong></p>
+                      </div>
+                  `;
+              });
+          });
+    });
+</script>
+<script src="cart-system.js"></script>
+</body>
+</html>
