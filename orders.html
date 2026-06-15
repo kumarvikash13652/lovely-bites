@@ -1,35 +1,87 @@
-<script>
-    firebase.auth().onAuthStateChanged(user => {
-        const container = document.getElementById('orders-container');
-        if (!user) {
-            container.innerHTML = "Please login first.";
-            return;
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Orders | Lovely Bites</title>
+    <style>
+        body { font-family: sans-serif; padding: 20px; background: #f4f4f4; }
+        .order-card { background: white; padding: 20px; margin: 15px 0; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .order-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #eee; }
+        .status { color: #e31e24; font-weight: bold; }
+        h2 { text-align: center; }
+    </style>
+</head>
+<body>
+
+    <h2>My Orders</h2>
+    <div id="orders-container">Loading your orders...</div>
+
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_PROJECT_ID.appspot.com",
+            messagingSenderId: "YOUR_ID",
+            appId: "YOUR_APP_ID"
+        };
+        
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
         }
 
-        console.log("Fetching orders for UID:", user.uid);
+        const db = firebase.firestore();
 
-        // Sirf 10 latest orders laao, bina filter ke check karte hain
-        db.collection("orders").limit(10).get()
-            .then(snapshot => {
-                console.log("Total orders in DB:", snapshot.size);
-                
-                if (snapshot.empty) {
-                    container.innerHTML = "Database is empty!";
-                    return;
-                }
+        // 3. Logic: Check Auth and Fetch Orders
+        firebase.auth().onAuthStateChanged(user => {
+            const container = document.getElementById('orders-container');
+            
+            if (!user) {
+                window.location.href = "login.html"; 
+                return;
+            }
 
-                container.innerHTML = ""; // Clear loading
-                snapshot.forEach(doc => {
-                    const data = doc.data();
-                    console.log("Order found:", data); // Yahan console mein check karo
-                    
-                    // Agar tumhara userId field name alag hai, toh yahan data.userId check karo
-                    container.innerHTML += `<div class="order-card">Order ID: ${doc.id}</div>`;
+            db.collection("orders")
+                .where("userId", "==", user.uid)
+                .orderBy("timestamp", "desc")
+                .onSnapshot(snapshot => {
+                    if (snapshot.empty) {
+                        container.innerHTML = "You haven't placed any orders yet.";
+                        return;
+                    }
+
+                    container.innerHTML = "";
+                    snapshot.forEach(doc => {
+                        const order = doc.data();
+                        
+                        let itemsHtml = order.items.map(item => `
+                            <div class="order-item">
+                                <span>${item.productName} (x${item.qty})</span>
+                                <span>₹${(item.price * item.qty).toFixed(2)}</span>
+                            </div>
+                        `).join('');
+
+                        container.innerHTML += `
+                            <div class="order-card">
+                                <h3>Order ID: ${doc.id.slice(-6)}</h3>
+                                <p>Status: <span class="status">${order.status || 'Pending'}</span></p>
+                                <div>${itemsHtml}</div>
+                                <hr>
+                                <p><strong>Total Amount: ₹${order.total}</strong></p>
+                            </div>
+                        `;
+                    });
+                }, error => {
+                    container.innerHTML = "Error loading orders: " + error.message;
                 });
-            })
-            .catch(err => {
-                container.innerHTML = "Error: " + err.message;
-                console.error(err);
-            });
-    });
-</script>
+        });
+    </script>
+
+    <script src="cart-system.js"></script>
+</body>
+</html>
