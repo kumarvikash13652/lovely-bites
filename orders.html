@@ -21,23 +21,9 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 
+    <script src="firebase-init.js"></script>
+
     <script>
-        const firebaseConfig = {
-            apiKey: "YOUR_API_KEY",
-            authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-            projectId: "YOUR_PROJECT_ID",
-            storageBucket: "YOUR_PROJECT_ID.appspot.com",
-            messagingSenderId: "YOUR_ID",
-            appId: "YOUR_APP_ID"
-        };
-        
-        if (!firebase.apps.length) {
-            firebase.initializeApp(firebaseConfig);
-        }
-
-        const db = firebase.firestore();
-
-        // 3. Logic: Check Auth and Fetch Orders
         firebase.auth().onAuthStateChanged(user => {
             const container = document.getElementById('orders-container');
             
@@ -45,6 +31,9 @@
                 window.location.href = "login.html"; 
                 return;
             }
+
+            // DB reference
+            const db = firebase.firestore();
 
             db.collection("orders")
                 .where("userId", "==", user.uid)
@@ -78,6 +67,7 @@
                     });
                 }, error => {
                     container.innerHTML = "Error loading orders: " + error.message;
+                    console.error("Firestore Error:", error);
                 });
         });
     </script>
