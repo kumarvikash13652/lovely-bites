@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Admin Dashboard | Lovely Bites</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+
+    <div id="login-section" class="flex h-screen items-center justify-center">
+        <button onclick="adminLogin()" class="bg-red-600 text-white px-6 py-3 rounded-lg font-bold">
+            Login as Admin
+        </button>
+    </div>
+
+    <div id="admin-panel" class="hidden p-8">
+        <h1 class="text-2xl font-bold mb-6">Admin Control Panel</h1>
+        <div class="bg-white p-6 rounded-lg shadow">
+            <h2 class="text-xl mb-4">Manage Orders</h2>
+            <table class="w-full border-collapse">
+                <thead>
+                    <tr class="bg-gray-200">
+                        <th class="p-3">Order ID</th>
+                        <th class="p-3">Details</th>
+                        <th class="p-3">Status</th>
+                    </tr>
+                </thead>
+                <tbody id="admin-orders-body"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <script src="firebase-init.js"></script>
+
+    <script>
+        const db = firebase.firestore();
+
+        async function adminLogin() {
+            const provider = new firebase.auth.GoogleAuthProvider();
+            const result = await firebase.auth().signInWithPopup(provider);
+            checkAdminRole(result.user);
+        }
+
+        async function checkAdminRole(user) {
+            const adminDoc = await db.collection("admins").doc(user.email).get();
+            if (adminDoc.exists) {
+                document.getElementById('login-section').classList.add('hidden');
+                document.getElementById('admin-panel').classList.remove('hidden');
+                loadOrders();
+            } else {
+                alert("Access Denied: You are not an Admin!");
+                firebase.auth().signOut();
+            }
+        }
+
+        // Professional Status Dropdown with Toggle
+        function updateStatus(orderId, status) {
+            db.collection("orders").doc(orderId).update({ status: status });
+        }
+    </script>
+</body>
+</html>
