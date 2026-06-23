@@ -48,19 +48,22 @@
                     snapshot.forEach(doc => {
                         const order = doc.data();
                         
-                        // Date formatting logic
+                        // Date formatting
                         const date = order.timestamp ? order.timestamp.toDate().toLocaleString() : "Date N/A";
                         
+                        // New Sequential ID Logic
+                        const displayOrderId = order.orderId ? order.orderId : "N/A";
+
                         let itemsHtml = order.items.map(item => `
                             <div class="order-item">
                                 <span>${item.productName} (x${item.qty})</span>
-                                <span>₹${(item.price * item.qty).toFixed(2)}</span>
+                                <span>₹${(parseFloat(item.price) * parseInt(item.qty)).toFixed(2)}</span>
                             </div>
                         `).join('');
 
                         container.innerHTML += `
                             <div class="order-card">
-                                <h3>Order ID: ${doc.id.slice(-6)}</h3>
+                                <h3>Order ID: ${displayOrderId}</h3>
                                 <div class="order-meta">📅 ${date}</div>
                                 <p>Status: <span class="status">${order.status || 'Pending'}</span></p>
                                 <div>${itemsHtml}</div>
@@ -74,7 +77,5 @@
                 });
         });
     </script>
-
-    <script src="cart-system.js"></script>
 </body>
 </html>
