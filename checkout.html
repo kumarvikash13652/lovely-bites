@@ -45,21 +45,13 @@
             return; 
         }
 
-        const name = document.getElementById('name').value;
-        const email = document.getElementById('email').value;
-        const phone = document.getElementById('phone').value;
-        
-        if(!name || !email || phone.length < 10) {
-            alert("Please fill all details correctly.");
-            return;
-        }
-
         const btn = document.getElementById('order-btn');
         btn.disabled = true;
         btn.innerText = "Placing Order...";
 
         try {
             const db = firebase.firestore();
+            const counterRef = db.collection("counters").doc("orderCounter");
             const cartRef = db.collection("users").doc(authUser.uid).collection("cart");
             const cartSnapshot = await cartRef.get();
             
@@ -68,28 +60,36 @@
                 btn.disabled = false; btn.innerText = "PLACE ORDER"; return; 
             }
 
-            let orderItems = [], totalAmount = 0;
-            cartSnapshot.forEach(doc => {
-                const item = doc.data();
-                const subtotal = parseFloat(item.price) * parseInt(item.qty);
-                orderItems.push({ productName: item.productName, qty: item.qty, price: item.price });
-                totalAmount += subtotal;
-            });
+            // Transaction Start
+            await db.runTransaction(async (transaction) => {
+                const counterDoc = await transaction.get(counterRef);
+                const newOrderId = counterDoc.data().lastOrderId + 1;
 
-            // Professional Schema Implementation
-            await db.collection("orders").add({
-                userId: authUser.uid,
-                name: name,
-                email: email,
-                phone: phone,
-                address: `${document.getElementById('address1').value}, ${document.getElementById('address2').value}, ${document.getElementById('city').value} - ${document.getElementById('pincode').value}`,
-                items: orderItems,
-                total: totalAmount,
-                status: "Pending",            // Professional default status
-                paymentStatus: "Pending",     // Professional default payment status
-                paymentMethod: "COD",         // Default COD
-                deliveryDate: null,           // Placeholder for CSV update
-                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                let orderItems = [], totalAmount = 0;
+                cartSnapshot.forEach(doc => {
+                    const item = doc.data();
+                    const subtotal = parseFloat(item.price) * parseInt(item.qty);
+                    orderItems.push({ productName: item.productName, qty: item.qty, price: item.price });
+                    totalAmount += subtotal;
+                });
+
+                transaction.set(db.collection("orders").doc(), {
+                    orderId: newOrderId,
+                    userId: authUser.uid,
+                    name: document.getElementById('name').value,
+                    email: document.getElementById('email').value,
+                    phone: document.getElementById('phone').value,
+                    address: `${document.getElementById('address1').value}, ${document.getElementById('address2').value}, ${document.getElementById('city').value} - ${document.getElementById('pincode').value}`,
+                    items: orderItems,
+                    total: totalAmount,
+                    status: "Pending",
+                    paymentStatus: "Pending",
+                    paymentMethod: "COD",
+                    deliveryDate: null,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                });
+
+                transaction.update(counterRef, { lastOrderId: newOrderId });
             });
 
             // Cart clear batch
@@ -98,7 +98,7 @@
             await batch.commit();
 
             alert("Order Successfully Placed!");
-            window.location.href = "orders.html"; // Seedha orders page par bhejo
+            window.location.href = "orders.html";
         } catch (e) { 
             console.error(e);
             alert("Error: " + e.message); 
