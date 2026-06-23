@@ -10,6 +10,7 @@
         .order-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #eee; }
         .status { color: #e31e24; font-weight: bold; }
         h2 { text-align: center; }
+        .order-meta { font-size: 0.9em; color: #555; margin-bottom: 10px; }
     </style>
 </head>
 <body>
@@ -32,7 +33,6 @@
                 return;
             }
 
-            // DB reference
             const db = firebase.firestore();
 
             db.collection("orders")
@@ -48,6 +48,9 @@
                     snapshot.forEach(doc => {
                         const order = doc.data();
                         
+                        // Date formatting logic
+                        const date = order.timestamp ? order.timestamp.toDate().toLocaleString() : "Date N/A";
+                        
                         let itemsHtml = order.items.map(item => `
                             <div class="order-item">
                                 <span>${item.productName} (x${item.qty})</span>
@@ -58,6 +61,7 @@
                         container.innerHTML += `
                             <div class="order-card">
                                 <h3>Order ID: ${doc.id.slice(-6)}</h3>
+                                <div class="order-meta">📅 ${date}</div>
                                 <p>Status: <span class="status">${order.status || 'Pending'}</span></p>
                                 <div>${itemsHtml}</div>
                                 <hr>
@@ -67,7 +71,6 @@
                     });
                 }, error => {
                     container.innerHTML = "Error loading orders: " + error.message;
-                    console.error("Firestore Error:", error);
                 });
         });
     </script>

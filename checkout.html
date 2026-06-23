@@ -8,7 +8,7 @@
         :root { --brand-red: #e31e24; --bg-cream: #fffdf5; }
         body { font-family: sans-serif; background: var(--bg-cream); padding: 20px; }
         .checkout-box { max-width: 500px; margin: auto; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
-        input { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 8px; }
+        input { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
         button { width: 100%; padding: 15px; background: var(--brand-red); color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 20px; }
         button:disabled { background: #ccc; }
     </style>
@@ -32,30 +32,16 @@
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 
+<script src="firebase-init.js"></script>
+
 <script>
-    if (!firebase.apps.length) {
-        firebase.initializeApp({
-            apiKey: "AIzaSyDVE5gYyGCgAlfHw82Apna6DsMY9zE2bGs",
-            authDomain: "lovelybites-e4d35.firebaseapp.com",
-            projectId: "lovelybites-e4d35",
-            storageBucket: "lovelybites-e4d35.firebasestorage.app",
-            messagingSenderId: "650974633550",
-            appId: "1:650974633550:web:14e277c8aef5db9ff4ed1f"
-        });
-    }
-
     let authUser = null;
-
-    // FIX: Page load hote hi Auth check ka wait karo
-    firebase.auth().onAuthStateChanged((user) => {
-        authUser = user;
-    });
+    firebase.auth().onAuthStateChanged((user) => { authUser = user; });
 
     async function placeOrder() {
-        // Agar user null hai, toh hi redirect karo
         if (!authUser) { 
             alert("Please login first!"); 
-            window.location.href = "login.html?redirect=checkout"; 
+            window.location.href = "login.html"; 
             return; 
         }
 
@@ -83,23 +69,14 @@
             }
 
             let orderItems = [], totalAmount = 0;
-            
             cartSnapshot.forEach(doc => {
                 const item = doc.data();
-                const unitPrice = parseFloat(item.price);
-                const quantity = parseInt(item.qty);
-                const subtotal = unitPrice * quantity; 
-                
-                orderItems.push({ 
-                    productName: item.productName, 
-                    qty: quantity, 
-                    price: unitPrice,
-                    subtotal: subtotal 
-                });
-                
+                const subtotal = parseFloat(item.price) * parseInt(item.qty);
+                orderItems.push({ productName: item.productName, qty: item.qty, price: item.price });
                 totalAmount += subtotal;
             });
 
+            // Professional Schema Implementation
             await db.collection("orders").add({
                 userId: authUser.uid,
                 name: name,
@@ -108,21 +85,24 @@
                 address: `${document.getElementById('address1').value}, ${document.getElementById('address2').value}, ${document.getElementById('city').value} - ${document.getElementById('pincode').value}`,
                 items: orderItems,
                 total: totalAmount,
-                status: "Pending",
+                status: "Pending",            // Professional default status
+                paymentStatus: "Pending",     // Professional default payment status
+                paymentMethod: "COD",         // Default COD
+                deliveryDate: null,           // Placeholder for CSV update
                 timestamp: firebase.firestore.FieldValue.serverTimestamp()
             });
 
+            // Cart clear batch
             const batch = db.batch();
             cartSnapshot.forEach(doc => batch.delete(doc.ref));
             await batch.commit();
 
             alert("Order Successfully Placed!");
-            window.location.href = "index.html"; 
+            window.location.href = "orders.html"; // Seedha orders page par bhejo
         } catch (e) { 
             console.error(e);
             alert("Error: " + e.message); 
-            btn.disabled = false;
-            btn.innerText = "PLACE ORDER";
+            btn.disabled = false; btn.innerText = "PLACE ORDER";
         }
     }
 </script>
