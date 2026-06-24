@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <meta charset="UTF-8">
     <title>Admin Dashboard | Lovely Bites</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
@@ -19,9 +20,9 @@
             <table class="w-full border-collapse">
                 <thead>
                     <tr class="bg-gray-200">
-                        <th class="p-3">Order ID</th>
-                        <th class="p-3">Details</th>
-                        <th class="p-3">Status</th>
+                        <th class="p-3 text-left">Order ID</th>
+                        <th class="p-3 text-left">Customer Details</th>
+                        <th class="p-3 text-left">Status</th>
                     </tr>
                 </thead>
                 <tbody id="admin-orders-body"></tbody>
@@ -37,12 +38,16 @@
     <script>
         const db = firebase.firestore();
 
+        // 1. Google Login
         async function adminLogin() {
             const provider = new firebase.auth.GoogleAuthProvider();
-            const result = await firebase.auth().signInWithPopup(provider);
-            checkAdminRole(result.user);
+            try {
+                const result = await firebase.auth().signInWithPopup(provider);
+                checkAdminRole(result.user);
+            } catch (error) { console.error("Login Error:", error); }
         }
 
+        // 2. Check Admin Role
         async function checkAdminRole(user) {
             const adminDoc = await db.collection("admins").doc(user.email).get();
             if (adminDoc.exists) {
@@ -50,14 +55,38 @@
                 document.getElementById('admin-panel').classList.remove('hidden');
                 loadOrders();
             } else {
-                alert("Access Denied: You are not an Admin!");
+                alert("Access Denied: You are not authorized!");
                 firebase.auth().signOut();
             }
         }
 
-        // Professional Status Dropdown with Toggle
-        function updateStatus(orderId, status) {
-            db.collection("orders").doc(orderId).update({ status: status });
+        // 3. Load Orders
+        function loadOrders() {
+            const tbody = document.getElementById('admin-orders-body');
+            db.collection("orders").orderBy("timestamp", "desc").onSnapshot(snapshot => {
+                tbody.innerHTML = "";
+                snapshot.forEach(doc => {
+                    const order = doc.data();
+                    tbody.innerHTML += `
+                        <tr class="border-b">
+                            <td class="p-3">${order.orderId || 'N/A'}</td>
+                            <td class="p-3">${order.name}<br><span class="text-sm text-gray-500">₹${order.total}</span></td>
+                            <td class="p-3">
+                                <select onchange="updateStatus('${doc.id}', this.value)" class="border p-1 rounded">
+                                    <option value="Pending" ${order.status == 'Pending' ? 'selected' : ''}>Pending</option>
+                                    <option value="Shipped" ${order.status == 'Shipped' ? 'selected' : ''}>Shipped</option>
+                                    <option value="Delivered" ${order.status == 'Delivered' ? 'selected' : ''}>Delivered</option>
+                                </select>
+                            </td>
+                        </tr>`;
+                });
+            });
+        }
+
+        // 4. Update Status
+        function updateStatus(docId, newStatus) {
+            db.collection("orders").doc(docId).update({ status: newStatus })
+            .then(() => console.log("Status Updated"));
         }
     </script>
 </body>
