@@ -17,6 +17,13 @@
         .order-summary { background: #f9f9f9; padding: 15px; border-radius: 8px; margin-bottom: 20px; border-left: 4px solid var(--brand-blue); }
         .order-summary h4 { margin: 0 0 10px 0; color: var(--brand-blue); font-size: 16px; }
         .summary-total { font-weight: bold; font-size: 18px; color: var(--brand-red); margin-top: 10px; text-align: right; }
+        
+        /* Cashfree Simulator Modal Styles */
+        #cashfree-simulator-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 9999; justify-content: center; align-items: center; }
+        .modal-content { background: white; padding: 30px; border-radius: 12px; max-width: 400px; width: 90%; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+        .modal-content h3 { color: var(--brand-blue); margin-top: 0; }
+        .modal-btn-success { background: #28a745; margin-top: 10px; }
+        .modal-btn-fail { background: #dc3545; margin-top: 10px; }
     </style>
 </head>
 <body>
@@ -47,6 +54,16 @@
     <button type="button" id="order-btn" onclick="initiateCheckout()">PLACE ORDER</button>
 </main>
 
+<!-- Cashfree Simulator Modal Popup -->
+<div id="cashfree-simulator-modal">
+    <div class="modal-content">
+        <h3>Cashfree Sandbox Simulator</h3>
+        <p>Choose payment simulation result for your order:</p>
+        <button class="modal-btn-success" onclick="simulatePaymentResponse(true)">Simulate Payment Success</button>
+        <button class="modal-btn-fail" onclick="simulatePaymentResponse(false)">Simulate Payment Failure</button>
+    </div>
+</div>
+
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
@@ -54,12 +71,9 @@
 <script src="firebase-init.js"></script>
 
 <script>
-    // Initialize Cashfree SDK (Sandbox Mode)
-    const cashfree = Cashfree({
-        mode: "sandbox" 
-    });
-
+    const cashfree = Cashfree({ mode: "sandbox" });
     let authUser = null;
+    let pendingOrderPayload = null;
 
     firebase.auth().onAuthStateChanged(async (user) => { 
         authUser = user; 
@@ -151,26 +165,29 @@
                 totalAmount += subtotal;
             });
 
+            const shippingDetails = {
+                name, email, phone, address: `${address1}, ${address2}, ${city} - ${pincode}`
+            };
+
             if (paymentMethod === 'cod') {
-                // COD Flow
                 await saveOrderToFirestore({
                     paymentMethod: "COD", 
                     paymentStatus: "Pending",
                     status: "Pending",
                     items: orderItems,
                     total: totalAmount,
-                    name, email, phone, address: `${address1}, ${address2}, ${city} - ${pincode}`
+                    ...shippingDetails
                 });
             } else {
-                // Online Payment Flow via Cashfree Sandbox
-                // Note: Real production me payment_session_id backend se generate hota hai. 
-                // Yahan sandbox test flow ke liye placeholder session ID use kiya gaya hai.
-                let checkoutOptions = {
-                    paymentSessionId: "session_test_" + Date.now(),
-                    redirectTarget: "_self"
+                // Save payload for simulator
+                pendingOrderPayload = {
+                    orderItems,
+                    totalAmount,
+                    shippingDetails
                 };
-
-                cashpay(checkoutOptions, orderItems, totalAmount, { name, email, phone, address: `${address1}, ${address2}, ${city} - ${pincode}` });
+                
+                // Open Cashfree Simulator Modal instead of failing session
+                document.getElementById('cashfree-simulator-modal').style.display = 'flex';
             }
 
         } catch (e) { 
@@ -181,44 +198,32 @@
         }
     }
 
-    async function cashpay(options, orderItems, totalAmount, shippingDetails) {
+    async function simulatePaymentResponse(isSuccess) {
+        document.getElementById('cashfree-simulator-modal').style.display = 'none';
+        const btn = document.getElementById('order-btn');
+
+        if (!isSuccess) {
+            alert("Payment failed by user simulation.");
+            btn.disabled = false;
+            btn.innerText = "PLACE ORDER";
+            return;
+        }
+
         try {
-            // Cashfree checkout popup trigger
-            cashfree.checkout(options).then(async function(result) {
-                if(result.error){
-                    alert("Payment failed: " + result.error.message);
-                    document.getElementById('order-btn').disabled = false;
-                    document.getElementById('order-btn').innerText = "PLACE ORDER";
-                }
-                if(result.redirect){
-                    console.log("Redirecting for payment...");
-                }
-                if(result.paymentDetails){
-                    // Payment successful callback
-                    await saveOrderToFirestore({
-                        paymentMethod: "Online", 
-                        paymentStatus: "Success", 
-                        paymentId: result.paymentDetails.paymentId || ("TXN_" + Date.now()),
-                        status: "Pending",
-                        items: orderItems,
-                        total: totalAmount,
-                        ...shippingDetails
-                    });
-                }
-            });
-        } catch(err) {
-            console.error("Cashfree error:", err);
-            // Fallback for direct testing if sandbox backend token is not connected yet
-            alert("Sandbox Payment Simulated Successfully!");
             await saveOrderToFirestore({
                 paymentMethod: "Online", 
                 paymentStatus: "Success", 
-                paymentId: "TXN_" + Date.now(),
+                paymentId: "TXN_SIM_" + Date.now(),
                 status: "Pending",
-                items: orderItems,
-                total: totalAmount,
-                ...shippingDetails
+                items: pendingOrderPayload.orderItems,
+                total: pendingOrderPayload.totalAmount,
+                ...pendingOrderPayload.shippingDetails
             });
+        } catch (err) {
+            console.error("Error saving online order:", err);
+            alert("Error saving order: " + err.message);
+            btn.disabled = false;
+            btn.innerText = "PLACE ORDER";
         }
     }
 
