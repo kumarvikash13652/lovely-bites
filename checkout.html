@@ -4,13 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Checkout | Lovely Bites</title>
+    <!-- Cashfree SDK v3 -->
+    <script src="https://sdk.cashfree.com/js/v3/cashfree.js"></script>
     <style>
         :root { --brand-red: #e31e24; --bg-cream: #fffdf5; }
         body { font-family: sans-serif; background: var(--bg-cream); padding: 20px; }
         .checkout-box { max-width: 500px; margin: auto; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
-        input { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
+        input, select { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
         button { width: 100%; padding: 15px; background: var(--brand-red); color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 20px; }
         button:disabled { background: #ccc; }
+        .payment-label { font-weight: bold; margin-top: 10px; display: block; color: #333; font-size: 14px; }
     </style>
 </head>
 <body>
@@ -25,7 +28,14 @@
     <input type="number" id="pincode" placeholder="Pincode" required>
     <input type="number" id="phone" placeholder="Mobile Number" required>
     
-    <button type="button" id="order-btn" onclick="placeOrder()">PLACE ORDER</button>
+    <!-- Payment Method Selector (COD Toggle for Testing & Online Cashfree) -->
+    <label class="payment-label" for="paymentMethod">Select Payment Method:</label>
+    <select id="paymentMethod">
+        <option value="online">Online Payment (UPI / Card via Cashfree)</option>
+        <option value="cod">Cash on Delivery (Testing Mode)</option>
+    </select>
+    
+    <button type="button" id="order-btn" onclick="initiateCheckout()">PLACE ORDER</button>
 </main>
 
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
@@ -38,72 +48,125 @@
     let authUser = null;
     firebase.auth().onAuthStateChanged((user) => { authUser = user; });
 
-    async function placeOrder() {
+    // Initialize Cashfree SDK in Sandbox Mode with App ID provided
+    const cashfree = Cashfree({
+        mode: "sandbox" 
+    });
+
+    async function initiateCheckout() {
         if (!authUser) { 
             alert("Please login first!"); 
             window.location.href = "login.html"; 
             return; 
         }
 
+        const name = document.getElementById('name').value;
+        const email = document.getElementById('email').value;
+        const phone = document.getElementById('phone').value;
+        const address1 = document.getElementById('address1').value;
+        const address2 = document.getElementById('address2').value;
+        const city = document.getElementById('city').value;
+        const pincode = document.getElementById('pincode').value;
+        const paymentMethod = document.getElementById('paymentMethod').value;
+
+        if (!name || !email || !address1 || !city || !pincode || !phone) {
+            alert("Kripya sabhi details bhariye!");
+            return;
+        }
+
         const btn = document.getElementById('order-btn');
         btn.disabled = true;
-        btn.innerText = "Placing Order...";
+        btn.innerText = "Processing...";
 
         try {
             const db = firebase.firestore();
-            const counterRef = db.collection("counters").doc("orderCounter");
             const cartRef = db.collection("users").doc(authUser.uid).collection("cart");
             const cartSnapshot = await cartRef.get();
             
             if (cartSnapshot.empty) { 
                 alert("Aapka cart khaali hai!"); 
-                btn.disabled = false; btn.innerText = "PLACE ORDER"; return; 
+                btn.disabled = false; 
+                btn.innerText = "PLACE ORDER"; 
+                return; 
             }
 
-            // Transaction Start
-            await db.runTransaction(async (transaction) => {
-                const counterDoc = await transaction.get(counterRef);
-                const newOrderId = counterDoc.data().lastOrderId + 1;
-
-                let orderItems = [], totalAmount = 0;
-                cartSnapshot.forEach(doc => {
-                    const item = doc.data();
-                    const subtotal = parseFloat(item.price) * parseInt(item.qty);
-                    orderItems.push({ productName: item.productName, qty: item.qty, price: item.price });
-                    totalAmount += subtotal;
-                });
-
-                transaction.set(db.collection("orders").doc(), {
-                    orderId: newOrderId,
-                    userId: authUser.uid,
-                    name: document.getElementById('name').value,
-                    email: document.getElementById('email').value,
-                    phone: document.getElementById('phone').value,
-                    address: `${document.getElementById('address1').value}, ${document.getElementById('address2').value}, ${document.getElementById('city').value} - ${document.getElementById('pincode').value}`,
-                    items: orderItems,
-                    total: totalAmount,
-                    status: "Pending",
-                    paymentStatus: "Pending",
-                    paymentMethod: "COD",
-                    deliveryDate: null,
-                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
-                });
-
-                transaction.update(counterRef, { lastOrderId: newOrderId });
+            let orderItems = [], totalAmount = 0;
+            cartSnapshot.forEach(doc => {
+                const item = doc.data();
+                const subtotal = parseFloat(item.price) * parseInt(item.qty);
+                orderItems.push({ productName: item.productName, qty: item.qty, price: item.price });
+                totalAmount += subtotal;
             });
 
-            // Cart clear batch
-            const batch = db.batch();
-            cartSnapshot.forEach(doc => batch.delete(doc.ref));
-            await batch.commit();
+            // Agar COD selected hai toh direct order save karo
+            if (paymentMethod === 'cod') {
+                await saveOrderToFirestore({
+                    paymentMethod: "COD",
+                    paymentStatus: "Pending",
+                    status: "Pending",
+                    items: orderItems,
+                    total: totalAmount,
+                    name, email, phone, address: `${address1}, ${address2}, ${city} - ${pincode}`
+                });
+            } 
+            // Agar Online (Cashfree) selected hai
+            else {
+                // Testing sandbox flow notification & simulation (Production mein session ID backend se aati hai)
+                alert("Cashfree Test Mode Active (App ID: TEST10187293b463f46b389f424dde3939278101). Simulating payment popup...");
+                
+                // Simulated Payment Success for Sandbox Frontend Test Flow
+                // (Jab tum backend server banaoge, yahan cashfree session ID pass hogi)
+                setTimeout(async () => {
+                    const simulatedPaymentId = "CF_TEST_PAY_" + Date.now();
+                    await saveOrderToFirestore({
+                        paymentMethod: "Online",
+                        paymentStatus: "Success",
+                        paymentId: simulatedPaymentId,
+                        status: "Pending",
+                        items: orderItems,
+                        total: totalAmount,
+                        name, email, phone, address: `${address1}, ${address2}, ${city} - ${pincode}`
+                    });
+                }, 1500);
+            }
 
-            alert("Order Successfully Placed!");
-            window.location.href = "orders.html";
         } catch (e) { 
             console.error(e);
             alert("Error: " + e.message); 
-            btn.disabled = false; btn.innerText = "PLACE ORDER";
+            btn.disabled = false; 
+            btn.innerText = "PLACE ORDER";
         }
+    }
+
+    async function saveOrderToFirestore(orderData) {
+        const db = firebase.firestore();
+        const counterRef = db.collection("counters").doc("orderCounter");
+        const cartRef = db.collection("users").doc(authUser.uid).collection("cart");
+        const cartSnapshot = await cartRef.get();
+
+        // Transaction for Sequential Order ID
+        await db.runTransaction(async (transaction) => {
+            const counterDoc = await transaction.get(counterRef);
+            const newOrderId = counterDoc.data().lastOrderId + 1;
+
+            transaction.set(db.collection("orders").doc(), {
+                ...orderData,
+                orderId: newOrderId,
+                userId: authUser.uid,
+                deliveryDate: null,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            });
+
+            transaction.update(counterRef, { lastOrderId: newOrderId });
+        });
+
+        // Clear Cart
+        const batch = db.batch();
+        cartSnapshot.forEach(doc => batch.delete(doc.ref));
+        await batch.commit();
+
+        alert("Order Successfully Placed!");
+        window.location.href = "orders.html";
     }
 </script>
 </body>
