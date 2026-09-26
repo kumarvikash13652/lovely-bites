@@ -5,19 +5,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Checkout | Lovely Bites</title>
     <style>
-        :root { --brand-red: #e31e24; --bg-cream: #fffdf5; }
+        :root { --brand-red: #e31e24; --bg-cream: #fffdf5; --brand-blue: #0054a6; }
         body { font-family: sans-serif; background: var(--bg-cream); padding: 20px; }
         .checkout-box { max-width: 500px; margin: auto; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
         input, select { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
         button { width: 100%; padding: 15px; background: var(--brand-red); color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 20px; }
         button:disabled { background: #ccc; }
         .payment-label { font-weight: bold; margin-top: 10px; display: block; color: #333; font-size: 14px; }
+        .order-summary { background: #f9f9f9; padding: 15px; border-radius: 8px; margin-bottom: 20px; border-left: 4px solid var(--brand-blue); }
+        .order-summary h4 { margin: 0 0 10px 0; color: var(--brand-blue); font-size: 16px; }
+        .summary-total { font-weight: bold; font-size: 18px; color: var(--brand-red); margin-top: 10px; text-align: right; }
     </style>
 </head>
 <body>
 
 <main class="checkout-box">
     <h2>Delivery Details</h2>
+    
+    <!-- Order Summary Added -->
+    <div class="order-summary">
+        <h4>Order Summary</h4>
+        <div id="summary-items">Loading items...</div>
+        <div class="summary-total" id="summary-total">Total: ₹0</div>
+    </div>
+
     <input type="text" id="name" placeholder="Full Name" required>
     <input type="email" id="email" placeholder="Email Address" required>
     <input type="text" id="address1" placeholder="Flat/House No" required>
@@ -43,7 +54,51 @@
 
 <script>
     let authUser = null;
-    firebase.auth().onAuthStateChanged((user) => { authUser = user; });
+
+    firebase.auth().onAuthStateChanged(async (user) => { 
+        authUser = user; 
+        if (user) {
+            loadCartSummary();
+        } else {
+            alert("Please login first!");
+            window.location.href = "login.html";
+        }
+    });
+
+    async function loadCartSummary() {
+        try {
+            const db = firebase.firestore();
+            const cartRef = db.collection("users").doc(authUser.uid).collection("cart");
+            const cartSnapshot = await cartRef.get();
+
+            const summaryContainer = document.getElementById('summary-items');
+            const totalContainer = document.getElementById('summary-total');
+
+            if (cartSnapshot.empty) {
+                summaryContainer.innerHTML = "Your cart is empty.";
+                totalContainer.innerHTML = "Total: ₹0";
+                return;
+            }
+
+            let html = "";
+            let totalAmount = 0;
+
+            cartSnapshot.forEach(doc => {
+                const item = doc.data();
+                const subtotal = parseFloat(item.price) * parseInt(item.qty);
+                totalAmount += subtotal;
+                html += `<div style="display:flex; justify-content:space-between; font-size:14px; margin-bottom:5px;">
+                    <span>${item.productName} (x${item.qty})</span>
+                    <span>₹${subtotal}</span>
+                </div>`;
+            });
+
+            summaryContainer.innerHTML = html;
+            totalContainer.innerHTML = `Total: ₹${totalAmount}`;
+        } catch (e) {
+            console.error("Error loading cart summary:", e);
+        }
+    }
 
     async function initiateCheckout() {
         if (!authUser) { 
@@ -90,7 +145,6 @@
                 totalAmount += subtotal;
             });
 
-            // Save order directly based on selected payment method
             const paymentInfo = paymentMethod === 'cod' 
                 ? { paymentMethod: "COD", paymentStatus: "Pending" } 
                 : { paymentMethod: "Online", paymentStatus: "Success", paymentId: "TXN_" + Date.now() };
@@ -117,7 +171,6 @@
         const cartRef = db.collection("users").doc(authUser.uid).collection("cart");
         const cartSnapshot = await cartRef.get();
 
-        // Transaction for Sequential Order ID
         await db.runTransaction(async (transaction) => {
             const counterDoc = await transaction.get(counterRef);
             let currentLastId = 0;
@@ -141,7 +194,6 @@
             }
         });
 
-        // Clear Cart
         const batch = db.batch();
         cartSnapshot.forEach(doc => batch.delete(doc.ref));
         await batch.commit();
