@@ -162,6 +162,26 @@
 <!-- Dynamic Appends Hook Footer -->
 <div id="global-footer"></div>
 
+<!-- Slider Function Script Added Safely -->
+<script>
+    function changeImage(button, direction) {
+        const container = button.closest('.slider-container');
+        const images = JSON.parse(container.getAttribute('data-images'));
+        let currentIndex = parseInt(container.getAttribute('data-index'));
+        
+        currentIndex += direction;
+        if (currentIndex < 0) {
+            currentIndex = images.length - 1;
+        } else if (currentIndex >= images.length) {
+            currentIndex = 0;
+        }
+        
+        container.setAttribute('data-index', currentIndex);
+        const imgElement = container.querySelector('img');
+        imgElement.src = images[currentIndex];
+    }
+</script>
+
 <!-- Local Script File Integration -->
 <script src="theme.js"></script>
 <script src="cart-system.js"></script>
