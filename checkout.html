@@ -4,8 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Checkout | Lovely Bites</title>
-    <!-- Cashfree SDK v3 -->
-    <script src="https://sdk.cashfree.com/js/v3/cashfree.js"></script>
     <style>
         :root { --brand-red: #e31e24; --bg-cream: #fffdf5; }
         body { font-family: sans-serif; background: var(--bg-cream); padding: 20px; }
@@ -28,11 +26,10 @@
     <input type="number" id="pincode" placeholder="Pincode" required>
     <input type="number" id="phone" placeholder="Mobile Number" required>
     
-    <!-- Payment Method Selector (COD Toggle & Online Cashfree Test) -->
     <label class="payment-label" for="paymentMethod">Select Payment Method:</label>
     <select id="paymentMethod">
-        <option value="online">Online Payment (UPI / Card via Cashfree Test)</option>
-        <option value="cod">Cash on Delivery (Testing Mode)</option>
+        <option value="online">Online Payment (UPI / Card - Simulated)</option>
+        <option value="cod">Cash on Delivery (COD)</option>
     </select>
     
     <button type="button" id="order-btn" onclick="initiateCheckout()">PLACE ORDER</button>
@@ -47,11 +44,6 @@
 <script>
     let authUser = null;
     firebase.auth().onAuthStateChanged((user) => { authUser = user; });
-
-    // Initialize Cashfree SDK in Sandbox Mode
-    const cashfree = Cashfree({
-        mode: "sandbox" 
-    });
 
     async function initiateCheckout() {
         if (!authUser) { 
@@ -76,7 +68,7 @@
 
         const btn = document.getElementById('order-btn');
         btn.disabled = true;
-        btn.innerText = "Processing...";
+        btn.innerText = "Processing Order...";
 
         try {
             const db = firebase.firestore();
@@ -98,34 +90,18 @@
                 totalAmount += subtotal;
             });
 
-            // If COD selected
-            if (paymentMethod === 'cod') {
-                await saveOrderToFirestore({
-                    paymentMethod: "COD",
-                    paymentStatus: "Pending",
-                    status: "Pending",
-                    items: orderItems,
-                    total: totalAmount,
-                    name, email, phone, address: `${address1}, ${address2}, ${city} - ${pincode}`
-                });
-            } 
-            // If Online Payment selected (Seamless Sandbox Test Simulation)
-            else {
-                console.log("Processing Online Payment via Cashfree Sandbox Test...");
-                
-                setTimeout(async () => {
-                    const simulatedPaymentId = "CF_TEST_PAY_" + Date.now();
-                    await saveOrderToFirestore({
-                        paymentMethod: "Online",
-                        paymentStatus: "Success",
-                        paymentId: simulatedPaymentId,
-                        status: "Pending",
-                        items: orderItems,
-                        total: totalAmount,
-                        name, email, phone, address: `${address1}, ${address2}, ${city} - ${pincode}`
-                    });
-                }, 1000);
-            }
+            // Save order directly based on selected payment method
+            const paymentInfo = paymentMethod === 'cod' 
+                ? { paymentMethod: "COD", paymentStatus: "Pending" } 
+                : { paymentMethod: "Online", paymentStatus: "Success", paymentId: "TXN_" + Date.now() };
+
+            await saveOrderToFirestore({
+                ...paymentInfo,
+                status: "Pending",
+                items: orderItems,
+                total: totalAmount,
+                name, email, phone, address: `${address1}, ${address2}, ${city} - ${pincode}`
+            });
 
         } catch (e) { 
             console.error(e);
