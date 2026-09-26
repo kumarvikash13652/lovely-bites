@@ -28,10 +28,10 @@
     <input type="number" id="pincode" placeholder="Pincode" required>
     <input type="number" id="phone" placeholder="Mobile Number" required>
     
-    <!-- Payment Method Selector (COD Toggle for Testing & Online Cashfree) -->
+    <!-- Payment Method Selector (COD Toggle & Online Cashfree Test) -->
     <label class="payment-label" for="paymentMethod">Select Payment Method:</label>
     <select id="paymentMethod">
-        <option value="online">Online Payment (UPI / Card via Cashfree)</option>
+        <option value="online">Online Payment (UPI / Card via Cashfree Test)</option>
         <option value="cod">Cash on Delivery (Testing Mode)</option>
     </select>
     
@@ -48,7 +48,7 @@
     let authUser = null;
     firebase.auth().onAuthStateChanged((user) => { authUser = user; });
 
-    // Initialize Cashfree SDK in Sandbox Mode with App ID provided
+    // Initialize Cashfree SDK in Sandbox Mode
     const cashfree = Cashfree({
         mode: "sandbox" 
     });
@@ -98,7 +98,7 @@
                 totalAmount += subtotal;
             });
 
-            // Agar COD selected hai toh direct order save karo
+            // If COD selected
             if (paymentMethod === 'cod') {
                 await saveOrderToFirestore({
                     paymentMethod: "COD",
@@ -109,43 +109,11 @@
                     name, email, phone, address: `${address1}, ${address2}, ${city} - ${pincode}`
                 });
             } 
-            // Agar Online (Cashfree) selected hai
+            // If Online Payment selected (Seamless Sandbox Test Simulation)
             else {
-                // Real Cashfree Sandbox Integration Flow using SDK Checkout Modal
-                // NOTE: Cashfree SDK requires a paymentSessionId generated securely. 
-                // For client-side testing without a backend server, we trigger the sandbox payload:
+                console.log("Processing Online Payment via Cashfree Sandbox Test...");
                 
-                let checkoutOptions = {
-                    paymentSessionId: "session_test_integration_" + Date.now(), // Sandbox token format
-                    redirectTarget: "_modal",
-                };
-
-                // Trigger Cashfree Modal Checkout
-                cashfree.checkout(checkoutOptions).then(async (result) => {
-                    if (result.error) {
-                        alert("Payment Failed / Cancelled: " + result.error.message);
-                        btn.disabled = false;
-                        btn.innerText = "PLACE ORDER";
-                        return;
-                    }
-                    if (result.redirect) {
-                        console.log("Payment redirection triggered.");
-                    }
-                    if (result.paymentDetails) {
-                        // Payment Successful, save order to Firestore
-                        await saveOrderToFirestore({
-                            paymentMethod: "Online",
-                            paymentStatus: "Success",
-                            paymentId: result.paymentDetails.paymentId || "CF_TEST_" + Date.now(),
-                            status: "Pending",
-                            items: orderItems,
-                            total: totalAmount,
-                            name, email, phone, address: `${address1}, ${address2}, ${city} - ${pincode}`
-                        });
-                    }
-                }).catch(async (err) => {
-                    // Fallback for sandbox test completion simulation if session requires server proxy
-                    console.warn("Sandbox SDK fallback triggered:", err);
+                setTimeout(async () => {
                     const simulatedPaymentId = "CF_TEST_PAY_" + Date.now();
                     await saveOrderToFirestore({
                         paymentMethod: "Online",
@@ -156,7 +124,7 @@
                         total: totalAmount,
                         name, email, phone, address: `${address1}, ${address2}, ${city} - ${pincode}`
                     });
-                });
+                }, 1000);
             }
 
         } catch (e) { 
@@ -176,7 +144,11 @@
         // Transaction for Sequential Order ID
         await db.runTransaction(async (transaction) => {
             const counterDoc = await transaction.get(counterRef);
-            const newOrderId = counterDoc.data().lastOrderId + 1;
+            let currentLastId = 0;
+            if (counterDoc.exists) {
+                currentLastId = counterDoc.data().lastOrderId || 0;
+            }
+            const newOrderId = currentLastId + 1;
 
             transaction.set(db.collection("orders").doc(), {
                 ...orderData,
@@ -186,7 +158,11 @@
                 timestamp: firebase.firestore.FieldValue.serverTimestamp()
             });
 
-            transaction.update(counterRef, { lastOrderId: newOrderId });
+            if (counterDoc.exists) {
+                transaction.update(counterRef, { lastOrderId: newOrderId });
+            } else {
+                transaction.set(counterRef, { lastOrderId: newOrderId });
+            }
         });
 
         // Clear Cart
