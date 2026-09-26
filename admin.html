@@ -2,34 +2,116 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Admin Dashboard | Lovely Bites</title>
+    <title>Admin Control Panel | Lovely Bites</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-100">
+<body class="bg-gray-100 min-h-screen">
 
-    <div id="login-section" class="flex h-screen items-center justify-center">
-        <button onclick="adminLogin()" class="bg-red-600 text-white px-6 py-3 rounded-lg font-bold">
-            Login as Admin
-        </button>
-    </div>
-
-    <div id="admin-panel" class="hidden p-8">
-        <h1 class="text-2xl font-bold mb-6">Admin Control Panel</h1>
-        <div class="bg-white p-6 rounded-lg shadow">
-            <h2 class="text-xl mb-4">Manage Orders</h2>
-            <table class="w-full border-collapse">
-                <thead>
-                    <tr class="bg-gray-200">
-                        <th class="p-3 text-left">Order ID</th>
-                        <th class="p-3 text-left">Customer Details</th>
-                        <th class="p-3 text-left">Status</th>
-                    </tr>
-                </thead>
-                <tbody id="admin-orders-body"></tbody>
-            </table>
+    <!-- Login Section -->
+    <div id="login-section" class="flex h-screen items-center justify-center flex-col">
+        <div class="bg-white p-8 rounded-xl shadow-lg text-center max-w-md w-full">
+            <h2 class="text-2xl font-bold mb-2 text-gray-800">Lovely Bites Admin</h2>
+            <p class="text-sm text-gray-500 mb-6">Secure Control Panel Access</p>
+            <button onclick="adminLogin()" class="w-full bg-red-600 text-white px-6 py-3 rounded-lg font-bold hover:bg-red-700 transition shadow">
+                Login with Google as Admin
+            </button>
         </div>
     </div>
 
+    <!-- Admin Panel Layout -->
+    <div id="admin-panel" class="hidden flex h-screen overflow-hidden">
+        
+        <!-- Sidebar Navigation -->
+        <aside class="w-64 bg-gray-900 text-white flex flex-col justify-between">
+            <div class="p-6">
+                <h1 class="text-xl font-bold tracking-wider text-red-500 mb-6">LOVELY BITES</h1>
+                <nav class="space-y-2">
+                    <button onclick="switchTab('orders')" id="nav-orders" class="w-full text-left px-4 py-3 rounded bg-red-600 font-semibold transition">📦 Orders Management</button>
+                    <button onclick="switchTab('products')" id="nav-products" class="w-full text-left px-4 py-3 rounded hover:bg-gray-800 font-semibold transition">🛍️ Products & Inventory</button>
+                </nav>
+            </div>
+            <div class="p-6 border-t border-gray-800">
+                <button onclick="adminLogout()" class="w-full bg-gray-800 text-red-400 border border-red-500/30 px-4 py-2 rounded text-sm hover:bg-red-950 transition">Logout</button>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="flex-1 overflow-y-auto p-8">
+            
+            <!-- ORDERS TAB -->
+            <section id="tab-orders" class="space-y-6">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <h2 class="text-2xl font-bold text-gray-800">Customer Orders</h2>
+                        <p class="text-sm text-gray-500">Manage order status, shipping details, and tracking info.</p>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl shadow overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full border-collapse text-left text-sm">
+                            <thead class="bg-gray-100 text-gray-700 uppercase text-xs tracking-wider">
+                                <tr>
+                                    <th class="p-4">Order ID & Date</th>
+                                    <th class="p-4">Customer Info</th>
+                                    <th class="p-4">Payment Info</th>
+                                    <th class="p-4">Status & Shipping</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admin-orders-body" class="divide-y divide-gray-200">
+                                <!-- Dynamic Orders -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- PRODUCTS & INVENTORY TAB -->
+            <section id="tab-products" class="hidden space-y-6">
+                <div>
+                    <h2 class="text-2xl font-bold text-gray-800">Products & Inventory Control</h2>
+                    <p class="text-sm text-gray-500">Update pricing, discounts, stock manually or upload via CSV in bulk.</p>
+                </div>
+
+                <!-- CSV Upload Box -->
+                <div class="bg-white p-6 rounded-xl shadow space-y-4">
+                    <h3 class="text-lg font-bold text-gray-800">Bulk CSV Sync</h3>
+                    <p class="text-xs text-gray-500">CSV format header: <code>id, name, price, mrp, stock, category</code></p>
+                    <div class="flex items-center gap-4">
+                        <input type="file" id="csvFile" accept=".csv" class="border p-2 rounded w-full text-sm">
+                        <button onclick="uploadCSV()" class="bg-blue-600 text-white px-5 py-2 rounded font-semibold text-sm hover:bg-blue-700 whitespace-nowrap">
+                            Upload & Sync CSV
+                        </button>
+                    </div>
+                    <p id="csv-status" class="text-xs text-gray-600"></p>
+                </div>
+
+                <!-- Product Live Table -->
+                <div class="bg-white rounded-xl shadow overflow-hidden">
+                    <div class="p-4 border-b font-bold text-gray-700">Live Product Database</div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full border-collapse text-left text-sm">
+                            <thead class="bg-gray-100 text-gray-700 uppercase text-xs">
+                                <tr>
+                                    <th class="p-4">ID / Name</th>
+                                    <th class="p-4">Price (₹)</th>
+                                    <th class="p-4">MRP (₹)</th>
+                                    <th class="p-4">Stock</th>
+                                    <th class="p-4">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admin-products-body" class="divide-y divide-gray-200">
+                                <!-- Dynamic Products -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- Firebase Scripts -->
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
@@ -38,55 +120,218 @@
     <script>
         const db = firebase.firestore();
 
-        // 1. Google Login
+        // Auth Listener
+        firebase.auth().onAuthStateChanged(async (user) => {
+            if (user) {
+                await checkAdminRole(user);
+            } else {
+                document.getElementById('login-section').classList.remove('hidden');
+                document.getElementById('admin-panel').classList.add('hidden');
+            }
+        });
+
         async function adminLogin() {
             const provider = new firebase.auth.GoogleAuthProvider();
             try {
-                const result = await firebase.auth().signInWithPopup(provider);
-                checkAdminRole(result.user);
-            } catch (error) { console.error("Login Error:", error); }
-        }
-
-        // 2. Check Admin Role
-        async function checkAdminRole(user) {
-            const adminDoc = await db.collection("admins").doc(user.email).get();
-            if (adminDoc.exists) {
-                document.getElementById('login-section').classList.add('hidden');
-                document.getElementById('admin-panel').classList.remove('hidden');
-                loadOrders();
-            } else {
-                alert("Access Denied: You are not authorized!");
-                firebase.auth().signOut();
+                await firebase.auth().signInWithPopup(provider);
+            } catch (error) { 
+                console.error("Login Error:", error); 
+                alert("Login Failed: " + error.message);
             }
         }
 
-        // 3. Load Orders
+        async function checkAdminRole(user) {
+            try {
+                const userEmail = user.email.toLowerCase().trim();
+                const adminDoc = await db.collection("admins").doc(userEmail).get();
+
+                if (adminDoc.exists) {
+                    document.getElementById('login-section').classList.add('hidden');
+                    document.getElementById('admin-panel').classList.remove('hidden');
+                    loadOrders();
+                    loadProducts();
+                } else {
+                    alert("Access Denied: You are not authorized as admin!");
+                    firebase.auth().signOut();
+                }
+            } catch (err) {
+                console.error("Admin Check Error:", err);
+            }
+        }
+
+        function switchTab(tab) {
+            if(tab === 'orders') {
+                document.getElementById('tab-orders').classList.remove('hidden');
+                document.getElementById('tab-products').classList.add('hidden');
+                document.getElementById('nav-orders').classList.add('bg-red-600');
+                document.getElementById('nav-products').classList.remove('bg-red-600');
+            } else {
+                document.getElementById('tab-orders').classList.add('hidden');
+                document.getElementById('tab-products').classList.remove('hidden');
+                document.getElementById('nav-products').classList.add('bg-red-600');
+                document.getElementById('nav-orders').classList.remove('bg-red-600');
+            }
+        }
+
+        // Load Orders with Full Details
         function loadOrders() {
             const tbody = document.getElementById('admin-orders-body');
             db.collection("orders").orderBy("timestamp", "desc").onSnapshot(snapshot => {
                 tbody.innerHTML = "";
+                if(snapshot.empty) {
+                    tbody.innerHTML = `<tr><td colspan="4" class="p-6 text-center text-gray-500">No orders found.</td></tr>`;
+                    return;
+                }
                 snapshot.forEach(doc => {
                     const order = doc.data();
+                    const dateStr = order.timestamp ? new Date(order.timestamp.toDate()).toLocaleString() : 'N/A';
+                    
                     tbody.innerHTML += `
-                        <tr class="border-b">
-                            <td class="p-3">${order.orderId || 'N/A'}</td>
-                            <td class="p-3">${order.name}<br><span class="text-sm text-gray-500">₹${order.total}</span></td>
-                            <td class="p-3">
-                                <select onchange="updateStatus('${doc.id}', this.value)" class="border p-1 rounded">
-                                    <option value="Pending" ${order.status == 'Pending' ? 'selected' : ''}>Pending</option>
-                                    <option value="Shipped" ${order.status == 'Shipped' ? 'selected' : ''}>Shipped</option>
-                                    <option value="Delivered" ${order.status == 'Delivered' ? 'selected' : ''}>Delivered</option>
-                                </select>
+                        <tr class="hover:bg-gray-50">
+                            <td class="p-4 align-top">
+                                <span class="font-bold text-gray-900">#${order.orderId || doc.id}</span>
+                                <div class="text-xs text-gray-500 mt-1">${dateStr}</div>
+                            </td>
+                            <td class="p-4 align-top">
+                                <div class="font-semibold text-gray-800">${order.name || 'N/A'}</div>
+                                <div class="text-xs text-gray-600">📞 ${order.phone || 'N/A'}</div>
+                                <div class="text-xs text-gray-500 mt-1 max-w-xs">📍 ${order.address || 'N/A'}</div>
+                            </td>
+                            <td class="p-4 align-top">
+                                <div class="font-bold text-gray-800">₹${order.total || 0}</div>
+                                <div class="text-xs text-gray-600">Mode: <span class="uppercase font-semibold">${order.paymentMode || 'Online'}</span></div>
+                                <div class="text-xs mt-1">
+                                    <span class="px-2 py-0.5 rounded text-[10px] font-bold ${order.paymentStatus === 'SUCCESS' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}">
+                                        ${order.paymentStatus || 'PENDING'}
+                                    </span>
+                                </div>
+                            </td>
+                            <td class="p-4 align-top space-y-2">
+                                <div>
+                                    <label class="text-[10px] text-gray-500 uppercase block">Status</label>
+                                    <select onchange="updateOrderStatus('${doc.id}', this.value)" class="border p-1.5 rounded text-xs bg-white font-medium">
+                                        <option value="Pending" ${order.status == 'Pending' ? 'selected' : ''}>Pending</option>
+                                        <option value="Processing" ${order.status == 'Processing' ? 'selected' : ''}>Processing</option>
+                                        <option value="Shipped" ${order.status == 'Shipped' ? 'selected' : ''}>Shipped</option>
+                                        <option value="Delivered" ${order.status == 'Delivered' ? 'selected' : ''}>Delivered</option>
+                                        <option value="Cancelled" ${order.status == 'Cancelled' ? 'selected' : ''}>Cancelled</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="text-[10px] text-gray-500 uppercase block">Tracking No / URL</label>
+                                    <div class="flex gap-1">
+                                        <input type="text" id="track-${doc.id}" value="${order.trackingInfo || ''}" placeholder="Tracking URL/ID" class="border p-1 rounded text-xs w-40">
+                                        <button onclick="saveTracking('${doc.id}')" class="bg-gray-800 text-white px-2 py-1 rounded text-xs">Save</button>
+                                    </div>
+                                </div>
                             </td>
                         </tr>`;
                 });
             });
         }
 
-        // 4. Update Status
-        function updateStatus(docId, newStatus) {
+        function updateOrderStatus(docId, newStatus) {
             db.collection("orders").doc(docId).update({ status: newStatus })
-            .then(() => console.log("Status Updated"));
+            .then(() => console.log("Status updated"))
+            .catch(err => alert("Error: " + err.message));
+        }
+
+        function saveTracking(docId) {
+            const trackingVal = document.getElementById(`track-${docId}`).value;
+            db.collection("orders").doc(docId).update({ trackingInfo: trackingVal })
+            .then(() => alert("Tracking info saved successfully!"))
+            .catch(err => alert("Error: " + err.message));
+        }
+
+        // Load Products
+        function loadProducts() {
+            const tbody = document.getElementById('admin-products-body');
+            db.collection("products").onSnapshot(snapshot => {
+                tbody.innerHTML = "";
+                if(snapshot.empty) {
+                    tbody.innerHTML = `<tr><td colspan="5" class="p-6 text-center text-gray-500">No products found. Upload via CSV.</td></tr>`;
+                    return;
+                }
+                snapshot.forEach(doc => {
+                    const prod = doc.data();
+                    tbody.innerHTML += `
+                        <tr class="hover:bg-gray-50">
+                            <td class="p-4">
+                                <div class="font-semibold text-gray-800">${prod.name || 'Unnamed'}</div>
+                                <div class="text-xs text-gray-400">ID: ${doc.id}</div>
+                            </td>
+                            <td class="p-4">₹<input type="number" id="p-price-${doc.id}" value="${prod.price || 0}" class="border p-1 rounded w-20 text-xs"></td>
+                            <td class="p-4">₹<input type="number" id="p-mrp-${doc.id}" value="${prod.mrp || 0}" class="border p-1 rounded w-20 text-xs"></td>
+                            <td class="p-4"><input type="number" id="p-stock-${doc.id}" value="${prod.stock || 0}" class="border p-1 rounded w-16 text-xs"></td>
+                            <td class="p-4">
+                                <button onclick="updateSingleProduct('${doc.id}')" class="bg-green-600 text-white px-3 py-1 rounded text-xs font-semibold hover:bg-green-700">Update</button>
+                            </td>
+                        </tr>`;
+                });
+            });
+        }
+
+        function updateSingleProduct(docId) {
+            const price = parseFloat(document.getElementById(`p-price-${docId}`).value) || 0;
+            const mrp = parseFloat(document.getElementById(`p-mrp-${docId}`).value) || 0;
+            const stock = parseInt(document.getElementById(`p-stock-${docId}`).value) || 0;
+
+            db.collection("products").doc(docId).update({ price, mrp, stock })
+            .then(() => alert("Product updated successfully!"))
+            .catch(err => alert("Error: " + err.message));
+        }
+
+        // CSV Bulk Sync
+        function uploadCSV() {
+            const fileInput = document.getElementById('csvFile');
+            const statusText = document.getElementById('csv-status');
+            if (fileInput.files.length === 0) { alert("Please select a CSV file first!"); return; }
+
+            const file = fileInput.files[0];
+            const reader = new FileReader();
+
+            reader.onload = async function(e) {
+                const text = e.target.result;
+                const lines = text.split("\n");
+                statusText.innerText = "Syncing with Firestore...";
+
+                let batch = db.batch();
+                let count = 0;
+
+                for (let i = 1; i < lines.length; i++) {
+                    if (!lines[i].trim()) continue;
+                    const data = lines[i].split(",").map(val => val.trim());
+                    const productId = data[0];
+                    const productData = {
+                        name: data[1],
+                        price: parseFloat(data[2]) || 0,
+                        mrp: parseFloat(data[3]) || 0,
+                        stock: parseInt(data[4]) || 0,
+                        category: data[5] || 'General'
+                    };
+
+                    if (productId) {
+                        const docRef = db.collection("products").doc(productId);
+                        batch.set(docRef, productData, { merge: true });
+                        count++;
+                    }
+                }
+
+                try {
+                    await batch.commit();
+                    statusText.innerText = `Success! ${count} products updated.`;
+                    alert(`${count} products successfully synchronized!`);
+                } catch (error) {
+                    console.error("CSV Batch Error:", error);
+                    statusText.innerText = "Sync failed.";
+                    alert("Error: " + error.message);
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        function adminLogout() {
+            firebase.auth().signOut().then(() => window.location.reload());
         }
     </script>
 </body>
