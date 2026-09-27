@@ -315,7 +315,12 @@
         }
 
         try {
+            // Numeric / Readable unique order ID generate ki ja rahi hai
+            const numericOrderId = "LB-" + Math.floor(100000 + Math.random() * 900000);
+
             const orderData = {
+                orderId: numericOrderId,
+                orderNumber: numericOrderId,
                 userId: currentUser.uid,
                 customerName: name,
                 customerPhone: phone,
