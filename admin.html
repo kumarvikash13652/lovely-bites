@@ -76,7 +76,7 @@
                 <!-- CSV Upload Box -->
                 <div class="bg-white p-6 rounded-xl shadow space-y-4">
                     <h3 class="text-lg font-bold text-gray-800">Bulk CSV Sync</h3>
-                    <p class="text-xs text-gray-500">CSV format header: <code>id, name, price, mrp, stock, category</code></p>
+                    <p class="text-xs text-gray-500">Supports full columns: <code>id, name, image_url, price, mrp, rrp, stock, category, weight, origin, rank, product_description, seo_text, Meta_title, Meta_description, sku</code></p>
                     <div class="flex items-center gap-4">
                         <input type="file" id="csvFile" accept=".csv" class="border p-2 rounded w-full text-sm">
                         <button onclick="uploadCSV()" class="bg-blue-600 text-white px-5 py-2 rounded font-semibold text-sm hover:bg-blue-700 whitespace-nowrap">
@@ -186,7 +186,6 @@
                     const order = doc.data();
                     const dateStr = order.timestamp ? new Date(order.timestamp.toDate()).toLocaleString() : 'N/A';
                     
-                    // Payment mode & status handling for Prepaid/Cash/COD
                     const payMode = (order.paymentMode || order.payment_mode || order.mode || 'Online').toUpperCase();
                     let payStatus = (order.paymentStatus || order.payment_status || order.status || 'PENDING').toUpperCase();
                     
@@ -293,7 +292,27 @@
             .catch(err => alert("Error: " + err.message));
         }
 
-        // CSV Bulk Sync (Fixed indices and line splitting issue)
+        // Helper to parse CSV lines safely handling quoted strings & commas
+        function parseCSVLine(text) {
+            let result = [];
+            let entry = "";
+            let inQuotes = false;
+            for (let i = 0; i < text.length; i++) {
+                let char = text[i];
+                if (char === '"') {
+                    inQuotes = !inQuotes;
+                } else if (char === ',' && !inQuotes) {
+                    result.push(entry.trim());
+                    entry = "";
+                } else {
+                    entry += char;
+                }
+            }
+            result.push(entry.trim());
+            return result.map(val => val.replace(/^"|"$/g, ''));
+        }
+
+        // Smart Header-Mapped CSV Bulk Sync
         function uploadCSV() {
             const fileInput = document.getElementById('csvFile');
             const statusText = document.getElementById('csv-status');
@@ -304,34 +323,54 @@
 
             reader.onload = async function(e) {
                 const text = e.target.result;
-                const lines = text.split("\n");
-                statusText.innerText = "Syncing with Firestore...";
+                const lines = text.split(/\r\n|\n/);
+                if (lines.length < 2) { alert("CSV file is empty or invalid!"); return; }
 
+                statusText.innerText = "Parsing headers and syncing with Firestore...";
+
+                const headers = parseCSVLine(lines[0]).map(h => h.toLowerCase());
+                
                 let batch = db.batch();
                 let count = 0;
 
                 for (let i = 1; i < lines.length; i++) {
                     if (!lines[i].trim()) continue;
-                    const data = lines[i].split(",").map(val => val.trim()); // Fixed: lines[i].split instead of lines.split
-                    const productId = data[0];
+                    const data = parseCSVLine(lines[i]);
+                    
+                    function getVal(colName) {
+                        const index = headers.indexOf(colName.toLowerCase());
+                        return (index !== -1 && data[index] !== undefined) ? data[index] : '';
+                    }
+
+                    const productId = getVal('id');
+                    if (!productId) continue;
+
                     const productData = {
-                        name: data[1],
-                        price: parseFloat(data[2]) || 0,
-                        mrp: parseFloat(data[3]) || 0,
-                        stock: parseInt(data[4]) || 0,
-                        category: data[5] || 'General'
+                        name: getVal('name'),
+                        image_url: getVal('image_url'),
+                        price: parseFloat(getVal('price')) || 0,
+                        mrp: parseFloat(getVal('mrp')) || 0,
+                        rrp: parseFloat(getVal('rrp')) || 0,
+                        stock: parseInt(getVal('stock')) || 0,
+                        category: getVal('category') || 'General',
+                        weight: getVal('weight'),
+                        origin: getVal('origin'),
+                        rank: parseInt(getVal('rank')) || 0,
+                        product_description: getVal('product_description'),
+                        seo_text: getVal('seo_text'),
+                        Meta_title: getVal('meta_title'),
+                        Meta_description: getVal('meta_description'),
+                        sku: getVal('sku')
                     };
 
-                    if (productId) {
-                        const docRef = db.collection("products").doc(productId);
-                        batch.set(docRef, productData, { merge: true });
-                        count++;
-                    }
+                    const docRef = db.collection("products").doc(docId = productId);
+                    batch.set(docRef, productData, { merge: true });
+                    count++;
                 }
 
                 try {
                     await batch.commit();
-                    statusText.innerText = `Success! ${count} products updated.`;
+                    statusText.innerText = `Success! ${count} products synchronized with all fields.`;
                     alert(`${count} products successfully synchronized!`);
                 } catch (error) {
                     console.error("CSV Batch Error:", error);
