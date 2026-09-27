@@ -176,7 +176,7 @@
         // Load Orders with Full Details
         function loadOrders() {
             const tbody = document.getElementById('admin-orders-body');
-            db.collection("orders").orderBy("timestamp", "desc").onSnapshot(snapshot => {
+            db.collection("orders").orderBy("createdAt", "desc").onSnapshot(snapshot => {
                 tbody.innerHTML = "";
                 if(snapshot.empty) {
                     tbody.innerHTML = `<tr><td colspan="4" class="p-6 text-center text-gray-500">No orders found.</td></tr>`;
@@ -184,32 +184,45 @@
                 }
                 snapshot.forEach(doc => {
                     const order = doc.data();
-                    const dateStr = order.timestamp ? new Date(order.timestamp.toDate()).toLocaleString() : 'N/A';
                     
-                    const payMode = (order.paymentMode || order.payment_mode || order.mode || 'Online').toUpperCase();
+                    // Handle timestamp mapping safely
+                    let dateStr = 'N/A';
+                    if (order.createdAt && typeof order.createdAt.toDate === 'function') {
+                        dateStr = order.createdAt.toDate().toLocaleString();
+                    } else if (order.timestamp && typeof order.timestamp.toDate === 'function') {
+                        dateStr = order.timestamp.toDate().toLocaleString();
+                    }
+                    
+                    const payMode = (order.paymentMethod || order.paymentMode || order.payment_mode || order.mode || 'Online').toUpperCase();
                     let payStatus = (order.paymentStatus || order.payment_status || order.status || 'PENDING').toUpperCase();
                     
                     let statusBadgeClass = 'bg-yellow-100 text-yellow-700';
-                    if (payStatus === 'SUCCESS' || payStatus === 'PAID' || payStatus === 'PREPAID') {
+                    if (payStatus.includes('SUCCESS') || payStatus.includes('PAID') || payStatus.includes('PREPAID')) {
                         statusBadgeClass = 'bg-green-100 text-green-700';
                     } else if (payMode.includes('COD') || payMode.includes('CASH')) {
                         statusBadgeClass = 'bg-blue-100 text-blue-700';
-                        payStatus = 'CASH ON DELIVERY (COD)';
                     }
+
+                    const customerName = order.customerName || order.name || 'N/A';
+                    const customerPhone = order.customerPhone || order.phone || 'N/A';
+                    const customerAddress = order.shippingAddress || order.address || 'N/A';
+                    const orderTotal = order.totalAmount || order.total || order.amount || 0;
+                    const currentStatus = order.orderStatus || order.status || 'Pending';
+                    const trackingVal = order.trackingInfo || order.tracking || '';
 
                     tbody.innerHTML += `
                         <tr class="hover:bg-gray-50">
                             <td class="p-4 align-top">
-                                <span class="font-bold text-gray-900">#${order.orderId || doc.id}</span>
+                                <span class="font-bold text-gray-900">${order.orderId || order.orderNumber || '#' + doc.id}</span>
                                 <div class="text-xs text-gray-500 mt-1">${dateStr}</div>
                             </td>
                             <td class="p-4 align-top">
-                                <div class="font-semibold text-gray-800">${order.name || 'N/A'}</div>
-                                <div class="text-xs text-gray-600">📞 ${order.phone || 'N/A'}</div>
-                                <div class="text-xs text-gray-500 mt-1 max-w-xs">📍 ${order.address || 'N/A'}</div>
+                                <div class="font-semibold text-gray-800">${customerName}</div>
+                                <div class="text-xs text-gray-600">📞 ${customerPhone}</div>
+                                <div class="text-xs text-gray-500 mt-1 max-w-xs">📍 ${customerAddress}</div>
                             </td>
                             <td class="p-4 align-top">
-                                <div class="font-bold text-gray-800">₹${order.total || order.amount || 0}</div>
+                                <div class="font-bold text-gray-800">₹${orderTotal}</div>
                                 <div class="text-xs text-gray-600">Mode: <span class="uppercase font-semibold">${payMode}</span></div>
                                 <div class="text-xs mt-1">
                                     <span class="px-2 py-0.5 rounded text-[10px] font-bold ${statusBadgeClass}">
@@ -221,28 +234,31 @@
                                 <div>
                                     <label class="text-[10px] text-gray-500 uppercase block">Status</label>
                                     <select onchange="updateOrderStatus('${doc.id}', this.value)" class="border p-1.5 rounded text-xs bg-white font-medium">
-                                        <option value="Pending" ${order.status == 'Pending' ? 'selected' : ''}>Pending</option>
-                                        <option value="Processing" ${order.status == 'Processing' ? 'selected' : ''}>Processing</option>
-                                        <option value="Shipped" ${order.status == 'Shipped' ? 'selected' : ''}>Shipped</option>
-                                        <option value="Delivered" ${order.status == 'Delivered' ? 'selected' : ''}>Delivered</option>
-                                        <option value="Cancelled" ${order.status == 'Cancelled' ? 'selected' : ''}>Cancelled</option>
+                                        <option value="Pending" ${currentStatus === 'Pending' ? 'selected' : ''}>Pending</option>
+                                        <option value="Processing" ${currentStatus === 'Processing' ? 'selected' : ''}>Processing</option>
+                                        <option value="Shipped" ${currentStatus === 'Shipped' ? 'selected' : ''}>Shipped</option>
+                                        <option value="Delivered" ${currentStatus === 'Delivered' ? 'selected' : ''}>Delivered</option>
+                                        <option value="Cancelled" ${currentStatus === 'Cancelled' ? 'selected' : ''}>Cancelled</option>
                                     </select>
                                 </div>
                                 <div>
                                     <label class="text-[10px] text-gray-500 uppercase block">Tracking No / URL</label>
                                     <div class="flex gap-1">
-                                        <input type="text" id="track-${doc.id}" value="${order.trackingInfo || ''}" placeholder="Tracking URL/ID" class="border p-1 rounded text-xs w-40">
+                                        <input type="text" id="track-${doc.id}" value="${trackingVal}" placeholder="Tracking URL/ID" class="border p-1 rounded text-xs w-40">
                                         <button onclick="saveTracking('${doc.id}')" class="bg-gray-800 text-white px-2 py-1 rounded text-xs">Save</button>
                                     </div>
                                 </div>
                             </td>
                         </tr>`;
                 });
+            }, (error) => {
+                console.error("Error loading orders:", error);
+                tbody.innerHTML = `<tr><td colspan="4" class="p-6 text-center text-red-500">Error loading orders: ${error.message}</td></tr>`;
             });
         }
 
         function updateOrderStatus(docId, newStatus) {
-            db.collection("orders").doc(docId).update({ status: newStatus })
+            db.collection("orders").doc(docId).update({ orderStatus: newStatus, status: newStatus })
             .then(() => console.log("Status updated"))
             .catch(err => alert("Error: " + err.message));
         }
@@ -292,7 +308,6 @@
             .catch(err => alert("Error: " + err.message));
         }
 
-        // Helper to parse CSV lines safely handling quoted strings & commas
         function parseCSVLine(text) {
             let result = [];
             let entry = "";
@@ -312,7 +327,6 @@
             return result.map(val => val.replace(/^"|"$/g, ''));
         }
 
-        // Smart Header-Mapped CSV Bulk Sync
         function uploadCSV() {
             const fileInput = document.getElementById('csvFile');
             const statusText = document.getElementById('csv-status');
@@ -363,7 +377,7 @@
                         sku: getVal('sku')
                     };
 
-                    const docRef = db.collection("products").doc(docId = productId);
+                    const docRef = db.collection("products").doc(productId);
                     batch.set(docRef, productData, { merge: true });
                     count++;
                 }
