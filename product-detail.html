@@ -117,7 +117,7 @@
         .footer-container { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; text-align: left; }
         @media(max-width: 768px) { .footer-container { grid-template-columns: 1fr; } }
         .footer-col h5 { color: var(--white); margin-bottom: 15px; text-transform: uppercase; letter-spacing: 1px; }
-        .footer-platforms { margin: 10px 0; display: flex; flex-wrap: gap; gap: 15px; align-items: center; }
+        .footer-platforms { margin: 10px 0; display: flex; flex-wrap: wrap; gap: 15px; align-items: center; }
         .platform-link img { height: 25px; filter: grayscale(1) brightness(2); opacity: 0.7; transition: 0.3s; }
         .platform-link:hover img { filter: grayscale(0) brightness(1); opacity: 1; }
         .msme-logo { height: 60px !important; filter: none !important; opacity: 1 !important; margin-top: 10px; }
@@ -262,7 +262,7 @@
 
                 if (cartBadge) cartBadge.innerText = totalCount;
                 document.getElementById('cart-drawer-items-container').innerHTML = drawerHtml;
-                document.getElementById('cart-drawer-subtotal.innerText = `₹${subtotal}` || document.getElementById('cart-drawer-subtotal').innerText = '₹' + subtotal;
+                document.getElementById('cart-drawer-subtotal').innerText = `₹${subtotal}`;
             });
         } else {
             if (cartBadge) cartBadge.innerText = "0";
@@ -435,7 +435,6 @@
                 });
             }
             
-            // Open the slide-over cart drawer smoothly instead of alert alert popup
             toggleCartDrawer(true);
         } catch (e) {
             console.error("Cart error:", e);
