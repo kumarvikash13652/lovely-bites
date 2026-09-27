@@ -1,68 +1,116 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-Q7KE84LF36"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-Q7KE84LF36');
+    </script>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="canonical" href="https://lovelybites.online/checkout.html" />
+    <link rel="icon" type="image/png" href="https://i.ibb.co/mFyGcMzs/Whats-App-Image-2026-04-21-at-12-22-57-removebg-preview.png">
+    
     <title>Checkout | Lovely Bites</title>
-    <!-- Favicon dynamically loaded -->
-    <link rel="icon" id="dynamic-favicon" href="">
     <!-- Cashfree SDK Script -->
     <script src="https://sdk.cashfree.com/js/v3/cashfree.js"></script>
+
     <style>
-        :root { --brand-red: #e31e24; --bg-cream: #fffdf5; --brand-blue: #0054a6; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg-cream); margin: 0; padding: 0; color: #333; }
-        
-        /* Navbar & Header Styles */
-        .site-header { background: white; padding: 12px 25px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.04); }
-        .brand-container { display: flex; align-items: center; gap: 10px; text-decoration: none; }
-        .brand-logo { width: 40px; height: 40px; object-fit: contain; border-radius: 50%; }
-        .brand-name { font-size: 18px; font-weight: bold; color: var(--brand-red); }
-
-        .nav-links { display: flex; gap: 20px; align-items: center; }
-        .nav-links a { text-decoration: none; color: #444; font-size: 14px; font-weight: 600; transition: color 0.2s; }
-        .nav-links a:hover { color: var(--brand-red); }
-
-        /* Mobile Hamburger & Sidebar */
-        .hamburger { display: none; font-size: 24px; cursor: pointer; background: none; border: none; color: #333; }
-        .mobile-sidebar { position: fixed; top: 0; right: -260px; width: 250px; height: 100%; background: white; box-shadow: -5px 0 15px rgba(0,0,0,0.1); z-index: 2000; transition: right 0.3s ease; display: flex; flexDirection: column; padding: 20px; box-sizing: border-box; }
-        .mobile-sidebar.active { right: 0; }
-        .sidebar-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding-bottom: 12px; margin-bottom: 15px; }
-        .close-sidebar { font-size: 22px; cursor: pointer; background: none; border: none; }
-        .mobile-sidebar a { text-decoration: none; color: #333; font-size: 16px; font-weight: 600; padding: 10px 0; border-bottom: 1px dashed #f0f0f0; }
-
-        @media(max-width: 768px) {
-            .nav-links { display: none; }
-            .hamburger { display: block; }
+        :root {
+            --brand-red: #e31e24;      
+            --brand-yellow: #ffcb05;   
+            --brand-blue: #0054a6;     
+            --brand-orange: #f58220;   
+            --bg-cream: #fffdf5;       
+            --text-dark: #2d2926;
+            --white: #ffffff;
         }
+        * { box-sizing: border-box; } 
+        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; margin: 0; background: var(--bg-cream); color: var(--text-dark); line-height: 1.6; }
+        
+        /* Lang Bar & Header (Exact Index/Theme match) */
+        .lang-bar { background: var(--brand-blue); padding: 8px; text-align: center; display: flex; justify-content: center; align-items: center; gap: 10px; }
+        .lang-btn { background: rgba(255,255,255,0.2); border: 1px solid white; color: white; padding: 4px 12px; cursor: pointer; font-size: 12px; border-radius: 20px; }
+        .lang-btn:hover { background: white; color: var(--brand-blue); }
+        header { background: var(--white); padding: 1rem 2rem; text-align: center; position: relative; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border-bottom: 4px solid var(--brand-red); }
+        .logo img { max-height: 90px; width: auto; filter: drop-shadow(2px 2px 0px var(--brand-blue)) drop-shadow(-2px -2px 0px var(--brand-orange)); padding: 5px; }
+        .gstin-top-right { position: absolute; top: 20px; right: 20px; color: #777; font-size: 0.7rem; text-align: right; font-family: monospace; }
 
-        /* Checkout Container Grid */
-        .checkout-container { max-width: 900px; margin: 30px auto; background: white; padding: 30px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+        /* Navigation Styles from theme.js */
+        .nav-wrapper { display: flex; align-items: center; justify-content: space-between; max-width: 1200px; margin: 0 auto; padding: 10px 20px 0 20px; position: relative; width: 100%; }
+        .nav-menu { display: flex; list-style: none; margin: 0; padding: 0; gap: 30px; align-items: center; }
+        .nav-item { position: relative; }
+        .nav-link { text-decoration: none; color: var(--text-dark); font-weight: 700; font-size: 1rem; padding: 15px 0; display: block; cursor: pointer; user-select: none; }
+        .nav-link:hover { color: var(--brand-red); }
+        .mega-menu { position: absolute; top: 100%; right: 0; left: auto; background: #ffffff; box-shadow: 0 15px 35px rgba(0,0,0,0.15); border-radius: 12px; padding: 20px; display: flex; gap: 15px; opacity: 0; visibility: hidden; transition: opacity 0.25s ease, transform 0.25s ease, visibility 0.25s ease; border-top: 4px solid var(--brand-red); min-width: 580px; z-index: 99999; transform: translateY(15px); pointer-events: none; }
+        @media (min-width: 769px) { .nav-item:hover .mega-menu { opacity: 1; visibility: visible; transform: translateY(0); pointer-events: auto; } }
+        .mega-item { flex: 1; text-align: center; text-decoration: none; color: var(--text-dark); padding: 12px 8px; border-radius: 8px; background: var(--bg-cream); display: block; }
+        .mega-item:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.08); background: #fff; }
+        .mega-img { width: 100%; height: 75px; object-fit: contain; margin-bottom: 8px; border-radius: 6px; }
+        .mega-item span { display: block; font-weight: 800; font-size: 0.85rem; color: var(--brand-blue); }
+        .burger-btn { display: none; background: none; border: none; cursor: pointer; padding: 10px; z-index: 100001; }
+        .burger-bar { display: block; width: 25px; height: 3px; margin: 5px auto; background-color: var(--text-dark); transition: all 0.3s ease; }
+        
+        @media (max-width: 768px) {
+            .burger-btn { display: block; }
+            .burger-btn.active .burger-bar:nth-child(2) { opacity: 0; }
+            .burger-btn.active .burger-bar:nth-child(1) { transform: translateY(8px) rotate(45deg); background-color: var(--brand-red); }
+            .burger-btn.active .burger-bar:nth-child(3) { transform: translateY(-8px) rotate(-45deg); background-color: var(--brand-red); }
+            .nav-menu { position: fixed; left: -100%; top: 0; flex-direction: column; background-color: #ffffff; width: 85%; max-width: 320px; height: 100vh; padding: 100px 24px 30px 24px; gap: 10px; box-shadow: 10px 0 30px rgba(0,0,0,0.15); transition: left 0.3s ease; align-items: flex-start; overflow-y: auto; z-index: 100000; }
+            .nav-menu.active { left: 0; }
+            .nav-item { width: 100%; }
+            .mega-menu { position: relative; top: 0; left: 0; right: auto; transform: none !important; min-width: 100% !important; display: none; opacity: 1; visibility: visible; flex-direction: column; padding: 10px; box-shadow: none; background: var(--bg-cream); gap: 8px; border-top: none; border-left: 3px solid var(--brand-red); margin-top: 5px; pointer-events: auto; }
+            .mega-menu.mobile-open { display: flex !important; }
+            .mega-item { display: flex !important; align-items: center; text-align: left; gap: 15px; padding: 10px; width: 100%; }
+            .mega-img { width: 45px; height: 45px; margin-bottom: 0; }
+            .nav-item-has-submenu > .nav-link::after { content: " ▾"; font-size: 0.85rem; display: inline-block; transition: transform 0.2s ease; }
+            .nav-item-has-submenu.open-caret > .nav-link::after { transform: rotate(180deg); }
+        }
+        .auth-btn { background: var(--brand-red); color: #fff; border: none; padding: 8px 20px; border-radius: 20px; font-weight: 700; cursor: pointer; transition: 0.3s; margin-left: 10px; }
+        .auth-btn:hover { background: #b7171c; }
+
+        /* Checkout Container Layout */
+        .checkout-container { max-width: 1000px; margin: 40px auto; background: var(--white); padding: 40px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
         @media(max-width: 768px) { 
-            .checkout-container { grid-template-columns: 1fr; padding: 20px; margin: 15px; } 
+            .checkout-container { grid-template-columns: 1fr; padding: 20px; margin: 20px; } 
         }
 
-        .checkout-section h2 { margin-top: 0; color: #111; font-size: 22px; border-bottom: 2px solid #f0f0f0; padding-bottom: 10px; margin-bottom: 20px; }
+        .checkout-section h2 { margin-top: 0; color: var(--text-dark); font-size: 1.5rem; border-bottom: 2px solid var(--bg-cream); padding-bottom: 12px; margin-bottom: 20px; }
         
-        input, select { width: 100%; padding: 12px 14px; margin: 8px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 14px; transition: border-color 0.2s; }
-        input:focus, select:focus { border-color: var(--brand-blue); outline: none; box-shadow: 0 0 0 3px rgba(0,84,166,0.1); }
+        input, select { width: 100%; padding: 12px 16px; margin: 8px 0 16px 0; border: 1px solid #ddd; border-radius: 10px; box-sizing: border-box; font-size: 1rem; transition: border-color 0.2s; background: #fafafa; }
+        input:focus, select:focus { border-color: var(--brand-blue); outline: none; box-shadow: 0 0 0 3px rgba(0,84,166,0.1); background: #fff; }
         
-        button#order-btn { width: 100%; padding: 15px; background: var(--brand-red); color: white; border: none; border-radius: 8px; font-weight: bold; font-size: 16px; cursor: pointer; margin-top: 20px; transition: background 0.2s; }
-        button#order-btn:hover { background: #c81920; }
-        button:disabled { background: #ccc; cursor: not-allowed; }
+        button#order-btn { width: 100%; padding: 15px; background: var(--brand-red); color: white; border: none; border-radius: 30px; font-weight: bold; font-size: 1rem; text-transform: uppercase; cursor: pointer; margin-top: 10px; box-shadow: 0 4px 0px #b7171c; transition: all 0.2s; }
+        button#order-btn:hover { background: var(--brand-orange); box-shadow: 0 4px 0px #c26715; }
+        button#order-btn:active { transform: translateY(2px); box-shadow: none; }
+        button:disabled { background: #ccc !important; box-shadow: none !important; cursor: not-allowed; }
         
-        .payment-label { font-weight: bold; margin-top: 15px; display: block; color: #444; font-size: 14px; }
+        .payment-label { font-weight: bold; margin-top: 10px; display: block; color: var(--text-dark); font-size: 0.95rem; }
         
-        .order-summary { background: #f9f9f9; padding: 20px; border-radius: 12px; border-left: 4px solid var(--brand-blue); height: fit-content; }
-        .order-summary h4 { margin: 0 0 15px 0; color: var(--brand-blue); font-size: 18px; border-bottom: 1px solid #eee; padding-bottom: 8px; }
-        .summary-total { font-weight: bold; font-size: 18px; color: var(--brand-red); margin-top: 15px; text-align: right; border-top: 1px solid #eee; padding-top: 10px; }
-        
-        /* Footer Styles */
-        .site-footer { max-width: 900px; margin: 0 auto 30px auto; background: #fff; padding: 20px; border-radius: 12px; text-align: center; font-size: 13px; color: #666; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
-        .site-footer p { margin: 5px 0; }
+        .order-summary { background: var(--bg-cream); padding: 25px; border-radius: 15px; border-left: 5px solid var(--brand-blue); height: fit-content; }
+        .order-summary h4 { margin: 0 0 15px 0; color: var(--brand-blue); font-size: 1.25rem; border-bottom: 1px solid #e5e0d0; padding-bottom: 10px; }
+        .summary-total { font-weight: 800; font-size: 1.2rem; color: var(--brand-red); margin-top: 20px; text-align: right; border-top: 1px solid #e5e0d0; padding-top: 12px; }
+
+        /* Footer (Exact Index/Theme match) */
+        footer { background: var(--text-dark); color: #aaa; padding: 3rem 2rem; font-size: 0.9rem; margin-top: 60px; }
+        .footer-container { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; text-align: left; }
+        .footer-col h5 { color: var(--white); margin-bottom: 15px; text-transform: uppercase; letter-spacing: 1px; }
+        .footer-platforms { margin: 10px 0; display: flex; justify-content: flex-start; align-items: center; gap: 15px; flex-wrap: wrap; }
+        .platform-link img { height: 25px; filter: grayscale(1) brightness(2); opacity: 0.7; transition: 0.3s; }
+        .platform-link:hover img { filter: grayscale(0) brightness(1); opacity: 1; }
+        .msme-logo { height: 60px !important; filter: none !important; opacity: 1 !important; margin-top: 10px; }
+        .footer-bottom { grid-column: 1 / -1; text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); font-size: 11px; opacity: 0.5; }
+        @media (max-width: 768px) {
+            .footer-container { grid-template-columns: 1fr; text-align: center; gap: 30px; }
+            .footer-platforms { justify-content: center; }
+        }
 
         /* Cashfree Simulator Modal Styles */
-        #cashfree-simulator-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 9999; justify-content: center; align-items: center; }
-        .modal-content { background: white; padding: 30px; border-radius: 12px; max-width: 400px; width: 90%; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+        #cashfree-simulator-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 99999; justify-content: center; align-items: center; }
+        .modal-content { background: white; padding: 30px; border-radius: 15px; max-width: 400px; width: 90%; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
         .modal-content h3 { color: var(--brand-blue); margin-top: 0; }
         .modal-btn-success { background: #28a745; color: white; border: none; padding: 12px; border-radius: 8px; width: 100%; font-weight: bold; cursor: pointer; margin-top: 10px; }
         .modal-btn-fail { background: #dc3545; color: white; border: none; padding: 12px; border-radius: 8px; width: 100%; font-weight: bold; cursor: pointer; margin-top: 10px; }
@@ -70,32 +118,34 @@
 </head>
 <body>
 
-<!-- Dynamic Navigation Bar (Index Style) -->
-<header class="site-header">
-    <a href="index.html" class="brand-container">
-        <img id="header-logo" src="" alt="Logo" class="brand-logo" style="display:none;">
-        <span class="brand-name" id="header-brand-name">Lovely Bites</span>
-    </a>
-    <nav class="nav-links" id="desktop-nav-links">
-        <a href="index.html">Home</a>
-        <a href="orders.html">My Orders</a>
-        <a href="cart.html">Cart</a>
-    </nav>
-    <button class="hamburger" onclick="toggleSidebar()">☰</button>
-</header>
-
-<!-- Mobile Sidebar Drawer -->
-<div class="mobile-sidebar" id="mobileSidebar">
-    <div class="sidebar-header">
-        <span style="font-weight: bold; color: var(--brand-red);">Menu</span>
-        <button class="close-sidebar" onclick="toggleSidebar()">&times;</button>
-    </div>
-    <div id="mobile-nav-links" style="display: flex; flex-direction: column;">
-        <a href="index.html">Home</a>
-        <a href="orders.html">My Orders</a>
-        <a href="cart.html">Cart</a>
-    </div>
+<div class="lang-bar">
+    <button class="lang-btn" onclick="location.reload()">English</button>
+    <button class="lang-btn" onclick="changeLanguage('hi')">हिंदी</button>
+    <div id="google_translate_element"></div>
 </div>
+
+<header>
+    <div class="gstin-top-right">K L ENTERPRISE | GSTIN: 10JQBPK5246N1ZO</div>
+    <div class="nav-wrapper">
+        <div class="logo"><a href="index.html"><img src="https://i.ibb.co/mFyGcMzs/Whats-App-Image-2026-04-21-at-12-22-57-removebg-preview.png" alt="Logo"></a></div>
+        <button class="burger-btn" id="mobile-burger-trigger"><span class="burger-bar"></span><span class="burger-bar"></span><span class="burger-bar"></span></button>
+        <ul class="nav-menu" id="navigation-drawer-menu">
+            <li class="nav-item"><a href="index.html" class="nav-link">Home</a></li>
+            <li class="nav-item"><a href="index.html" class="nav-link">About Us</a></li>
+            <li class="nav-item nav-item-has-submenu" id="submenu-parent-wrapper">
+                <span class="nav-link" id="submenu-toggle-item">Our Products</span>
+                <div class="mega-menu" id="product-mega-dropdown">
+                    <a href="makhana.html" class="mega-item"><img src="https://i.ibb.co/wFcZdWZw/Gemini-Generated-Image-4ltfp64ltfp64ltf.png" class="mega-img"><span>Makhana</span></a>
+                    <a href="makhana.html" class="mega-item"><img src="https://i.ibb.co/JRrFnCxs/Gemini-Generated-Image-gqn9ebgqn9ebgqn9.png" class="mega-img"><span>Sattu</span></a>
+                    <a href="makhana.html" class="mega-item"><img src="https://i.ibb.co/KzNPtkxb/Gemini-Generated-Image-9e5mv89e5mv89e5m.png" class="mega-img"><span>Murmura</span></a>
+                    <a href="makhana.html" class="mega-item"><img src="https://i.ibb.co/zHX9kbvs/Gemini-Generated-Image-h9bbalh9bbalh9bb.png" class="mega-img"><span>Katarni Poha</span></a>
+                </div>
+            </li>
+            <li class="nav-item"><a href="index.html" class="nav-link">Contact Us</a></li>
+            <li class="nav-item"><button id="auth-btn" class="auth-btn">Login</button></li>
+        </ul>
+    </div>
+</header>
 
 <div class="checkout-container">
     <!-- Left Column: Order Summary -->
@@ -127,12 +177,13 @@
     </main>
 </div>
 
-<!-- Dynamic Footer Injection -->
-<footer class="site-footer">
-    <p id="footer-address"></p>
-    <p id="footer-gstin"></p>
-    <p id="footer-fssai"></p>
-    <p style="margin-top: 10px; font-size: 12px; color: #999;">© <span id="current-year"></span> Lovely Bites. All rights reserved.</p>
+<footer>
+    <div class="footer-container">
+        <div class="footer-col"><h5>Quality & Certification</h5><p><strong>FSSAI: 20426290000095</strong></p><img src="https://i.ibb.co/ds7NhrHf/New-Project-5.png" class="msme-logo" alt="MSME"></div>
+        <div class="footer-col"><h5>Shop Online</h5><p>Find us on Marketplaces:</p><div class="footer-platforms"><a href="#" class="platform-link"><img src="https://i.ibb.co/hRB8h7zS/Amazon-Logo-White-PNG.png" alt="Amazon"></a><a href="#" class="platform-link"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/33/Meesho_logo.png/250px-Meesho_logo.png" alt="Meesho"></a><a href="#" class="platform-link"><img src="https://i.ibb.co/HT14SWjR/tradeindia-logo-rounded-glossy-icon-with-transparent-background-free-png.webp" alt="TradeIndia"></a></div></div>
+        <div class="footer-col"><h5>Contact Us</h5><p>Shiv Kala Bhawan, Maharshi Menhi Nagar, Madhepura, Bihar 852113</p><p>Email: support@lovelybites.online</p></div>
+        <div class="footer-bottom">&copy; 2026 Lovely Bites. All Rights Reserved.</div>
+    </div>
 </footer>
 
 <!-- Cashfree Simulator Modal Popup -->
@@ -145,76 +196,38 @@
     </div>
 </div>
 
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
-
-<script src="firebase-init.js"></script>
+<!-- Scripts Integration -->
+<script src="cart-loader.js"></script>
+<script src="cart-system.js"></script>
 
 <script>
+    // Burger Menu & Submenu Toggle Script (from theme.js)
+    document.getElementById('mobile-burger-trigger').addEventListener('click', () => {
+        document.getElementById('navigation-drawer-menu').classList.toggle('active');
+        document.getElementById('mobile-burger-trigger').classList.toggle('active');
+    });
+    document.getElementById('submenu-toggle-item').addEventListener('click', (e) => {
+        if (window.innerWidth <= 768) {
+            e.preventDefault();
+            document.getElementById('product-mega-dropdown').classList.toggle('mobile-open');
+            document.getElementById('submenu-parent-wrapper').classList.toggle('open-caret');
+        }
+    });
+
     const cashfree = Cashfree({ mode: "sandbox" });
     let authUser = null;
     let pendingOrderPayload = null;
 
-    document.getElementById('current-year').textContent = new Date().getFullYear();
-
-    // Toggle Mobile Sidebar Drawer
-    function toggleSidebar() {
-        document.getElementById('mobileSidebar').classList.toggle('active');
-    }
-
-    // Load Global Config & Mega Menu from Firestore
-    async function loadGlobalConfig() {
-        try {
-            const db = firebase.firestore();
-            const docRef = db.collection("settings").doc("global_config");
-            const docSnap = await docRef.get();
-
-            if (docSnap.exists) {
-                const data = docSnap.data();
-                
-                if (data.brandName) {
-                    document.getElementById('header-brand-name').textContent = data.brandName;
-                }
-                if (data.logoUrl) {
-                    const logoImg = document.getElementById('header-logo');
-                    logoImg.src = data.logoUrl;
-                    logoImg.style.display = 'block';
-                }
-                if (data.faviconUrl) {
-                    document.getElementById('dynamic-favicon').href = data.faviconUrl;
-                }
-                if (data.addressText) {
-                    document.getElementById('footer-address').textContent = "Address: " + data.addressText;
-                }
-                if (data.gstinText) {
-                    document.getElementById('footer-gstin').textContent = data.gstinText;
-                }
-                if (data.fssaiText) {
-                    document.getElementById('footer-fssai').textContent = data.fssaiText;
-                }
-
-                // Optional: If megaMenuLinks or custom links are stored in global_config
-                if (data.megaMenuLinks && Array.isArray(data.megaMenuLinks)) {
-                    let linksHtml = '<a href="index.html">Home</a>';
-                    data.megaMenuLinks.forEach(link => {
-                        linksHtml += `<a href="${link.url}">${link.title}</a>`;
-                    });
-                    linksHtml += '<a href="orders.html">My Orders</a><a href="cart.html">Cart</a>';
-                    document.getElementById('desktop-nav-links').innerHTML = linksHtml;
-                    document.getElementById('mobile-nav-links').innerHTML = linksHtml;
-                }
-            }
-        } catch (err) {
-            console.error("Error loading global config:", err);
-        }
-    }
-
-    // Auth State & Cart Init
+    // Firebase Auth & Cart Summary Logic (Fully Intact)
     firebase.auth().onAuthStateChanged(async (user) => { 
         authUser = user; 
+        const authBtn = document.getElementById('auth-btn');
+        if(authBtn) {
+            authBtn.innerText = user ? "Logout" : "Login";
+            authBtn.onclick = () => user ? firebase.auth().signOut() : firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider());
+        }
+
         if (user) {
-            loadGlobalConfig();
             loadCartSummary();
         } else {
             alert("Please login first!");
