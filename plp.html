@@ -62,19 +62,26 @@
         @media(max-width: 992px) { .products-grid { grid-template-columns: repeat(2, 1fr); gap: 15px; } }
         @media(max-width: 576px) { .products-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; } }
 
-        .product-card { background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.05); transition: transform 0.3s; display: flex; flex-direction: column; text-decoration: none; color: inherit; border-bottom: 4px solid var(--brand-yellow); }
+        .product-card { background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.05); transition: transform 0.3s; display: flex; flex-direction: column; text-decoration: none; color: inherit; border-bottom: 4px solid var(--brand-yellow); position: relative; }
         .product-card:hover { transform: translateY(-4px); box-shadow: 0 8px 20px rgba(0,0,0,0.1); }
         
-        .product-img-box { height: 180px; background: #f9f9f9; display: flex; align-items: center; justify-content: center; padding: 10px; position: relative; }
+        .product-img-box { height: 180px; background: #f9f9f9; display: flex; align-items: center; justify-content: center; padding: 10px; position: relative; cursor: pointer; }
         @media(min-width: 577px) { .product-img-box { height: 220px; } }
         .product-img-box img { max-height: 100%; max-width: 100%; object-fit: contain; }
         
-        .product-info { padding: 15px; display: flex; flex-direction: column; flex-grow: 1; }
+        .product-info { padding: 12px; display: flex; flex-direction: column; flex-grow: 1; }
         .product-category { font-size: 10px; color: var(--brand-orange); text-transform: uppercase; font-weight: 800; margin-bottom: 4px; letter-spacing: 1px; }
-        .product-name { font-size: 1.05rem; font-weight: 800; color: var(--text-dark); margin-bottom: 8px; }
-        .price-row { display: flex; align-items: center; gap: 8px; margin-top: auto; padding-top: 8px; flex-wrap: wrap; }
-        .product-price { font-size: 1.15rem; font-weight: 900; color: var(--brand-red); }
-        .product-mrp { font-size: 0.85rem; color: #888; text-decoration: line-through; }
+        .product-name { font-size: 0.95rem; font-weight: 800; color: var(--text-dark); margin-bottom: 4px; cursor: pointer; }
+        .product-name:hover { color: var(--brand-red); }
+        
+        .product-weight { font-size: 0.8rem; color: #666; margin-bottom: 8px; font-weight: 600; }
+
+        .price-row { display: flex; align-items: center; gap: 8px; margin-top: auto; padding-top: 4px; flex-wrap: wrap; margin-bottom: 10px; }
+        .product-price { font-size: 1.05rem; font-weight: 900; color: var(--brand-red); }
+        .product-mrp { font-size: 0.8rem; color: #888; text-decoration: line-through; }
+
+        .add-to-cart-btn { background: var(--brand-blue); color: white; border: none; padding: 8px 12px; border-radius: 6px; font-weight: 700; font-size: 0.85rem; cursor: pointer; width: 100%; transition: background 0.2s; text-align: center; }
+        .add-to-cart-btn:hover { background: #003d7a; }
 
         /* Footer */
         footer { background: var(--text-dark); color: #aaa; padding: 3rem 2rem; font-size: 0.9rem; margin-top: 50px; }
@@ -222,7 +229,6 @@
             snapshot.forEach(doc => {
                 const data = doc.data();
                 
-                // Sirf wahi item lo jo stock mein hain (stock > 0 ya inStock true)
                 const stockVal = Number(data.stock !== undefined ? data.stock : 1);
                 const isInStock = data.inStock !== false && stockVal > 0 && data.status !== "out_of_stock" && data.status !== "OOS";
                 
@@ -236,6 +242,7 @@
                         category: cat,
                         price: Number(data.price || data.amount || 0),
                         mrp: Number(data.mrp || 0),
+                        weight: data.weight || data.size || data.netWeight || "Standard Pack",
                         imageUrl: data.image_url || data.imageUrl || data.image || 'https://i.ibb.co/mFyGcMzs/Whats-App-Image-2026-04-21-at-12-22-57-removebg-preview.png',
                         rank: Number(data.rank || 999),
                         createdAt: data.createdAt || data.timestamp || null
@@ -243,7 +250,6 @@
                 }
             });
 
-            // Populate Category Filter Dropdown
             const categorySelect = document.getElementById('category-filter');
             categorySelect.innerHTML = '<option value="all">All Categories</option>';
             categoriesSet.forEach(cat => {
@@ -264,13 +270,10 @@
         const selectedPriceRange = document.getElementById('price-filter').value;
         const selectedSort = document.getElementById('sort-select').value;
 
-        // 1. Filtering
         let filtered = allProducts.filter(item => {
-            // Category filter
             if (selectedCategory !== 'all' && item.category !== selectedCategory) {
                 return false;
             }
-            // Price bracket filter
             if (selectedPriceRange === 'under100' && item.price >= 100) return false;
             if (selectedPriceRange === '100to500' && (item.price < 100 || item.price > 500)) return false;
             if (selectedPriceRange === 'above500' && item.price <= 500) return false;
@@ -278,10 +281,9 @@
             return true;
         });
 
-        // 2. Sorting
         filtered.sort((a, b) => {
             if (selectedSort === 'relevance') {
-                return a.rank - b.rank; // Lower rank comes first
+                return a.rank - b.rank;
             } else if (selectedSort === 'low-high') {
                 return a.price - b.price;
             } else if (selectedSort === 'high-low') {
@@ -294,7 +296,6 @@
             return 0;
         });
 
-        // 3. Rendering
         if (filtered.length === 0) {
             gridWrapper.innerHTML = "<p style='grid-column: 1/-1; text-align: center; padding: 40px;'>Is filter ke mutabiq koi product nahi mila.</p>";
             return;
@@ -303,23 +304,57 @@
         let gridHTML = "";
         filtered.forEach(item => {
             gridHTML += `
-                <a href="product-detail.html?id=${item.id}" class="product-card">
-                    <div class="product-img-box">
+                <div class="product-card">
+                    <div class="product-img-box" onclick="window.location.href='product-detail.html?id=${item.id}'">
                         <img src="${item.imageUrl}" alt="${item.name}">
                     </div>
                     <div class="product-info">
                         <span class="product-category">${item.category}</span>
-                        <h3 class="product-name">${item.name}</h3>
+                        <h3 class="product-name" onclick="window.location.href='product-detail.html?id=${item.id}'">${item.name}</h3>
+                        <div class="product-weight">⚖️ ${item.weight}</div>
                         <div class="price-row">
                             <span class="product-price">₹${item.price}</span>
                             ${item.mrp > item.price ? `<span class="product-mrp">₹${item.mrp}</span>` : ''}
                         </div>
+                        <button class="add-to-cart-btn" onclick="quickAddToCart('${item.id}', '${item.name.replace(/'/g, "\\'")}', ${item.price}, '${item.imageUrl}')">Add to Cart</button>
                     </div>
-                </a>
+                </div>
             `;
         });
 
         gridWrapper.innerHTML = gridHTML;
+    }
+
+    async function quickAddToCart(productId, productName, productPrice, productImage) {
+        const user = firebase.auth().currentUser;
+        if (!user) {
+            alert("Pehle login kijiye cart mein item add karne ke liye!");
+            firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider());
+            return;
+        }
+
+        try {
+            const cartRef = firebase.firestore().collection("users").doc(user.uid).collection("cart").doc(productId);
+            const docSnap = await cartRef.get();
+
+            if (docSnap.exists) {
+                const currentQty = docSnap.data().qty || 1;
+                await cartRef.update({ qty: currentQty + 1 });
+            } else {
+                await cartRef.set({
+                    productId: productId,
+                    name: productName,
+                    price: productPrice,
+                    image: productImage,
+                    qty: 1,
+                    addedAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+            }
+            alert(productName + " cart mein add ho gaya!");
+        } catch (error) {
+            console.error("Error adding to cart: ", error);
+            alert("Cart mein add karne mein kuch samasya aayi.");
+        }
     }
 </script>
 </body>
