@@ -149,7 +149,7 @@
                 if (user) {
                     firebase.auth().signOut();
                 } else {
-                    firebase.auth().signinWithPopup ? firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider()) : firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider());
+                    firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider());
                 }
             };
         }
@@ -162,9 +162,10 @@
                 if (cartBadge) cartBadge.innerText = totalCount;
             });
 
-            // Fetch User Orders safely sorted or filtered
+            // Fetch User Orders sorted by createdAt descending
             firebase.firestore().collection("orders")
                 .where("userId", "==", user.uid)
+                .orderBy("createdAt", "desc")
                 .onSnapshot((snapshot) => {
                     if (snapshot.empty) {
                         ordersWrapper.innerHTML = "<p style='text-align: center; padding: 40px;'>Aapne abhi tak koi order place nahi kiya hai!</p>";
@@ -176,14 +177,22 @@
                         const order = doc.data();
                         const orderId = doc.id;
                         
-                        // Numeric or Readable order ID check (agar order.numericOrderId ya order.orderNumber hai toh wo use karein, nahi toh document ID ka numeric/short part)
-                        const displayOrderId = order.orderNumber || order.numericOrderId || orderId.substring(0, 10);
+                        const displayOrderId = order.orderNumber || order.numericOrderId || order.orderId || orderId.substring(0, 10);
                         
-                        const dateStr = order.createdAt ? new Date(order.createdAt.seconds * 1000).toLocaleDateString('en-IN', {
-                            day: 'numeric',
-                            month: 'short',
-                            year: 'numeric'
-                        }) : "Recent";
+                        let dateStr = "Recent";
+                        if (order.createdAt && typeof order.createdAt.toDate === 'function') {
+                            dateStr = order.createdAt.toDate().toLocaleDateString('en-IN', {
+                                day: 'numeric',
+                                month: 'short',
+                                year: 'numeric'
+                            });
+                        } else if (order.timestamp && typeof order.timestamp.toDate === 'function') {
+                            dateStr = order.timestamp.toDate().toLocaleDateString('en-IN', {
+                                day: 'numeric',
+                                month: 'short',
+                                year: 'numeric'
+                            });
+                        }
                         
                         let itemsHTML = "";
                         if (order.items && order.items.length > 0) {
@@ -200,19 +209,35 @@
                         }
 
                         const totalAmountNum = Number(order.totalAmount || order.total || 0);
+                        const currentStatus = order.orderStatus || order.status || 'Placed';
+                        const trackingVal = order.trackingInfo || order.tracking || order.awb || '';
+
+                        // Tracking Section HTML
+                        let trackingHTML = '';
+                        if (trackingVal) {
+                            const isUrl = trackingVal.startsWith('http');
+                            trackingHTML = `
+                                <div style="margin-top: 8px; padding: 6px 10px; background: #eef2ff; border-radius: 6px; font-size: 0.85rem;">
+                                    <strong>📦 AWB / Tracking:</strong> 
+                                    ${isUrl ? `<a href="${trackingVal}" target="_blank" style="color: var(--brand-blue); text-decoration: underline;">${trackingVal}</a>` : `<span style="font-family: monospace; color: #333;">${trackingVal}</span>`}
+                                </div>
+                            `;
+                        }
 
                         ordersHTML += `
                             <div class="order-card">
                                 <div class="order-header">
                                     <span class="order-id">Order ID: #${displayOrderId}</span>
-                                    <span class="order-status">${order.orderStatus || order.status || 'Placed'}</span>
+                                    <span class="order-status">${currentStatus}</span>
                                 </div>
                                 <div class="order-body">
                                     <p><strong>Date:</strong> ${dateStr}</p>
                                     <p><strong>Shipping To:</strong> ${order.customerName || 'N/A'} (${order.customerPhone || 'N/A'})</p>
                                     <p><strong>Address:</strong> ${order.shippingAddress || order.address || 'N/A'}</p>
-                                    <p><strong>Payment:</strong> ${order.paymentMethod || 'Online'} (${order.paymentStatus || 'Paid'})</p>
+                                    <p><strong>Payment:</strong> ${(order.paymentMethod || 'Online').toUpperCase()} (${(order.paymentStatus || 'Paid').toUpperCase()})</p>
                                     
+                                    ${trackingHTML}
+
                                     <div class="order-items-list">
                                         ${itemsHTML}
                                     </div>
@@ -228,7 +253,7 @@
                     ordersWrapper.innerHTML = ordersHTML;
                 }, (error) => {
                     console.error("Orders fetch error:", error);
-                    ordersWrapper.innerHTML = "<p style='text-align: center; color: red;'>Error loading orders.</p>";
+                    ordersWrapper.innerHTML = "<p style='text-align: center; color: red;'>Error loading orders. (Note: Agar Firestore index ka error aaye, toh console link par click karke index create karein).</p>";
                 });
 
         } else {
