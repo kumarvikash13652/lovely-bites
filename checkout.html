@@ -89,14 +89,17 @@
     let authUser = null;
     let pendingOrderPayload = null;
 
-    firebase.auth().onAuthStateChanged(async (user) => { 
-        authUser = user; 
-        if (user) {
-            loadCartSummary();
-        } else {
-            alert("Please login first!");
-            window.location.href = "login.html";
-        }
+    // Fixed session persistence so login state carries over properly from index.html
+    firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL).then(() => {
+        firebase.auth().onAuthStateChanged(async (user) => { 
+            authUser = user; 
+            if (user) {
+                loadCartSummary();
+            } else {
+                alert("Please login first!");
+                window.location.href = "login.html";
+            }
+        });
     });
 
     async function loadCartSummary() {
@@ -193,14 +196,12 @@
                     ...shippingDetails
                 });
             } else {
-                // Save payload for simulator
                 pendingOrderPayload = {
                     orderItems,
                     totalAmount,
                     shippingDetails
                 };
                 
-                // Open Cashfree Simulator Modal instead of failing session
                 document.getElementById('cashfree-simulator-modal').style.display = 'flex';
             }
 
