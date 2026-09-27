@@ -65,7 +65,12 @@
         .payment-card.active { border-color: var(--brand-blue); background: #f0f7ff; color: var(--brand-blue); }
 
         /* Cart Summary Items */
-        .cart-item-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #eee; font-size: 0.95rem; }
+        .cart-item-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #eee; font-size: 0.95rem; }
+        .item-controls { display: flex; align-items: center; gap: 8px; margin-top: 5px; }
+        .qty-mini-btn { background: #eee; border: none; width: 26px; height: 26px; font-weight: bold; border-radius: 4px; cursor: pointer; }
+        .delete-btn { background: #ffebee; color: var(--brand-red); border: none; padding: 4px 8px; font-size: 12px; font-weight: bold; border-radius: 4px; cursor: pointer; }
+        .delete-btn:hover { background: var(--brand-red); color: white; }
+
         .summary-total { display: flex; justify-content: space-between; font-size: 1.3rem; font-weight: 900; color: var(--brand-red); margin-top: 20px; padding-top: 15px; border-top: 2px dashed #ddd; }
 
         .place-order-btn { background: var(--brand-red); color: white; border: none; width: 100%; padding: 14px; border-radius: 30px; font-weight: 800; font-size: 1.1rem; cursor: pointer; margin-top: 25px; transition: 0.3s; box-shadow: 0 5px 15px rgba(227,30,36,0.3); }
@@ -234,15 +239,25 @@
             snapshot.forEach(doc => {
                 const item = doc.data();
                 const itemQty = item.qty || 1;
-                const itemTotal = (item.price || 0) * itemQty;
+                const itemPrice = item.price || 0;
+                const itemTotal = itemPrice * itemQty;
                 totalCount += itemQty;
                 totalAmt += itemTotal;
                 cartItemsArray.push({ id: doc.id, ...item });
 
                 htmlContent += `
                     <div class="cart-item-row">
-                        <div><strong>${item.productName}</strong> (x${itemQty})</div>
-                        <div>₹${itemTotal}</div>
+                        <div>
+                            <strong>${item.productName}</strong><br>
+                            <span style="font-size: 0.85rem; color: #666;">₹${itemPrice} x ${itemQty} = <strong>₹${itemTotal}</strong></span>
+                            <div class="item-controls">
+                                <button class="qty-mini-btn" onclick="updateCartQty('${doc.id}', ${itemQty - 1}, ${itemPrice}, '${item.productName}')">-</button>
+                                <span style="font-size: 0.9rem; font-weight: bold; padding: 0 5px;">${itemQty}</span>
+                                <button class="qty-mini-btn" onclick="updateCartQty('${doc.id}', ${itemQty + 1}, ${itemPrice}, '${item.productName}')">+</button>
+                                <button class="delete-btn" onclick="deleteCartItem('${doc.id}')">Delete</button>
+                            </div>
+                        </div>
+                        <div style="font-weight: bold; color: var(--brand-red);">₹${itemTotal}</div>
                     </div>
                 `;
             });
@@ -252,6 +267,28 @@
             grandTotalAmount = totalAmt;
             if (cartBadge) cartBadge.innerText = totalCount;
         });
+    }
+
+    async function updateCartQty(productId, newQty, price, productName) {
+        if (!currentUser) return;
+        const cartRef = firebase.firestore().collection("users").doc(currentUser.uid).collection("cart").doc(productId);
+        
+        if (newQty <= 0) {
+            await cartRef.delete();
+        } else {
+            await cartRef.update({
+                qty: newQty,
+                price: price,
+                productName: productName
+            });
+        }
+    }
+
+    async function deleteCartItem(productId) {
+        if (!currentUser) return;
+        if (confirm("Kya aap is item ko cart se hatana chahte hain?")) {
+            await firebase.firestore().collection("users").doc(currentUser.uid).collection("cart").doc(productId).delete();
+        }
     }
 
     async function handlePlaceOrder(e) {
@@ -269,7 +306,6 @@
         const phone = document.getElementById('ship-phone').value;
         const address = document.getElementById('ship-address').value;
 
-        // If Cashfree Test payment selected, simulate payment popup
         if (selectedPayment === "Cashfree Test") {
             const confirmPay = confirm(`[Cashfree Test Gateway Simulator]\nAmount to Pay: ₹${grandTotalAmount}\nClick OK to simulate successful payment.`);
             if (!confirmPay) {
@@ -292,10 +328,8 @@
                 createdAt: firebase.firestore.FieldValue.serverTimestamp()
             };
 
-            // Save order to global orders collection
             const orderRef = await firebase.firestore().collection("orders").add(orderData);
 
-            // Clear user's cart
             const cartRef = firebase.firestore().collection("users").doc(currentUser.uid).collection("cart");
             const cartDocs = await cartRef.get();
             const batch = firebase.firestore().batch();
