@@ -56,7 +56,6 @@
         .auth-btn { background: var(--brand-red); color: #fff; border: none; padding: 8px 20px; border-radius: 20px; font-weight: 700; cursor: pointer; transition: 0.3s; margin-left: 10px; }
         .auth-btn:hover { background: #b7171c; }
 
-        /* Cart Icon Trigger */
         .cart-icon-btn { background: none; border: 2px solid var(--brand-blue); color: var(--brand-blue); padding: 6px 14px; border-radius: 20px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 5px; transition: 0.2s; }
         .cart-icon-btn:hover { background: var(--brand-blue); color: white; }
 
@@ -69,7 +68,6 @@
         .msme-logo { height: 60px !important; filter: none !important; opacity: 1 !important; margin-top: 10px; }
         .footer-bottom { grid-column: 1 / -1; text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); font-size: 11px; opacity: 0.5; }
 
-        /* Original Checkout Styles */
         .checkout-wrapper { padding: 40px 20px; }
         .checkout-container { max-width: 900px; margin: 0 auto; background: white; padding: 30px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
         @media(max-width: 768px) { .checkout-container { grid-template-columns: 1fr; padding: 20px; margin: 10px; } }
@@ -89,49 +87,40 @@
         .order-summary h4 { margin: 0 0 15px 0; color: var(--brand-blue); font-size: 18px; border-bottom: 1px solid #eee; padding-bottom: 8px; }
         .summary-total { font-weight: bold; font-size: 18px; color: var(--brand-red); margin-top: 15px; text-align: right; border-top: 1px solid #eee; padding-top: 10px; }
         
-        /* Cashfree Simulator Modal Styles */
         #cashfree-simulator-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 9999; justify-content: center; align-items: center; }
         .modal-content { background: white; padding: 30px; border-radius: 12px; max-width: 400px; width: 90%; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
         .modal-content h3 { color: var(--brand-blue); margin-top: 0; }
         .modal-btn-success { background: #28a745; color: white; border: none; padding: 12px; border-radius: 8px; width: 100%; font-weight: bold; cursor: pointer; margin-top: 10px; }
         .modal-btn-fail { background: #dc3545; color: white; border: none; padding: 12px; border-radius: 8px; width: 100%; font-weight: bold; cursor: pointer; margin-top: 10px; }
-        
-        /* Cart Sidebar Drawer */
-        .cart-sidebar { position: fixed; right: -380px; top: 0; width: 380px; height: 100%; background: white; z-index: 100005; transition: right 0.3s ease; padding: 25px; box-shadow: -5px 0 25px rgba(0,0,0,0.15); overflow-y: auto; }
-        .cart-sidebar.active { right: 0; }
-        .cart-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 100004; }
-        .cart-overlay.active { display: block; }
     </style>
 </head>
 <body>
 
-<!-- Header with Cart, My Orders & Burger Menu -->
-<div id="global-header">
-    <div class="lang-bar"><button class="lang-btn" onclick="location.reload()">English</button><button class="lang-btn">हिंदी</button></div>
-    <header>
-        <div class="gstin-top-right">K L ENTERPRISE | GSTIN: 10JQBPK5246N1ZO</div>
-        <div class="nav-wrapper">
-            <div class="logo"><a href="index.html"><img src="https://i.ibb.co/mFyGcMzs/Whats-App-Image-2026-04-21-at-12-22-57-removebg-preview.png" alt="Logo"></a></div>
-            <button class="burger-btn" id="mobile-burger-trigger"><span class="burger-bar"></span><span class="burger-bar"></span><span class="burger-bar"></span></button>
-            <ul class="nav-menu" id="navigation-drawer-menu">
-                <li class="nav-item"><a href="index.html" class="nav-link">Home</a></li>
-                <li class="nav-item"><a href="index.html" class="nav-link">About Us</a></li>
-                <li class="nav-item nav-item-has-submenu" id="submenu-parent-wrapper">
-                    <span class="nav-link" id="submenu-toggle-item">Our Products</span>
-                    <div class="mega-menu" id="product-mega-dropdown">
-                        <a href="makhana.html" class="mega-item"><img src="https://i.ibb.co/wFcZdWZw/Gemini-Generated-Image-4ltfp64ltfp64ltf.png" class="mega-img"><span>Makhana</span></a>
-                        <a href="makhana.html" class="mega-item"><img src="https://i.ibb.co/JRrFnCxs/Gemini-Generated-Image-gqn9ebgqn9ebgqn9.png" class="mega-img"><span>Sattu</span></a>
-                        <a href="makhana.html" class="mega-item"><img src="https://i.ibb.co/KzNPtkxb/Gemini-Generated-Image-9e5mv89e5mv89e5m.png" class="mega-img"><span>Murmura</span></a>
-                        <a href="makhana.html" class="mega-item"><img src="https://i.ibb.co/zHX9kbvs/Gemini-Generated-Image-h9bbalh9bbalh9bb.png" class="mega-img"><span>Katarni Poha</span></a>
-                    </div>
-                </li>
-                <li class="nav-item"><a href="orders.html" class="nav-link">My Orders</a></li>
-                <li class="nav-item"><button id="cart-drawer-btn" class="cart-icon-btn">🛒 Cart</button></li>
-                <li class="nav-item"><button id="auth-btn" class="auth-btn">Login</button></li>
-            </ul>
-        </div>
-    </header>
-</div>
+<!-- Header -->
+<div class="lang-bar"><button class="lang-btn" onclick="location.reload()">English</button><button class="lang-btn">हिंदी</button></div>
+<header>
+    <div class="gstin-top-right">K L ENTERPRISE | GSTIN: 10JQBPK5246N1ZO</div>
+    <div class="nav-wrapper">
+        <div class="logo"><a href="index.html"><img src="https://i.ibb.co/mFyGcMzs/Whats-App-Image-2026-04-21-at-12-22-57-removebg-preview.png" alt="Logo"></a></div>
+        <button class="burger-btn" id="mobile-burger-trigger"><span class="burger-bar"></span><span class="burger-bar"></span><span class="burger-bar"></span></button>
+        <ul class="nav-menu" id="navigation-drawer-menu">
+            <li class="nav-item"><a href="index.html" class="nav-link">Home</a></li>
+            <li class="nav-item"><a href="index.html" class="nav-link">About Us</a></li>
+            <li class="nav-item nav-item-has-submenu" id="submenu-parent-wrapper">
+                <span class="nav-link" id="submenu-toggle-item">Our Products</span>
+                <div class="mega-menu" id="product-mega-dropdown">
+                    <a href="makhana.html" class="mega-item"><img src="https://i.ibb.co/wFcZdWZw/Gemini-Generated-Image-4ltfp64ltfp64ltf.png" class="mega-img"><span>Makhana</span></a>
+                    <a href="makhana.html" class="mega-item"><img src="https://i.ibb.co/JRrFnCxs/Gemini-Generated-Image-gqn9ebgqn9ebgqn9.png" class="mega-img"><span>Sattu</span></a>
+                    <a href="makhana.html" class="mega-item"><img src="https://i.ibb.co/KzNPtkxb/Gemini-Generated-Image-9e5mv89e5mv89e5m.png" class="mega-img"><span>Murmura</span></a>
+                    <a href="makhana.html" class="mega-item"><img src="https://i.ibb.co/zHX9kbvs/Gemini-Generated-Image-h9bbalh9bbalh9bb.png" class="mega-img"><span>Katarni Poha</span></a>
+                </div>
+            </li>
+            <li class="nav-item"><a href="orders.html" class="nav-link">My Orders</a></li>
+            <li class="nav-item"><button id="cart-drawer-btn" class="cart-icon-btn">🛒 Cart</button></li>
+            <li class="nav-item"><button id="auth-btn" class="auth-btn">Login</button></li>
+        </ul>
+    </div>
+</header>
 
 <!-- Checkout Container -->
 <div class="checkout-wrapper">
@@ -167,27 +156,14 @@
 </div>
 
 <!-- Footer -->
-<div id="global-footer">
-    <footer>
-        <div class="footer-container">
-            <div class="footer-col"><h5>Quality & Certification</h5><p><strong>FSSAI: 20426290000095</strong></p><img src="https://i.ibb.co/ds7NhrHf/New-Project-5.png" class="msme-logo" alt="MSME"></div>
-            <div class="footer-col"><h5>Shop Online</h5><p>Find us on Marketplaces:</p><div class="footer-platforms"><a href="#" class="platform-link"><img src="https://i.ibb.co/hRB8h7zS/Amazon-Logo-White-PNG.png" alt="Amazon"></a><a href="#" class="platform-link"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/33/Meesho_logo.png/250px-Meesho_logo.png" alt="Meesho"></a><a href="#" class="platform-link"><img src="https://i.ibb.co/HT14SWjR/tradeindia-logo-rounded-glossy-icon-with-transparent-background-free-png.webp" alt="TradeIndia"></a></div></div>
-            <div class="footer-col"><h5>Contact Us</h5><p>Shiv Kala Bhawan, Maharshi Menhi Nagar, Madhepura, Bihar 852113</p><p>Email: support@lovelybites.online</p></div>
-            <div class="footer-bottom">&copy; 2026 Lovely Bites. All Rights Reserved.</div>
-        </div>
-    </footer>
-</div>
-
-<!-- Cart Sidebar & Overlay Markup -->
-<div class="cart-overlay" id="cart-overlay"></div>
-<div class="cart-sidebar" id="cart-sidebar">
-    <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #eee; padding-bottom:10px; margin-bottom:15px;">
-        <h3 style="margin:0; color:var(--brand-blue);">Your Cart</h3>
-        <button id="close-cart-btn" style="background:none; border:none; font-size:18px; cursor:pointer;">✕</button>
+<footer>
+    <div class="footer-container">
+        <div class="footer-col"><h5>Quality & Certification</h5><p><strong>FSSAI: 20426290000095</strong></p><img src="https://i.ibb.co/ds7NhrHf/New-Project-5.png" class="msme-logo" alt="MSME"></div>
+        <div class="footer-col"><h5>Shop Online</h5><p>Find us on Marketplaces:</p><div class="footer-platforms"><a href="#" class="platform-link"><img src="https://i.ibb.co/hRB8h7zS/Amazon-Logo-White-PNG.png" alt="Amazon"></a><a href="#" class="platform-link"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/33/Meesho_logo.png/250px-Meesho_logo.png" alt="Meesho"></a><a href="#" class="platform-link"><img src="https://i.ibb.co/HT14SWjR/tradeindia-logo-rounded-glossy-icon-with-transparent-background-free-png.webp" alt="TradeIndia"></a></div></div>
+        <div class="footer-col"><h5>Contact Us</h5><p>Shiv Kala Bhawan, Maharshi Menhi Nagar, Madhepura, Bihar 852113</p><p>Email: support@lovelybites.online</p></div>
+        <div class="footer-bottom">&copy; 2026 Lovely Bites. All Rights Reserved.</div>
     </div>
-    <div id="cart-sidebar-items">Loading cart items...</div>
-    <div id="cart-sidebar-total" style="font-weight:bold; font-size:16px; margin-top:20px; text-align:right;">Total: ₹0</div>
-</div>
+</footer>
 
 <!-- Cashfree Simulator Modal Popup -->
 <div id="cashfree-simulator-modal">
@@ -205,10 +181,11 @@
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 
 <script src="firebase-init.js"></script>
-<script src="cart-system_2.js"></script>
+<!-- CORRECT FILENAME WITHOUT _2 -->
+<script src="cart-system.js"></script>
+<script src="theme.js"></script>
 
 <script>
-    // Header Navigation & Mobile Burger Menu Toggles
     document.addEventListener('DOMContentLoaded', () => {
         const burger = document.getElementById('mobile-burger-trigger');
         const menu = document.getElementById('navigation-drawer-menu');
@@ -229,31 +206,6 @@
                     dropdown.classList.toggle('mobile-open');
                     parentWrapper.classList.toggle('open-caret');
                 }
-            });
-        }
-
-        // Cart Drawer Toggles
-        const cartBtn = document.getElementById('cart-drawer-btn');
-        const cartSidebar = document.getElementById('cart-sidebar');
-        const cartOverlay = document.getElementById('cart-overlay');
-        const closeCart = document.getElementById('close-cart-btn');
-
-        if (cartBtn && cartSidebar && cartOverlay) {
-            cartBtn.addEventListener('click', () => {
-                cartSidebar.classList.add('active');
-                cartOverlay.classList.add('active');
-            });
-        }
-        if (closeCart && cartSidebar && cartOverlay) {
-            closeCart.addEventListener('click', () => {
-                cartSidebar.classList.remove('active');
-                cartOverlay.classList.remove('active');
-            });
-        }
-        if (cartOverlay && cartSidebar) {
-            cartOverlay.addEventListener('click', () => {
-                cartSidebar.classList.remove('active');
-                cartOverlay.classList.remove('active');
             });
         }
     });
@@ -425,11 +377,11 @@
 
         await db.runTransaction(async (transaction) => {
             const counterDoc = await transaction.get(orderCounterRef);
-            let currentLastId = 0;
+            let currentlastId = 0;
             if (counterDoc.exists) {
-                currentLastId = counterDoc.data().lastOrderId || 0;
+                currentlastId = counterDoc.data().lastOrderId || 0;
             }
-            const newOrderId = currentLastId + 1;
+            const newOrderId = currentlastId + 1;
 
             transaction.set(db.collection("orders").doc(), {
                 ...orderData,
