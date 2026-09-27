@@ -23,25 +23,27 @@
         .lang-bar { background: var(--brand-blue); padding: 8px; text-align: center; display: flex; justify-content: center; align-items: center; gap: 10px; }
         .lang-btn { background: rgba(255,255,255,0.2); border: 1px solid white; color: white; padding: 4px 12px; cursor: pointer; font-size: 12px; border-radius: 20px; }
 
-        /* Header & Navigation */
+        /* Header */
         header { background: var(--white); padding: 1rem 2rem; text-align: center; position: relative; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border-bottom: 4px solid var(--brand-red); }
-        .logo img { max-height: 110px; width: auto; filter: drop-shadow(2px 2px 0px var(--brand-blue)) drop-shadow(-2px -2px 0px var(--brand-orange)); padding: 5px; }
+        .logo img { max-height: 100px; width: auto; filter: drop-shadow(2px 2px 0px var(--brand-blue)); padding: 5px; }
         .gstin-top-right { position: absolute; top: 20px; right: 20px; color: #777; font-size: 0.7rem; text-align: right; font-family: monospace; }
         
+        /* Navigation */
         .nav-wrapper { display: flex; align-items: center; justify-content: space-between; max-width: 1200px; margin: 0 auto; padding: 10px 20px 0 20px; position: relative; width: 100%; }
         .nav-menu { display: flex; list-style: none; margin: 0; padding: 0; gap: 20px; align-items: center; }
         .nav-item { position: relative; }
-        .nav-link { text-decoration: none; color: var(--text-dark); font-weight: 700; font-size: 0.95rem; padding: 15px 0; display: block; cursor: pointer; user-select: none; }
+        .nav-link { text-decoration: none; color: var(--text-dark); font-weight: 700; font-size: 0.95rem; padding: 15px 0; display: block; cursor: pointer; }
         .nav-link:hover { color: var(--brand-red); }
         
-        /* Burger Menu for Mobile */
+        /* Mobile Burger */
         .burger-btn { display: none; background: none; border: none; cursor: pointer; padding: 10px; z-index: 100001; }
         .burger-bar { display: block; width: 25px; height: 3px; margin: 5px auto; background-color: var(--text-dark); transition: all 0.3s ease; }
         
-        @media (max-width: 769px) {
+        @media (max-width: 768px) {
             .burger-btn { display: block; }
             .nav-menu { display: none; position: absolute; top: 100%; left: 0; width: 100%; background: white; flex-direction: column; align-items: flex-start; padding: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.15); border-bottom: 3px solid var(--brand-red); z-index: 100000; }
             .nav-menu.active { display: flex; }
+            .gstin-top-right { display: none; }
         }
 
         .auth-btn { background: var(--brand-red); color: #fff; border: none; padding: 8px 20px; border-radius: 20px; font-weight: 700; cursor: pointer; transition: 0.3s; }
@@ -96,11 +98,11 @@
     <div class="gstin-top-right">K L ENTERPRISE | GSTIN: 10JQBPK5246N1ZO</div>
     <div class="nav-wrapper">
         <div class="logo"><a href="index.html"><img src="https://i.ibb.co/mFyGcMzs/Whats-App-Image-2026-04-21-at-12-22-57-removebg-preview.png" alt="Logo"></a></div>
-        <button class="burger-btn" id="burger-trigger"><span class="burger-bar"></span><span class="burger-bar"></span><span class="burger-bar"></span></button>
-        <ul class="nav-menu" id="nav-menu-list">
+        <button class="burger-btn" id="mobile-burger-trigger"><span class="burger-bar"></span><span class="burger-bar"></span><span class="burger-bar"></span></button>
+        <ul class="nav-menu" id="navigation-drawer-menu">
             <li class="nav-item"><a href="index.html" class="nav-link">Home</a></li>
             <li class="nav-item"><a href="plp.html" class="nav-link">Products</a></li>
-            <li class="nav-item"><a href="checkout.html" class="nav-link">🛒 Cart (<span id="cart-badge">0</span>)</a></li>
+            <li class="nav-item"><a href="checkout.html" class="nav-link">🛒 Cart (<span id="cart-count-badge">0</span>)</a></li>
             <li class="nav-item"><a href="orders.html" class="nav-link">📦 My Orders</a></li>
             <li class="nav-item"><button id="auth-btn" class="auth-btn">Login</button></li>
         </ul>
@@ -140,12 +142,12 @@
         </div>
 
         <div class="products-grid" id="products-grid">
-            <!-- Dynamic Products will load here -->
+            <!-- Dynamic Products from Firebase -->
         </div>
     </main>
 </div>
 
-<footer>
+<footer id="contact">
     <div class="footer-container">
         <div class="footer-col"><h5>Quality & Certification</h5><p><strong>FSSAI: 20426290000095</strong></p><img src="https://i.ibb.co/ds7NhrHf/New-Project-5.png" class="msme-logo" alt="MSME"></div>
         <div class="footer-col"><h5>Shop Online</h5><p>Find us on Marketplaces:</p><div class="footer-platforms"><a href="#" class="platform-link"><img src="https://i.ibb.co/hRB8h7zS/Amazon-Logo-White-PNG.png" alt="Amazon"></a><a href="#" class="platform-link"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/33/Meesho_logo.png/250px-Meesho_logo.png" alt="Meesho"></a><a href="#" class="platform-link"><img src="https://i.ibb.co/HT14SWjR/tradeindia-logo-rounded-glossy-icon-with-transparent-background-free-png.webp" alt="TradeIndia"></a></div></div>
@@ -159,13 +161,24 @@
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 
-<script src="firebase-init.js"></script>
-
 <script>
-    // Mobile Drawer Toggle
+    const firebaseConfig = {
+        apiKey: "AIzaSyDVE5gYyGCgAlfHw82Apna6DsMY9zE2bGs",
+        authDomain: "lovelybites-e4d35.firebaseapp.com",
+        projectId: "lovelybites-e4d35",
+        storageBucket: "lovelybites-e4d35.firebasestorage.app",
+        messagingSenderId: "650974633550",
+        appId: "1:650974633550:web:14e277c8aef5db9ff4ed1f"
+    };
+
+    if (!firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
+    }
+
+    // Mobile Burger Menu
     document.addEventListener('DOMContentLoaded', () => {
-        const burger = document.getElementById('burger-trigger');
-        const menu = document.getElementById('nav-menu-list');
+        const burger = document.getElementById('mobile-burger-trigger');
+        const menu = document.getElementById('navigation-drawer-menu');
         if (burger && menu) {
             burger.addEventListener('click', () => {
                 menu.classList.toggle('active');
@@ -179,10 +192,33 @@
     firebase.auth().onAuthStateChanged((user) => {
         currentUser = user;
         const authBtn = document.getElementById('auth-btn');
+        const cartBadge = document.getElementById('cart-count-badge');
+        
         if (authBtn) {
             authBtn.innerText = user ? "Logout" : "Login";
-            authBtn.onclick = () => user ? firebase.auth().signOut() : firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider());
+            authBtn.onclick = () => {
+                if (user) {
+                    firebase.auth().signOut();
+                } else {
+                    const provider = new firebase.auth.GoogleAuthProvider();
+                    firebase.auth().signInWithPopup(provider);
+                }
+            };
         }
+
+        if (user) {
+            const db = firebase.firestore();
+            db.collection("users").doc(user.uid).collection("cart").onSnapshot((snapshot) => {
+                let totalCount = 0;
+                snapshot.forEach(doc => {
+                    totalCount += (doc.data().qty || 1);
+                });
+                if (cartBadge) cartBadge.innerText = totalCount;
+            });
+        } else {
+            if (cartBadge) cartBadge.innerText = "0";
+        }
+
         loadProducts();
     });
 
