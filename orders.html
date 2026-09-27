@@ -3,79 +3,227 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="https://i.ibb.co/mFyGcMzs/Whats-App-Image-2026-04-21-at-12-22-57-removebg-preview.png">
     <title>My Orders | Lovely Bites</title>
+
     <style>
-        body { font-family: sans-serif; padding: 20px; background: #f4f4f4; }
-        .order-card { background: white; padding: 20px; margin: 15px 0; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        .order-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #eee; }
-        .status { color: #e31e24; font-weight: bold; }
-        h2 { text-align: center; }
-        .order-meta { font-size: 0.9em; color: #555; margin-bottom: 10px; }
+        :root { 
+            --brand-red: #e31e24;      
+            --brand-yellow: #ffcb05;   
+            --brand-blue: #0054a6;     
+            --brand-orange: #f58220;   
+            --bg-cream: #fffdf5;       
+            --text-dark: #2d2926;
+            --white: #ffffff;
+        }
+        * { box-sizing: border-box; } 
+        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background: var(--bg-cream); margin: 0; padding: 0; color: var(--text-dark); line-height: 1.6; }
+        
+        /* Language Bar */
+        .lang-bar { background: var(--brand-blue); padding: 8px; text-align: center; display: flex; justify-content: center; align-items: center; gap: 10px; }
+        .lang-btn { background: rgba(255,255,255,0.2); border: 1px solid white; color: white; padding: 4px 12px; cursor: pointer; font-size: 12px; border-radius: 20px; }
+
+        /* Header */
+        header { background: var(--white); padding: 1rem 2rem; text-align: center; position: relative; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border-bottom: 4px solid var(--brand-red); }
+        .logo img { max-height: 100px; width: auto; filter: drop-shadow(2px 2px 0px var(--brand-blue)); padding: 5px; }
+        .gstin-top-right { position: absolute; top: 20px; right: 20px; color: #777; font-size: 0.7rem; text-align: right; font-family: monospace; }
+        
+        /* Navigation */
+        .nav-wrapper { display: flex; align-items: center; justify-content: space-between; max-width: 1200px; margin: 0 auto; padding: 10px 20px 0 20px; position: relative; width: 100%; }
+        .nav-menu { display: flex; list-style: none; margin: 0; padding: 0; gap: 20px; align-items: center; }
+        .nav-item { position: relative; }
+        .nav-link { text-decoration: none; color: var(--text-dark); font-weight: 700; font-size: 0.95rem; padding: 15px 0; display: block; cursor: pointer; }
+        .nav-link:hover { color: var(--brand-red); }
+        
+        /* Mobile Burger */
+        .burger-btn { display: none; background: none; border: none; cursor: pointer; padding: 10px; z-index: 100001; }
+        .burger-bar { display: block; width: 25px; height: 3px; margin: 5px auto; background-color: var(--text-dark); transition: all 0.3s ease; }
+        
+        @media (max-width: 768px) {
+            .burger-btn { display: block; }
+            .nav-menu { display: none; position: absolute; top: 100%; left: 0; width: 100%; background: white; flex-direction: column; align-items: flex-start; padding: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.15); border-bottom: 3px solid var(--brand-red); z-index: 100000; }
+            .nav-menu.active { display: flex; }
+            .gstin-top-right { display: none; }
+        }
+
+        .auth-btn { background: var(--brand-red); color: #fff; border: none; padding: 8px 20px; border-radius: 20px; font-weight: 700; cursor: pointer; transition: 0.3s; }
+        .auth-btn:hover { background: #b7171c; }
+
+        /* Orders Container */
+        .orders-container { max-width: 900px; margin: 40px auto; padding: 0 20px; }
+        .section-title { font-size: 2rem; color: var(--brand-blue); margin-bottom: 25px; font-weight: 800; text-align: center; }
+        
+        .order-card { background: white; border-radius: 12px; padding: 25px; margin-bottom: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); border-left: 6px solid var(--brand-orange); }
+        .order-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding-bottom: 12px; margin-bottom: 15px; flex-wrap: wrap; gap: 10px; }
+        .order-id { font-family: monospace; font-size: 0.9rem; color: #666; }
+        .order-status { background: #e6f4ea; color: #137333; padding: 4px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: bold; }
+        
+        .order-body p { margin: 5px 0; font-size: 0.95rem; }
+        .order-items-list { margin: 15px 0; background: #fafafa; padding: 10px 15px; border-radius: 8px; }
+        .order-item-row { display: flex; justify-content: space-between; font-size: 0.9rem; padding: 4px 0; }
+        
+        .order-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 15px; padding-top: 15px; border-top: 1px solid #eee; font-weight: bold; }
+        .order-total { font-size: 1.2rem; color: var(--brand-red); }
+
+        /* Footer */
+        footer { background: var(--text-dark); color: #aaa; padding: 3rem 2rem; font-size: 0.9rem; margin-top: 50px; }
+        .footer-container { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; text-align: left; }
+        @media(max-width: 768px) { .footer-container { grid-template-columns: 1fr; } }
+        .footer-col h5 { color: var(--white); margin-bottom: 15px; text-transform: uppercase; letter-spacing: 1px; }
+        .footer-platforms { margin: 10px 0; display: flex; flex-wrap: wrap; gap: 15px; align-items: center; }
+        .platform-link img { height: 25px; filter: grayscale(1) brightness(2); opacity: 0.7; transition: 0.3s; }
+        .platform-link:hover img { filter: grayscale(0) brightness(1); opacity: 1; }
+        .msme-logo { height: 60px !important; filter: none !important; opacity: 1 !important; margin-top: 10px; }
+        .footer-bottom { grid-column: 1 / -1; text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); font-size: 11px; opacity: 0.5; }
     </style>
 </head>
 <body>
 
-    <h2>My Orders</h2>
-    <div id="orders-container">Loading your orders...</div>
+<div class="lang-bar"><button class="lang-btn" onclick="location.reload()">English</button><button class="lang-btn">हिंदी</button></div>
+<header>
+    <div class="gstin-top-right">K L ENTERPRISE | GSTIN: 10JQBPK5246N1ZO</div>
+    <div class="nav-wrapper">
+        <div class="logo"><a href="index.html"><img src="https://i.ibb.co/mFyGcMzs/Whats-App-Image-2026-04-21-at-12-22-57-removebg-preview.png" alt="Logo"></a></div>
+        <button class="burger-btn" id="mobile-burger-trigger"><span class="burger-bar"></span><span class="burger-bar"></span><span class="burger-bar"></span></button>
+        <ul class="nav-menu" id="navigation-drawer-menu">
+            <li class="nav-item"><a href="index.html" class="nav-link">Home</a></li>
+            <li class="nav-item"><a href="plp.html" class="nav-link">Products</a></li>
+            <li class="nav-item"><a href="checkout.html" class="nav-link">🛒 Cart (<span id="cart-count-badge">0</span>)</a></li>
+            <li class="nav-item"><a href="orders.html" class="nav-link">📦 My Orders</a></li>
+            <li class="nav-item"><button id="auth-btn" class="auth-btn">Login</button></li>
+        </ul>
+    </div>
+</header>
 
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+<main class="orders-container">
+    <h2 class="section-title">My Order History</h2>
+    <div id="orders-list-wrapper">
+        <p style="text-align: center; padding: 40px;">Loading your orders...</p>
+    </div>
+</main>
 
-    <script src="firebase-init.js"></script>
+<footer id="contact">
+    <div class="footer-container">
+        <div class="footer-col"><h5>Quality & Certification</h5><p><strong>FSSAI: 20426290000095</strong></p><img src="https://i.ibb.co/ds7NhrHf/New-Project-5.png" class="msme-logo" alt="MSME"></div>
+        <div class="footer-col"><h5>Shop Online</h5><p>Find us on Marketplaces:</p><div class="footer-platforms"><a href="#" class="platform-link"><img src="https://i.ibb.co/hRB8h7zS/Amazon-Logo-White-PNG.png" alt="Amazon"></a><a href="#" class="platform-link"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/33/Meesho_logo.png/250px-Meesho_logo.png" alt="Meesho"></a><a href="#" class="platform-link"><img src="https://i.ibb.co/HT14SWjR/tradeindia-logo-rounded-glossy-icon-with-transparent-background-free-png.webp" alt="TradeIndia"></a></div></div>
+        <div class="footer-col"><h5>Contact Us</h5><p>Shiv Kala Bhawan, Maharshi Menhi Nagar, Madhepura, Bihar 852113</p><p>Email: support@lovelybites.online</p></div>
+        <div class="footer-bottom">&copy; 2026 Lovely Bites. All Rights Reserved.</div>
+    </div>
+</footer>
 
-    <script>
-        firebase.auth().onAuthStateChanged(user => {
-            const container = document.getElementById('orders-container');
-            
-            if (!user) {
-                window.location.href = "login.html"; 
-                return;
-            }
+<!-- Firebase SDKs -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 
-            const db = firebase.firestore();
+<script>
+    const firebaseConfig = {
+        apiKey: "AIzaSyDVE5gYyGCgAlfHw82Apna6DsMY9zE2bGs",
+        authDomain: "lovelybites-e4d35.firebaseapp.com",
+        projectId: "lovelybites-e4d35",
+        storageBucket: "lovelybites-e4d35.firebasestorage.app",
+        messagingSenderId: "650974633550",
+        appId: "1:650974633550:web:14e277c8aef5db9ff4ed1f"
+    };
 
-            db.collection("orders")
+    if (!firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const burger = document.getElementById('mobile-burger-trigger');
+        const menu = document.getElementById('navigation-drawer-menu');
+        if (burger && menu) {
+            burger.addEventListener('click', () => menu.classList.toggle('active'));
+        }
+    });
+
+    firebase.auth().onAuthStateChanged((user) => {
+        const authBtn = document.getElementById('auth-btn');
+        const cartBadge = document.getElementById('cart-count-badge');
+        const ordersWrapper = document.getElementById('orders-list-wrapper');
+
+        if (authBtn) {
+            authBtn.innerText = user ? "Logout" : "Login";
+            authBtn.onclick = () => {
+                if (user) {
+                    firebase.auth().signOut();
+                } else {
+                    firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider());
+                }
+            };
+        }
+
+        if (user) {
+            // Fetch Cart Count
+            firebase.firestore().collection("users").doc(user.uid).collection("cart").onSnapshot((snapshot) => {
+                let totalCount = 0;
+                snapshot.forEach(doc => { totalCount += (doc.data().qty || 1); });
+                if (cartBadge) cartBadge.innerText = totalCount;
+            });
+
+            // Fetch User Orders
+            firebase.firestore().collection("orders")
                 .where("userId", "==", user.uid)
-                .orderBy("timestamp", "desc")
-                .onSnapshot(snapshot => {
+                .onSnapshot((snapshot) => {
                     if (snapshot.empty) {
-                        container.innerHTML = "You haven't placed any orders yet.";
+                        ordersWrapper.innerHTML = "<p style='text-align: center; padding: 40px;'>Aapne abhi tak koi order place nahi kiya hai!</p>";
                         return;
                     }
 
-                    container.innerHTML = "";
+                    let ordersHTML = "";
                     snapshot.forEach(doc => {
                         const order = doc.data();
+                        const orderId = doc.id;
+                        const dateStr = order.createdAt ? new Date(order.createdAt.seconds * 1000).toLocaleDateString() : "Recent";
                         
-                        // Date formatting
-                        const date = order.timestamp ? order.timestamp.toDate().toLocaleString() : "Date N/A";
-                        
-                        // New Sequential ID Logic
-                        const displayOrderId = order.orderId ? order.orderId : "N/A";
+                        let itemsHTML = "";
+                        if (order.items && order.items.length > 0) {
+                            order.items.forEach(item => {
+                                itemsHTML += `
+                                    <div class="order-item-row">
+                                        <span>${item.productName} (x${item.qty || 1})</span>
+                                        <span>₹${(item.price || 0) * (item.qty || 1)}</span>
+                                    </div>
+                                `;
+                            });
+                        }
 
-                        let itemsHtml = order.items.map(item => `
-                            <div class="order-item">
-                                <span>${item.productName} (x${item.qty})</span>
-                                <span>₹${(parseFloat(item.price) * parseInt(item.qty)).toFixed(2)}</span>
-                            </div>
-                        `).join('');
-
-                        container.innerHTML += `
+                        ordersHTML += `
                             <div class="order-card">
-                                <h3>Order ID: ${displayOrderId}</h3>
-                                <div class="order-meta">📅 ${date}</div>
-                                <p>Status: <span class="status">${order.status || 'Pending'}</span></p>
-                                <div>${itemsHtml}</div>
-                                <hr>
-                                <p><strong>Total Amount: ₹${order.total}</strong></p>
+                                <div class="order-header">
+                                    <span class="order-id">Order ID: #${orderId.substring(0, 10)}...</span>
+                                    <span class="order-status">${order.orderStatus || 'Placed'}</span>
+                                </div>
+                                <div class="order-body">
+                                    <p><strong>Date:</strong> ${dateStr}</p>
+                                    <p><strong>Shipping To:</strong> ${order.customerName} (${order.customerPhone})</p>
+                                    <p><strong>Address:</strong> ${order.shippingAddress}</p>
+                                    <p><strong>Payment:</strong> ${order.paymentMethod} (${order.paymentStatus})</p>
+                                    
+                                    <div class="order-items-list">
+                                        ${itemsHTML}
+                                    </div>
+                                </div>
+                                <div class="order-footer">
+                                    <span>Total Paid:</span>
+                                    <span class="order-total">₹${order.totalAmount}</span>
+                                </div>
                             </div>
                         `;
                     });
-                }, error => {
-                    container.innerHTML = "Error loading orders: " + error.message;
+
+                    ordersWrapper.innerHTML = ordersHTML;
+                }, (error) => {
+                    console.error("Orders fetch error:", error);
+                    ordersWrapper.innerHTML = "<p style='text-align: center; color: red;'>Error loading orders.</p>";
                 });
-        });
-    </script>
+
+        } else {
+            if (cartBadge) cartBadge.innerText = "0";
+            ordersWrapper.innerHTML = "<p style='text-align: center; padding: 40px;'>Pehle login karein apne orders dekhne ke liye.</p>";
+        }
+    });
+</script>
 </body>
 </html>
