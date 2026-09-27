@@ -16,6 +16,7 @@
             --bg-cream: #fffdf5;        
             --text-dark: #2d2926;
             --white: #ffffff;
+            --brand-green: #28a745;
         }
         * { box-sizing: border-box; } 
         body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background: var(--bg-cream); margin: 0; padding: 0; color: var(--text-dark); line-height: 1.6; }
@@ -90,18 +91,19 @@
         }
         .product-img-box img { max-height: 100%; max-width: 100%; object-fit: contain; }
 
-        .out-of-stock-badge {
+        .stock-badge {
             position: absolute;
             top: 10px;
             right: 10px;
-            background: rgba(227, 30, 36, 0.9);
-            color: white;
             padding: 4px 10px;
             font-size: 11px;
             font-weight: bold;
             border-radius: 4px;
             letter-spacing: 0.5px;
+            color: white;
+            z-index: 2;
         }
+        .stock-badge.few-left { background: rgba(245, 130, 32, 0.95); }
 
         .product-content { padding: 20px; display: flex; flex-direction: column; flex: 1; }
         .product-cat { font-size: 11px; color: var(--brand-orange); text-transform: uppercase; font-weight: 800; margin-bottom: 6px; letter-spacing: 0.5px; }
@@ -115,7 +117,6 @@
         
         .btn-add-cart { background: var(--brand-blue); color: white; border: none; padding: 8px 16px; border-radius: 20px; font-weight: 700; font-size: 0.85rem; cursor: pointer; transition: 0.3s; }
         .btn-add-cart:hover { background: #003d7a; }
-        .btn-add-cart:disabled { background: #ccc; cursor: not-allowed; }
 
         /* Translucent Cart Drawer Styles */
         .cart-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(3px); z-index: 999999; opacity: 0; visibility: hidden; transition: all 0.3s ease; }
@@ -354,12 +355,17 @@
             snapshot.forEach(doc => {
                 const data = doc.data();
                 
-                // Stock calculation (agar stock field nahi hai ya undefined hai, toh default 10 maan lo, warna exact value check karo)
+                // Stock calculation
                 let stockVal = 10;
                 if (data.stock !== undefined && data.stock !== null) {
                     stockVal = Number(data.stock);
                 } else if (data.quantity !== undefined && data.quantity !== null) {
                     stockVal = Number(data.quantity);
+                }
+
+                // Agar stock 0 hai toh product ko skip (hide) kar denge
+                if (stockVal <= 0) {
+                    return; 
                 }
 
                 const product = {
@@ -369,8 +375,7 @@
                     price: Number(data.price || data.amount || 0),
                     weight: data.weight || "N/A",
                     imageUrl: data.image_url || data.imageUrl || data.image || 'https://i.ibb.co/mFyGcMzs/Whats-App-Image-2026-04-21-at-12-22-57-removebg-preview.png',
-                    stock: stockVal,
-                    inStock: stockVal > 0
+                    stock: stockVal
                 };
                 allProducts.push(product);
                 categoriesSet.add(product.category);
@@ -399,15 +404,14 @@
 
         let html = '';
         products.forEach(p => {
-            let outOfStockBadge = !p.inStock ? `<div class="out-of-stock-badge">Out of Stock</div>` : '';
-            let btnAction = p.inStock 
-                ? `<button class="btn-add-cart" onclick="addToCart('${p.id}', '${escapeHtml(p.productName)}', ${p.price})">Add to Cart</button>`
-                : `<button class="btn-add-cart" disabled>Sold Out</button>`;
+            // Agar stock 10 se kam hai toh "Few left" badge dikhayenge
+            let stockBadgeHtml = (p.stock < 10) ? `<div class="stock-badge few-left">Few left</div>` : '';
+            let btnAction = `<button class="btn-add-cart" onclick="addToCart('${p.id}', '${escapeHtml(p.productName)}', ${p.price})">Add to Cart</button>`;
 
             html += `
                 <div class="product-card">
                     <div class="product-img-box">
-                        ${outOfStockBadge}
+                        ${stockBadgeHtml}
                         <img src="${p.imageUrl}" alt="${p.productName}">
                     </div>
                     <div class="product-content">
