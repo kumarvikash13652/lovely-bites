@@ -25,47 +25,38 @@
 
         /* Header */
         header { background: var(--white); padding: 1rem 2rem; text-align: center; position: relative; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border-bottom: 4px solid var(--brand-red); }
-        .logo img { max-height: 110px; width: auto; filter: drop-shadow(2px 2px 0px var(--brand-blue)) drop-shadow(-2px -2px 0px var(--brand-orange)); padding: 5px; }
+        .logo img { max-height: 100px; width: auto; filter: drop-shadow(2px 2px 0px var(--brand-blue)); padding: 5px; }
         .gstin-top-right { position: absolute; top: 20px; right: 20px; color: #777; font-size: 0.7rem; text-align: right; font-family: monospace; }
         
         /* Navigation */
         .nav-wrapper { display: flex; align-items: center; justify-content: space-between; max-width: 1200px; margin: 0 auto; padding: 10px 20px 0 20px; position: relative; width: 100%; }
         .nav-menu { display: flex; list-style: none; margin: 0; padding: 0; gap: 20px; align-items: center; }
         .nav-item { position: relative; }
-        .nav-link { text-decoration: none; color: var(--text-dark); font-weight: 700; font-size: 0.95rem; padding: 15px 0; display: block; cursor: pointer; user-select: none; }
+        .nav-link { text-decoration: none; color: var(--text-dark); font-weight: 700; font-size: 0.95rem; padding: 15px 0; display: block; cursor: pointer; }
         .nav-link:hover { color: var(--brand-red); }
-        
-        /* Mega Menu Dropdown */
-        .mega-menu { position: absolute; top: 100%; right: 0; left: auto; background: #ffffff; box-shadow: 0 15px 35px rgba(0,0,0,0.15); border-radius: 12px; padding: 20px; display: flex; gap: 15px; opacity: 0; visibility: hidden; transition: opacity 0.25s ease, transform 0.25s ease, visibility 0.25s ease; border-top: 4px solid var(--brand-red); min-width: 580px; z-index: 99999; transform: translateY(15px); pointer-events: none; }
-        @media (min-width: 769px) { .nav-item:hover .mega-menu { opacity: 1; visibility: visible; transform: translateY(0); pointer-events: auto; } }
-        .mega-item { flex: 1; text-align: center; text-decoration: none; color: var(--text-dark); padding: 12px 8px; border-radius: 8px; background: var(--bg-cream); display: block; }
-        .mega-item:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.08); background: #fff; }
-        .mega-img { width: 100%; height: 75px; object-fit: contain; margin-bottom: 8px; border-radius: 6px; }
-        .mega-item span { display: block; font-weight: 800; font-size: 0.85rem; color: var(--brand-blue); }
         
         /* Mobile Burger */
         .burger-btn { display: none; background: none; border: none; cursor: pointer; padding: 10px; z-index: 100001; }
         .burger-bar { display: block; width: 25px; height: 3px; margin: 5px auto; background-color: var(--text-dark); transition: all 0.3s ease; }
         
-        @media (max-width: 769px) {
+        @media (max-width: 768px) {
             .burger-btn { display: block; }
             .nav-menu { display: none; position: absolute; top: 100%; left: 0; width: 100%; background: white; flex-direction: column; align-items: flex-start; padding: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.15); border-bottom: 3px solid var(--brand-red); z-index: 100000; }
             .nav-menu.active { display: flex; }
-            .mega-menu { position: static; opacity: 1; visibility: visible; transform: none; box-shadow: none; display: none; width: 100%; min-width: unset; flex-direction: column; }
-            .mega-menu.mobile-open { display: flex; }
+            .gstin-top-right { display: none; }
         }
 
-        .auth-btn { background: var(--brand-red); color: #fff; border: none; padding: 8px 20px; border-radius: 20px; font-weight: 700; cursor: pointer; transition: 0.3s; margin-left: 5px; }
+        .auth-btn { background: var(--brand-red); color: #fff; border: none; padding: 8px 20px; border-radius: 20px; font-weight: 700; cursor: pointer; transition: 0.3s; }
         .auth-btn:hover { background: #b7171c; }
 
         /* Hero Section */
         .hero { background: linear-gradient(135deg, var(--brand-yellow), var(--brand-orange)); padding: 60px 20px; text-align: center; color: var(--text-dark); }
-        .hero h1 { font-size: 2.8rem; margin-bottom: 15px; font-weight: 900; color: var(--brand-blue); text-shadow: 1px 1px 0px rgba(255,255,255,0.5); }
+        .hero h1 { font-size: 2.8rem; margin-bottom: 15px; font-weight: 900; color: var(--brand-blue); }
         .hero p { font-size: 1.2rem; max-width: 700px; margin: 0 auto 30px auto; font-weight: 500; }
         .cta-btn { background: var(--brand-red); color: white; padding: 14px 32px; border-radius: 30px; text-decoration: none; font-weight: 800; font-size: 1.1rem; box-shadow: 0 5px 20px rgba(227,30,36,0.3); transition: 0.3s; display: inline-block; }
         .cta-btn:hover { background: #b7171c; transform: translateY(-2px); }
 
-        /* Featured Section */
+        /* Features Section */
         .section-container { max-width: 1200px; margin: 50px auto; padding: 0 20px; }
         .section-title { text-align: center; font-size: 2rem; color: var(--brand-blue); margin-bottom: 30px; font-weight: 800; }
         .features-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
@@ -97,17 +88,7 @@
         <button class="burger-btn" id="mobile-burger-trigger"><span class="burger-bar"></span><span class="burger-bar"></span><span class="burger-bar"></span></button>
         <ul class="nav-menu" id="navigation-drawer-menu">
             <li class="nav-item"><a href="index.html" class="nav-link">Home</a></li>
-            <li class="nav-item"><a href="#about" class="nav-link">About Us</a></li>
-            <li class="nav-item nav-item-has-submenu" id="submenu-parent-wrapper">
-                <span class="nav-link" id="submenu-toggle-item">Our Products</span>
-                <div class="mega-menu" id="product-mega-dropdown">
-                    <a href="plp.html" class="mega-item"><img src="https://i.ibb.co/wFcZdWZw/Gemini-Generated-Image-4ltfp64ltfp64ltf.png" class="mega-img"><span>Makhana</span></a>
-                    <a href="plp.html" class="mega-item"><img src="https://i.ibb.co/JRrFnCxs/Gemini-Generated-Image-gqn9ebgqn9ebgqn9.png" class="mega-img"><span>Sattu</span></a>
-                    <a href="plp.html" class="mega-item"><img src="https://i.ibb.co/KzNPtkxb/Gemini-Generated-Image-9e5mv89e5mv89e5m.png" class="mega-img"><span>Murmura</span></a>
-                    <a href="plp.html" class="mega-item"><img src="https://i.ibb.co/zHX9kbvs/Gemini-Generated-Image-h9bbalh9bbalh9bb.png" class="mega-img"><span>Katarni Poha</span></a>
-                </div>
-            </li>
-            <li class="nav-item"><a href="#contact" class="nav-link">Contact Us</a></li>
+            <li class="nav-item"><a href="plp.html" class="nav-link">Products</a></li>
             <li class="nav-item"><a href="checkout.html" class="nav-link">🛒 Cart (<span id="cart-count-badge">0</span>)</a></li>
             <li class="nav-item"><a href="orders.html" class="nav-link">📦 My Orders</a></li>
             <li class="nav-item"><button id="auth-btn" class="auth-btn">Login</button></li>
@@ -115,43 +96,22 @@
     </div>
 </header>
 
-<!-- Hero Banner -->
 <section class="hero">
     <h1>Authentic & Healthy Snacks from Bihar</h1>
     <p>Experience the traditional taste of Premium Makhana, Sattu, Murmura, and Katarni Poha delivered straight to your doorstep.</p>
     <a href="plp.html" class="cta-btn">Shop Our Products Now</a>
 </section>
 
-<!-- Features Section -->
 <div class="section-container">
     <h2 class="section-title">Why Choose Lovely Bites?</h2>
     <div class="features-grid">
-        <div class="feature-card">
-            <h3>100% Natural</h3>
-            <p>Pure ingredients sourced directly from authentic farmers of Bihar.</p>
-        </div>
-        <div class="feature-card">
-            <h3>FSSAI Certified</h3>
-            <p>Strict quality checks and hygienic processing standards.</p>
-        </div>
-        <div class="feature-card">
-            <h3>Best Quality</h3>
-            <p>Handpicked premium grades to ensure crunchy and rich taste.</p>
-        </div>
-        <div class="feature-card">
-            <h3>Secure Delivery</h3>
-            <p>Fast and safe shipping across top marketplaces and direct orders.</p>
-        </div>
+        <div class="feature-card"><h3>100% Natural</h3><p>Pure ingredients sourced directly from authentic farmers of Bihar.</p></div>
+        <div class="feature-card"><h3>FSSAI Certified</h3><p>Strict quality checks and hygienic processing standards.</p></div>
+        <div class="feature-card"><h3>Best Quality</h3><p>Handpicked premium grades to ensure crunchy and rich taste.</p></div>
+        <div class="feature-card"><h3>Secure Delivery</h3><p>Fast and safe shipping across top marketplaces and direct orders.</p></div>
     </div>
 </div>
 
-<!-- About & Contact Section -->
-<div class="section-container" id="about" style="background: white; padding: 40px; border-radius: 12px; box-shadow: 0 5px 20px rgba(0,0,0,0.05);">
-    <h2 class="section-title" style="margin-top:0;">About K L Enterprise</h2>
-    <p style="text-align: center; max-width: 800px; margin: 0 auto; color: #555;">Based in Madhepura, Bihar, K L Enterprise brings traditional Indian superfoods like organic Makhana and protein-rich Sattu to modern households with uncompromising quality.</p>
-</div>
-
-<!-- Footer -->
 <footer id="contact">
     <div class="footer-container">
         <div class="footer-col"><h5>Quality & Certification</h5><p><strong>FSSAI: 20426290000095</strong></p><img src="https://i.ibb.co/ds7NhrHf/New-Project-5.png" class="msme-logo" alt="MSME"></div>
@@ -166,38 +126,63 @@
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 
-<script src="firebase-init.js"></script>
-<script src="cart-system.js"></script>
-<script src="theme.js"></script>
-
 <script>
+    // Firebase Initialization with your config
+    const firebaseConfig = {
+        apiKey: "AIzaSyDVE5gYyGCgAlfHw82Apna6DsMY9zE2bGs",
+        authDomain: "lovelybites-e4d35.firebaseapp.com",
+        projectId: "lovelybites-e4d35",
+        storageBucket: "lovelybites-e4d35.firebasestorage.app",
+        messagingSenderId: "650974633550",
+        appId: "1:650974633550:web:14e277c8aef5db9ff4ed1f"
+    };
+
+    if (!firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
+    }
+
+    // Mobile Burger Menu Toggle
     document.addEventListener('DOMContentLoaded', () => {
         const burger = document.getElementById('mobile-burger-trigger');
         const menu = document.getElementById('navigation-drawer-menu');
         if (burger && menu) {
             burger.addEventListener('click', () => {
                 menu.classList.toggle('active');
-                burger.classList.toggle('active');
-            });
-        }
-        
-        const submenuToggle = document.getElementById('submenu-toggle-item');
-        const dropdown = document.getElementById('product-mega-dropdown');
-        if (submenuToggle && dropdown) {
-            submenuToggle.addEventListener('click', (e) => {
-                if (window.innerWidth <= 768) {
-                    e.preventDefault();
-                    dropdown.classList.toggle('mobile-open');
-                }
             });
         }
     });
 
-    firebase.auth().onAuthStateChanged((user) => {
+    // Google Auth State & Login/Logout Logic
+    firebase.auth().onAuthStateChanged(async (user) => {
         const authBtn = document.getElementById('auth-btn');
+        const cartBadge = document.getElementById('cart-count-badge');
+        
         if (authBtn) {
             authBtn.innerText = user ? "Logout" : "Login";
-            authBtn.onclick = () => user ? firebase.auth().signOut() : firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider());
+            authBtn.onclick = () => {
+                if (user) {
+                    firebase.auth().signOut();
+                } else {
+                    const provider = new firebase.auth.GoogleAuthProvider();
+                    firebase.auth().signInWithPopup(provider);
+                }
+            };
+        }
+
+        // Real-time Cart Count fetch from Firestore
+        if (user) {
+            const db = firebase.firestore();
+            db.collection("users").doc(user.uid).collection("cart").onSnapshot((snapshot) => {
+                let totalCount = 0;
+                snapshot.forEach(doc => {
+                    totalCount += (doc.data().qty || 1);
+                });
+                if (cartBadge) cartBadge.innerText = totalCount;
+            }, (error) => {
+                console.error("Cart fetch error:", error);
+            });
+        } else {
+            if (cartBadge) cartBadge.innerText = "0";
         }
     });
 </script>
