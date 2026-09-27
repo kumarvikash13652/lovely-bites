@@ -149,7 +149,7 @@
                 if (user) {
                     firebase.auth().signOut();
                 } else {
-                    firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider());
+                    firebase.auth().signinWithPopup ? firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider()) : firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider());
                 }
             };
         }
@@ -162,7 +162,7 @@
                 if (cartBadge) cartBadge.innerText = totalCount;
             });
 
-            // Fetch User Orders
+            // Fetch User Orders safely sorted or filtered
             firebase.firestore().collection("orders")
                 .where("userId", "==", user.uid)
                 .onSnapshot((snapshot) => {
@@ -175,31 +175,43 @@
                     snapshot.forEach(doc => {
                         const order = doc.data();
                         const orderId = doc.id;
-                        const dateStr = order.createdAt ? new Date(order.createdAt.seconds * 1000).toLocaleDateString() : "Recent";
+                        
+                        // Numeric or Readable order ID check (agar order.numericOrderId ya order.orderNumber hai toh wo use karein, nahi toh document ID ka numeric/short part)
+                        const displayOrderId = order.orderNumber || order.numericOrderId || orderId.substring(0, 10);
+                        
+                        const dateStr = order.createdAt ? new Date(order.createdAt.seconds * 1000).toLocaleDateString('en-IN', {
+                            day: 'numeric',
+                            month: 'short',
+                            year: 'numeric'
+                        }) : "Recent";
                         
                         let itemsHTML = "";
                         if (order.items && order.items.length > 0) {
                             order.items.forEach(item => {
+                                const itemQty = Number(item.qty || item.quantity || 1);
+                                const itemPrice = Number(item.price || 0);
                                 itemsHTML += `
                                     <div class="order-item-row">
-                                        <span>${item.productName} (x${item.qty || 1})</span>
-                                        <span>₹${(item.price || 0) * (item.qty || 1)}</span>
+                                        <span>${item.productName || item.name || 'Product'} (x${itemQty})</span>
+                                        <span>₹${(itemPrice * itemQty).toFixed(2)}</span>
                                     </div>
                                 `;
                             });
                         }
 
+                        const totalAmountNum = Number(order.totalAmount || order.total || 0);
+
                         ordersHTML += `
                             <div class="order-card">
                                 <div class="order-header">
-                                    <span class="order-id">Order ID: #${orderId.substring(0, 10)}...</span>
-                                    <span class="order-status">${order.orderStatus || 'Placed'}</span>
+                                    <span class="order-id">Order ID: #${displayOrderId}</span>
+                                    <span class="order-status">${order.orderStatus || order.status || 'Placed'}</span>
                                 </div>
                                 <div class="order-body">
                                     <p><strong>Date:</strong> ${dateStr}</p>
-                                    <p><strong>Shipping To:</strong> ${order.customerName} (${order.customerPhone})</p>
-                                    <p><strong>Address:</strong> ${order.shippingAddress}</p>
-                                    <p><strong>Payment:</strong> ${order.paymentMethod} (${order.paymentStatus})</p>
+                                    <p><strong>Shipping To:</strong> ${order.customerName || 'N/A'} (${order.customerPhone || 'N/A'})</p>
+                                    <p><strong>Address:</strong> ${order.shippingAddress || order.address || 'N/A'}</p>
+                                    <p><strong>Payment:</strong> ${order.paymentMethod || 'Online'} (${order.paymentStatus || 'Paid'})</p>
                                     
                                     <div class="order-items-list">
                                         ${itemsHTML}
@@ -207,7 +219,7 @@
                                 </div>
                                 <div class="order-footer">
                                     <span>Total Paid:</span>
-                                    <span class="order-total">₹${order.totalAmount}</span>
+                                    <span class="order-total">₹${totalAmountNum.toFixed(2)}</span>
                                 </div>
                             </div>
                         `;
