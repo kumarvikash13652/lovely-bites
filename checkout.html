@@ -41,7 +41,6 @@
         .mega-img { width: 100%; height: 75px; object-fit: contain; margin-bottom: 8px; border-radius: 6px; }
         .mega-item span { display: block; font-weight: 800; font-size: 0.85rem; color: var(--brand-blue); }
         
-        /* Burger & Mobile Responsive Styles */
         .burger-btn { display: none; background: none; border: none; cursor: pointer; padding: 10px; z-index: 100001; }
         .burger-bar { display: block; width: 25px; height: 3px; margin: 5px auto; background-color: var(--text-dark); transition: all 0.3s ease; }
         
@@ -118,6 +117,8 @@
                 </div>
             </li>
             <li class="nav-item"><a href="index.html#contact" class="nav-link">Contact Us</a></li>
+            <!-- Cart Link with Dynamic Counter ID -->
+            <li class="nav-item"><a href="#" id="nav-cart-btn" class="nav-link">🛒 Cart (<span id="cart-count-badge">0</span>)</a></li>
             <li class="nav-item"><button id="auth-btn" class="auth-btn">Login</button></li>
         </ul>
     </div>
@@ -249,28 +250,39 @@
 
             const summaryContainer = document.getElementById('summary-items');
             const totalContainer = document.getElementById('summary-total');
+            const cartBadge = document.getElementById('cart-count-badge');
 
             if (cartSnapshot.empty) {
                 summaryContainer.innerHTML = "Your cart is empty.";
                 totalContainer.innerHTML = "Total: ₹0";
+                if (cartBadge) cartBadge.innerText = "0";
                 return;
             }
 
             let html = "";
             let totalAmount = 0;
+            let totalQuantity = 0;
 
             cartSnapshot.forEach(doc => {
                 const item = doc.data();
-                const subtotal = parseFloat(item.price) * parseInt(item.qty);
+                const qty = parseInt(item.qty || 1);
+                const subtotal = parseFloat(item.price) * qty;
                 totalAmount += subtotal;
+                totalQuantity += qty;
+
                 html += `<div style="display:flex; justify-content:space-between; font-size:14px; margin-bottom:8px; border-bottom:1px dashed #eee; padding-bottom:6px;">
-                    <span>${item.productName} (x${item.qty})</span>
+                    <span>${item.productName} (x${qty})</span>
                     <span style="font-weight:600;">₹${subtotal}</span>
                 </div>`;
             });
 
             summaryContainer.innerHTML = html;
             totalContainer.innerHTML = `Total: ₹${totalAmount}`;
+            
+            // Navbar cart count badge update
+            if (cartBadge) {
+                cartBadge.innerText = totalQuantity;
+            }
         } catch (e) {
             console.error("Error loading cart summary:", e);
         }
