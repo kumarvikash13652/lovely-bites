@@ -8,11 +8,11 @@
 
     <style>
         :root { 
-            --brand-red: #e31e24;      
+            --brand-red: #e31e24;     
             --brand-yellow: #ffcb05;   
             --brand-blue: #0054a6;     
-            --brand-orange: #f58220;   
-            --bg-cream: #fffdf5;       
+            --brand-orange: #f58220;    
+            --bg-cream: #fffdf5;        
             --text-dark: #2d2926;
             --white: #ffffff;
         }
@@ -243,6 +243,8 @@
                 const itemTotal = itemPrice * itemQty;
                 totalCount += itemQty;
                 totalAmt += itemTotal;
+                
+                // Ensure id field matches Firestore document ID (which is the product ID)
                 cartItemsArray.push({ id: doc.id, ...item });
 
                 htmlContent += `
@@ -315,7 +317,6 @@
         }
 
         try {
-            // Numeric / Readable unique order ID generate ki ja rahi hai
             const numericOrderId = "LB-" + Math.floor(100000 + Math.random() * 900000);
 
             const orderData = {
@@ -333,17 +334,32 @@
                 createdAt: firebase.firestore.FieldValue.serverTimestamp()
             };
 
-            const orderRef = await firebase.firestore().collection("orders").add(orderData);
+            // 1. Save order in Firestore
+            await firebase.firestore().collection("orders").add(orderData);
 
-            const cartRef = firebase.firestore().collection("users").doc(currentUser.uid).collection("cart");
+            // 2. Decrement Inventory & Clear Cart using Batch Write
+            const db = firebase.firestore();
+            const batch = db.batch();
+
+            cartItemsArray.forEach(item => {
+                // Assuming item.id is the product document ID in the 'products' collection
+                const productRef = db.collection("products").doc(item.id);
+                batch.update(productRef, {
+                    stock: firebase.firestore.FieldValue.increment(-item.qty)
+                });
+            });
+
+            // Delete cart items
+            const cartRef = db.collection("users").doc(currentUser.uid).collection("cart");
             const cartDocs = await cartRef.get();
-            const batch = firebase.firestore().batch();
             cartDocs.forEach(doc => {
                 batch.delete(doc.ref);
             });
+
+            // Commit all inventory and cart updates together
             await batch.commit();
 
-            alert("Order Successfully Place ho gaya!");
+            alert("Order Successfully Place ho gaya aur inventory update ho gayi!");
             window.location.href = "orders.html";
         } catch (err) {
             console.error("Order placing error:", err);
