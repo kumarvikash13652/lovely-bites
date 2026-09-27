@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="https://i.ibb.co/mFyGcMzs/Whats-App-Image-2026-04-21-at-12-22-57-removebg-preview.png">
+    <title>Our Products | Lovely Bites</title>
+
+    <style>
+        :root { 
+            --brand-red: #e31e24;      
+            --brand-yellow: #ffcb05;   
+            --brand-blue: #0054a6;     
+            --brand-orange: #f58220;   
+            --bg-cream: #fffdf5;       
+            --text-dark: #2d2926;
+            --white: #ffffff;
+        }
+        * { box-sizing: border-box; } 
+        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background: var(--bg-cream); margin: 0; padding: 0; color: var(--text-dark); line-height: 1.6; }
+        
+        .lang-bar { background: var(--brand-blue); padding: 8px; text-align: center; display: flex; justify-content: center; align-items: center; gap: 10px; }
+        .lang-btn { background: rgba(255,255,255,0.2); border: 1px solid white; color: white; padding: 4px 12px; cursor: pointer; font-size: 12px; border-radius: 20px; }
+        header { background: var(--white); padding: 1rem 2rem; text-align: center; position: relative; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border-bottom: 4px solid var(--brand-red); }
+        .logo img { max-height: 110px; width: auto; filter: drop-shadow(2px 2px 0px var(--brand-blue)) drop-shadow(-2px -2px 0px var(--brand-orange)); padding: 5px; }
+        .gstin-top-right { position: absolute; top: 20px; right: 20px; color: #777; font-size: 0.7rem; text-align: right; font-family: monospace; }
+        
+        .nav-wrapper { display: flex; align-items: center; justify-content: space-between; max-width: 1200px; margin: 0 auto; padding: 10px 20px 0 20px; position: relative; width: 100%; }
+        .nav-menu { display: flex; list-style: none; margin: 0; padding: 0; gap: 20px; align-items: center; }
+        .nav-item { position: relative; }
+        .nav-link { text-decoration: none; color: var(--text-dark); font-weight: 700; font-size: 0.95rem; padding: 15px 0; display: block; cursor: pointer; user-select: none; }
+        .nav-link:hover { color: var(--brand-red); }
+        
+        .mega-menu { position: absolute; top: 100%; right: 0; left: auto; background: #ffffff; box-shadow: 0 15px 35px rgba(0,0,0,0.15); border-radius: 12px; padding: 20px; display: flex; gap: 15px; opacity: 0; visibility: hidden; transition: opacity 0.25s ease, transform 0.25s ease, visibility 0.25s ease; border-top: 4px solid var(--brand-red); min-width: 580px; z-index: 99999; transform: translateY(15px); pointer-events: none; }
+        @media (min-width: 769px) { .nav-item:hover .mega-menu { opacity: 1; visibility: visible; transform: translateY(0); pointer-events: auto; } }
+        .mega-item { flex: 1; text-align: center; text-decoration: none; color: var(--text-dark); padding: 12px 8px; border-radius: 8px; background: var(--bg-cream); display: block; }
+        .mega-item:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.08); background: #fff; }
+        .mega-img { width: 100%; height: 75px; object-fit: contain; margin-bottom: 8px; border-radius: 6px; }
+        .mega-item span { display: block; font-weight: 800; font-size: 0.85rem; color: var(--brand-blue); }
+        
+        .burger-btn { display: none; background: none; border: none; cursor: pointer; padding: 10px; z-index: 100001; }
+        .burger-bar { display: block; width: 25px; height: 3px; margin: 5px auto; background-color: var(--text-dark); transition: all 0.3s ease; }
+        
+        @media (max-width: 769px) {
+            .burger-btn { display: block; }
+            .nav-menu { display: none; position: absolute; top: 100%; left: 0; width: 100%; background: white; flex-direction: column; align-items: flex-start; padding: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.15); border-bottom: 3px solid var(--brand-red); z-index: 100000; }
+            .nav-menu.active { display: flex; }
+            .mega-menu { position: static; opacity: 1; visibility: visible; transform: none; box-shadow: none; display: none; width: 100%; min-width: unset; flex-direction: column; }
+            .mega-menu.mobile-open { display: flex; }
+        }
+
+        .auth-btn { background: var(--brand-red); color: #fff; border: none; padding: 8px 20px; border-radius: 20px; font-weight: 700; cursor: pointer; transition: 0.3s; margin-left: 5px; }
+        .auth-btn:hover { background: #b7171c; }
+
+        /* PLP Layout & Filters */
+        .plp-main-container { max-width: 1200px; margin: 40px auto; padding: 0 20px; display: grid; grid-template-columns: 260px 1fr; gap: 30px; }
+        @media(max-width: 768px) { .plp-main-container { grid-template-columns: 1fr; } }
+
+        .filter-sidebar { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); height: fit-content; }
+        .filter-sidebar h3 { margin-top: 0; font-size: 18px; color: var(--brand-blue); border-bottom: 2px solid #f0f0f0; padding-bottom: 10px; }
+        .filter-group { margin-bottom: 20px; }
+        .filter-group label { display: block; font-weight: 600; font-size: 14px; margin-bottom: 8px; color: #444; }
+        .filter-group select, .filter-group input { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; }
+
+        .plp-content-area { display: flex; flex-direction: column; gap: 20px; }
+        .plp-controls-bar { background: white; padding: 15px 20px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 5px 20px rgba(0,0,0,0.05); flex-wrap: wrap; gap: 15px; }
+        .plp-controls-bar select { padding: 8px 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; }
+
+        .products-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+        @media(max-width: 992px) { .products-grid { grid-template-columns: repeat(2, 1fr); } }
+        @media(max-width: 576px) { .products-grid { grid-template-columns: 1fr; } }
+
+        .product-card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.05); transition: transform 0.2s, box-shadow 0.2s; display: flex; flex-direction: column; cursor: pointer; }
+        .product-card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        .product-img-box { width: 100%; height: 180px; background: #f9f9f9; display: flex; align-items: center; justify-content: center; padding: 10px; }
+        .product-img-box img { max-height: 100%; max-width: 100%; object-fit: contain; }
+        .product-info { padding: 15px; display: flex; flex-direction: column; flex-grow: 1; }
+        .product-category { font-size: 12px; color: var(--brand-orange); text-transform: uppercase; font-weight: 700; margin-bottom: 5px; }
+        .product-title { font-size: 16px; font-weight: 700; color: var(--text-dark); margin: 0 0 10px 0; }
+        .product-price-row { display: flex; justify-content: space-between; align-items: center; margin-top: auto; }
+        .product-price { font-size: 18px; font-weight: 800; color: var(--brand-red); }
+        .add-to-cart-plp-btn { background: var(--brand-blue); color: white; border: none; padding: 8px 14px; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 13px; transition: background 0.2s; }
+        .add-to-cart-plp-btn:hover { background: #003d7a; }
+
+        footer { background: var(--text-dark); color: #aaa; padding: 3rem 2rem; font-size: 0.9rem; margin-top: 50px; }
+        .footer-container { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; text-align: left; }
+        .footer-col h5 { color: var(--white); margin-bottom: 15px; text-transform: uppercase; letter-spacing: 1px; }
+        .footer-platforms { margin: 10px 0; display: flex; justify-content: flex-start; align-items: center; gap: 15px; flex-wrap: wrap; }
+        .platform-link img { height: 25px; filter: grayscale(1) brightness(2); opacity: 0.7; transition: 0.3s; }
+        .platform-link:hover img { filter: grayscale(0) brightness(1); opacity: 1; }
+        .msme-logo { height: 60px !important; filter: none !important; opacity: 1 !important; margin-top: 10px; }
+        .footer-bottom { grid-column: 1 / -1; text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); font-size: 11px; opacity: 0.5; }
+
+        .cart-sidebar { position: fixed; right: -380px; top: 0; width: 380px; height: 100%; background: white; z-index: 100005; transition: right 0.3s ease; padding: 25px; box-shadow: -5px 0 25px rgba(0,0,0,0.15); overflow-y: auto; }
+        .cart-sidebar.active { right: 0; }
+        .cart-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 100004; }
+        .cart-overlay.active { display: block; }
+    </style>
+</head>
+<body>
+
+<!-- Header Markup -->
+<div class="lang-bar"><button class="lang-btn" onclick="location.reload()">English</button><button class="lang-btn">हिंदी</button></div>
+<header>
+    <div class="gstin-top-right">K L ENTERPRISE | GSTIN: 10JQBPK5246N1ZO</div>
+    <div class="nav-wrapper">
+        <div class="logo"><a href="index.html"><img src="https://i.ibb.co/mFyGcMzs/Whats-App-Image-2026-04-21-at-12-22-57-removebg-preview.png" alt="Logo"></a></div>
+        <button class="burger-btn" id="mobile-burger-trigger"><span class="burger-bar"></span><span class="burger-bar"></span><span class="burger-bar"></span></button>
+        <ul class="nav-menu" id="navigation-drawer-menu">
+            <li class="nav-item"><a href="index.html" class="nav-link">Home</a></li>
+            <li class="nav-item"><a href="index.html#about" class="nav-link">About Us</a></li>
+            <li class="nav-item nav-item-has-submenu" id="submenu-parent-wrapper">
+                <span class="nav-link" id="submenu-toggle-item">Our Products</span>
+                <div class="mega-menu" id="product-mega-dropdown">
+                    <a href="products.html" class="mega-item"><img src="https://i.ibb.co/wFcZdWZw/Gemini-Generated-Image-4ltfp64ltfp64ltf.png" class="mega-img"><span>Makhana</span></a>
+                    <a href="products.html" class="mega-item"><img src="https://i.ibb.co/JRrFnCxs/Gemini-Generated-Image-gqn9ebgqn9ebgqn9.png" class="mega-img"><span>Sattu</span></a>
+                    <a href="products.html" class="mega-item"><img src="https://i.ibb.co/KzNPtkxb/Gemini-Generated-Image-9e5mv89e5mv89e5m.png" class="mega-img"><span>Murmura</span></a>
+                    <a href="products.html" class="mega-item"><img src="https://i.ibb.co/zHX9kbvs/Gemini-Generated-Image-h9bbalh9bbalh9bb.png" class="mega-img"><span>Katarni Poha</span></a>
+                </div>
+            </li>
+            <li class="nav-item"><a href="index.html#contact" class="nav-link">Contact Us</a></li>
+            <li class="nav-item"><a href="#" id="nav-cart-btn" class="nav-link">🛒 Cart (<span id="cart-count-badge">0</span>)</a></li>
+            <li class="nav-item"><a href="orders.html" class="nav-link">📦 My Orders</a></li>
+            <li class="nav-item"><button id="auth-btn" class="auth-btn">Login</button></li>
+        </ul>
+    </div>
+</header>
+
+<!-- PLP Container with Filter Sidebar and Products Grid -->
+<div class="plp-main-container">
+    <!-- Filters Sidebar -->
+    <aside class="filter-sidebar">
+        <h3>Filters</h3>
+        <div class="filter-group">
+            <label for="category-filter">Category</label>
+            <select id="category-filter" onchange="applyFiltersAndSort()">
+                <option value="all">All Categories</option>
+                <option value="Makhana">Makhana</option>
+                <option value="Sattu">Sattu</option>
+                <option value="Murmura">Murmura</option>
+                <option value="Katarni Poha">Katarni Poha</option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <label for="max-price-filter">Max Price: <span id="price-val">₹1000</span></label>
+            <input type="range" id="max-price-filter" min="50" max="1000" step="50" value="1000" oninput="document.getElementById('price-val').innerText = '₹' + this.value; applyFiltersAndSort();">
+        </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="plp-content-area">
+        <div class="plp-controls-bar">
+            <span id="product-count-label" style="font-weight: 600; color: #555;">Loading products...</span>
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <label for="sort-select" style="font-size: 14px; font-weight: 600;">Sort By:</label>
+                <select id="sort-select" onchange="applyFiltersAndSort()">
+                    <option value="relevance">Relevance</option>
+                    <option value="newest">Newest First</option>
+                    <option value="price-low-high">Price: Low to High</option>
+                    <option value="price-high-low">Price: High to Low</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Products Grid -->
+        <div class="products-grid" id="products-grid-container">
+            <!-- Dynamically injected products -->
+        </div>
+    </main>
+</div>
+
+<!-- Footer -->
+<footer>
+    <div class="footer-container">
+        <div class="footer-col"><h5>Quality & Certification</h5><p><strong>FSSAI: 20426290000095</strong></p><img src="https://i.ibb.co/ds7NhrHf/New-Project-5.png" class="msme-logo" alt="MSME"></div>
+        <div class="footer-col"><h5>Shop Online</h5><p>Find us on Marketplaces:</p><div class="footer-platforms"><a href="#" class="platform-link"><img src="https://i.ibb.co/hRB8h7zS/Amazon-Logo-White-PNG.png" alt="Amazon"></a><a href="#" class="platform-link"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/33/Meesho_logo.png/250px-Meesho_logo.png" alt="Meesho"></a><a href="#" class="platform-link"><img src="https://i.ibb.co/HT14SWjR/tradeindia-logo-rounded-glossy-icon-with-transparent-background-free-png.webp" alt="TradeIndia"></a></div></div>
+        <div class="footer-col"><h5>Contact Us</h5><p>Shiv Kala Bhawan, Maharshi Menhi Nagar, Madhepura, Bihar 852113</p><p>Email: support@lovelybites.online</p></div>
+        <div class="footer-bottom">&copy; 2026 Lovely Bites. All Rights Reserved.</div>
+    </div>
+</footer>
+
+<!-- Cart Sidebar & Overlay Markup -->
+<div class="cart-overlay" id="cart-overlay"></div>
+<div class="cart-sidebar" id="cart-sidebar">
+    <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #eee; padding-bottom:10px; margin-bottom:15px;">
+        <h3 style="margin:0; color:var(--brand-blue);">Your Cart</h3>
+        <button id="close-cart-btn" style="background:none; border:none; font-size:18px; cursor:pointer;">✕</button>
+    </div>
+    <div id="cart-sidebar-items">Loading cart items...</div>
+    <div id="cart-sidebar-total" style="font-weight:bold; font-size:16px; margin-top:20px; text-align:right;">Total: ₹0</div>
+</div>
+
+<!-- Firebase SDK Compat Scripts -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
+<script src="firebase-init.js"></script>
+<script src="cart-system.js"></script>
+<script src="theme.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const burger = document.getElementById('mobile-burger-trigger');
+        const menu = document.getElementById('navigation-drawer-menu');
+        if (burger && menu) {
+            burger.addEventListener('click', () => {
+                menu.classList.toggle('active');
+                burger.classList.toggle('active');
+            });
+        }
+        
+        const submenuToggle = document.getElementById('submenu-toggle-item');
+        const dropdown = document.getElementById('product-mega-dropdown');
+        const parentWrapper = document.getElementById('submenu-parent-wrapper');
+        if (submenuToggle && dropdown) {
+            submenuToggle.addEventListener('click', (e) => {
+                if (window.innerWidth <= 768) {
+                    e.preventDefault();
+                    dropdown.classList.toggle('mobile-open');
+                    parentWrapper.classList.toggle('open-caret');
+                }
+            });
+        }
+    });
+
+    let allProducts = [];
+    let authUser = null;
+
+    firebase.auth().onAuthStateChanged((user) => {
+        authUser = user;
+        const authBtn = document.getElementById('auth-btn');
+        if (authBtn) {
+            authBtn.innerText = user ? "Logout" : "Login";
+            authBtn.onclick = () => user ? firebase.auth().signOut() : firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider());
+        }
+        fetchProductsFromFirebase();
+    });
+
+    async function fetchProductsFromFirebase() {
+        try {
+            const db = firebase.firestore();
+            const snapshot = await db.collection("products").get();
+            allProducts = [];
+            snapshot.forEach(doc => {
+                allProducts.push({ id: doc.id, ...doc.data() });
+            });
+            applyFiltersAndSort();
+        } catch (e) {
+            console.error("Error fetching products:", e);
+            document.getElementById('products-grid-container').innerHTML = "<p>Error loading products.</p>";
+        }
+    }
+
+    function applyFiltersAndSort() {
+        const categoryVal = document.getElementById('category-filter').value;
+        const maxPriceVal = parseFloat(document.getElementById('max-price-filter').value);
+        const sortVal = document.getElementById('sort-select').value;
+
+        // 1. Filter
+        let filtered = allProducts.filter(item => {
+            const matchCategory = (categoryVal === 'all' || item.category === categoryVal);
+            const matchPrice = (parseFloat(item.price || 0) <= maxPriceVal);
+            return matchCategory && matchPrice;
+        });
+
+        // 2. Sort
+        if (sortVal === 'price-low-high') {
+            filtered.sort((a, b) => parseFloat(a.price) - parseFloat(b.price));
+        } else if (sortVal === 'price-high-low') {
+            filtered.sort((a, b) => parseFloat(b.price) - parseFloat(a.price));
+        } else if (sortVal === 'newest') {
+            filtered.sort((a, b) => (b.timestamp?.seconds || 0) - (a.timestamp?.seconds || 0));
+        }
+        // 'relevance' keeps default firebase order
+
+        renderProducts(filtered);
+    }
+
+    function renderProducts(products) {
+        const container = document.getElementById('products-grid-container');
+        const countLabel = document.getElementById('product-count-label');
+
+        countLabel.innerText = `Showing ${products.length} products`;
+
+        if (products.length === 0) {
+            container.innerHTML = "<p style='grid-column: 1/-1; text-align:center; padding: 40px;'>No products found matching your filter criteria.</p>";
+            return;
+        }
+
+        let html = "";
+        products.forEach(item => {
+            html += `
+                <div class="product-card" onclick="openPDP('${item.id}')">
+                    <div class="product-img-box">
+                        <img src="${item.imageUrl || 'https://i.ibb.co/mFyGcMzs/Whats-App-Image-2026-04-21-at-12-22-57-removebg-preview.png'}" alt="${item.productName}">
+                    </div>
+                    <div class="product-info">
+                        <span class="product-category">${item.category || 'General'}</span>
+                        <h4 class="product-title">${item.productName}</h4>
+                        <div class="product-price-row">
+                            <span class="product-price">₹${item.price}</span>
+                            <button class="add-to-cart-plp-btn" onclick="event.stopPropagation(); addToCartDirect('${item.id}', '${item.productName}', ${item.price})">Add to Cart</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+        container.innerHTML = html;
+    }
+
+    function openPDP(productId) {
+        window.location.href = `product-detail.html?id=${productId}`;
+    }
+
+    async function addToCartDirect(productId, productName, price) {
+        if (!authUser) {
+            alert("Please login first to add items to cart!");
+            firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider());
+            return;
+        }
+
+        try {
+            const db = firebase.firestore();
+            const cartRef = db.collection("users").doc(authUser.uid).collection("cart").doc(productId);
+            const cartDoc = await cartRef.get();
+
+            if (cartDoc.exists) {
+                const currentQty = cartDoc.data().qty || 1;
+                await cartRef.update({ qty: currentQty + 1 });
+            } else {
+                await cartRef.set({
+                    productId,
+                    productName,
+                    price,
+                    qty: 1
+                });
+            }
+            alert(`${productName} cart mein add ho gaya hai!`);
+            if (typeof loadCartSummary === 'function') {
+                loadCartSummary();
+            }
+        } catch (e) {
+            console.error("Error adding to cart:", e);
+            alert("Error adding item to cart.");
+        }
+    }
+</script>
+</body>
+</html>
