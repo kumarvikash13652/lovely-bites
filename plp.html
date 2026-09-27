@@ -75,6 +75,7 @@
             flex-direction: column; 
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             border: 1px solid rgba(0,0,0,0.04);
+            position: relative;
         }
         .product-card:hover { transform: translateY(-5px); box-shadow: 0 12px 30px rgba(0,0,0,0.1); }
 
@@ -89,6 +90,19 @@
         }
         .product-img-box img { max-height: 100%; max-width: 100%; object-fit: contain; }
 
+        .out-of-stock-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(227, 30, 36, 0.9);
+            color: white;
+            padding: 4px 10px;
+            font-size: 11px;
+            font-weight: bold;
+            border-radius: 4px;
+            letter-spacing: 0.5px;
+        }
+
         .product-content { padding: 20px; display: flex; flex-direction: column; flex: 1; }
         .product-cat { font-size: 11px; color: var(--brand-orange); text-transform: uppercase; font-weight: 800; margin-bottom: 6px; letter-spacing: 0.5px; }
         .product-title { font-size: 1.1rem; font-weight: 800; color: var(--text-dark); margin: 0 0 10px 0; text-decoration: none; }
@@ -98,8 +112,10 @@
 
         .product-footer { display: flex; align-items: center; justify-content: space-between; margin-top: auto; padding-top: 15px; border-top: 1px solid #f0f0f0; }
         .product-price { font-size: 1.25rem; font-weight: 900; color: var(--brand-red); }
-        .btn-card-buy { background: var(--brand-blue); color: white; border: none; padding: 8px 16px; border-radius: 20px; font-weight: 700; font-size: 0.85rem; cursor: pointer; text-decoration: none; transition: 0.3s; }
-        .btn-card-buy:hover { background: #003d7a; }
+        
+        .btn-add-cart { background: var(--brand-blue); color: white; border: none; padding: 8px 16px; border-radius: 20px; font-weight: 700; font-size: 0.85rem; cursor: pointer; transition: 0.3s; }
+        .btn-add-cart:hover { background: #003d7a; }
+        .btn-add-cart:disabled { background: #ccc; cursor: not-allowed; }
 
         /* Translucent Cart Drawer Styles */
         .cart-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(3px); z-index: 999999; opacity: 0; visibility: hidden; transition: all 0.3s ease; }
@@ -337,13 +353,24 @@
 
             snapshot.forEach(doc => {
                 const data = doc.data();
+                
+                // Stock calculation (agar stock field nahi hai ya undefined hai, toh default 10 maan lo, warna exact value check karo)
+                let stockVal = 10;
+                if (data.stock !== undefined && data.stock !== null) {
+                    stockVal = Number(data.stock);
+                } else if (data.quantity !== undefined && data.quantity !== null) {
+                    stockVal = Number(data.quantity);
+                }
+
                 const product = {
                     id: doc.id,
                     productName: data.productName || data.name || "Lovely Bites Product",
                     category: data.category || data.type || "General",
                     price: Number(data.price || data.amount || 0),
                     weight: data.weight || "N/A",
-                    imageUrl: data.image_url || data.imageUrl || data.image || 'https://i.ibb.co/mFyGcMzs/Whats-App-Image-2026-04-21-at-12-22-57-removebg-preview.png'
+                    imageUrl: data.image_url || data.imageUrl || data.image || 'https://i.ibb.co/mFyGcMzs/Whats-App-Image-2026-04-21-at-12-22-57-removebg-preview.png',
+                    stock: stockVal,
+                    inStock: stockVal > 0
                 };
                 allProducts.push(product);
                 categoriesSet.add(product.category);
@@ -372,9 +399,15 @@
 
         let html = '';
         products.forEach(p => {
+            let outOfStockBadge = !p.inStock ? `<div class="out-of-stock-badge">Out of Stock</div>` : '';
+            let btnAction = p.inStock 
+                ? `<button class="btn-add-cart" onclick="addToCart('${p.id}', '${escapeHtml(p.productName)}', ${p.price})">Add to Cart</button>`
+                : `<button class="btn-add-cart" disabled>Sold Out</button>`;
+
             html += `
                 <div class="product-card">
                     <div class="product-img-box">
+                        ${outOfStockBadge}
                         <img src="${p.imageUrl}" alt="${p.productName}">
                     </div>
                     <div class="product-content">
@@ -383,13 +416,46 @@
                         <div class="product-weight">⚖️ ${p.weight}</div>
                         <div class="product-footer">
                             <div class="product-price">₹${p.price}</div>
-                            <a href="pdp.html?id=${p.id}" class="btn-card-buy">View Details</a>
+                            ${btnAction}
                         </div>
                     </div>
                 </div>
             `;
         });
         gridContainer.innerHTML = html;
+    }
+
+    async function addToCart(productId, productName, price) {
+        if (!currentUser) {
+            alert("Pehle login karein!");
+            firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider());
+            return;
+        }
+
+        const cartRef = firebase.firestore().collection("users").doc(currentUser.uid).collection("cart").doc(productId);
+        
+        try {
+            const docSnap = await cartRef.get();
+            if (docSnap.exists) {
+                const currentQty = docSnap.data().qty || 1;
+                await cartRef.update({ qty: currentQty + 1 });
+            } else {
+                await cartRef.set({
+                    productName: productName,
+                    price: price,
+                    qty: 1,
+                    addedAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+            }
+            toggleCartDrawer(true);
+        } catch (error) {
+            console.error("Error adding to cart: ", error);
+            alert("Cart me add karne me error aayi.");
+        }
+    }
+
+    function escapeHtml(str) {
+        return str.replace(/'/g, "\\'").replace(/"/g, '&quot;');
     }
 
     function filterProducts() {
