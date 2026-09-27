@@ -15,6 +15,12 @@
     <link rel="icon" type="image/png" href="https://i.ibb.co/mFyGcMzs/Whats-App-Image-2026-04-21-at-12-22-57-removebg-preview.png">
     
     <title>Checkout | Lovely Bites</title>
+
+    <!-- Firebase SDK Scripts (Mandatory for Auth & Firestore) -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+
     <!-- Cashfree SDK Script -->
     <script src="https://sdk.cashfree.com/js/v3/cashfree.js"></script>
 
@@ -31,7 +37,7 @@
         * { box-sizing: border-box; } 
         body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; margin: 0; background: var(--bg-cream); color: var(--text-dark); line-height: 1.6; }
         
-        /* Lang Bar & Header (Exact Index/Theme match) */
+        /* Lang Bar & Header */
         .lang-bar { background: var(--brand-blue); padding: 8px; text-align: center; display: flex; justify-content: center; align-items: center; gap: 10px; }
         .lang-btn { background: rgba(255,255,255,0.2); border: 1px solid white; color: white; padding: 4px 12px; cursor: pointer; font-size: 12px; border-radius: 20px; }
         .lang-btn:hover { background: white; color: var(--brand-blue); }
@@ -39,18 +45,20 @@
         .logo img { max-height: 90px; width: auto; filter: drop-shadow(2px 2px 0px var(--brand-blue)) drop-shadow(-2px -2px 0px var(--brand-orange)); padding: 5px; }
         .gstin-top-right { position: absolute; top: 20px; right: 20px; color: #777; font-size: 0.7rem; text-align: right; font-family: monospace; }
 
-        /* Navigation Styles from theme.js */
+        /* Navigation Styles */
         .nav-wrapper { display: flex; align-items: center; justify-content: space-between; max-width: 1200px; margin: 0 auto; padding: 10px 20px 0 20px; position: relative; width: 100%; }
-        .nav-menu { display: flex; list-style: none; margin: 0; padding: 0; gap: 30px; align-items: center; }
+        .nav-menu { display: flex; list-style: none; margin: 0; padding: 0; gap: 25px; align-items: center; }
         .nav-item { position: relative; }
         .nav-link { text-decoration: none; color: var(--text-dark); font-weight: 700; font-size: 1rem; padding: 15px 0; display: block; cursor: pointer; user-select: none; }
         .nav-link:hover { color: var(--brand-red); }
+        
         .mega-menu { position: absolute; top: 100%; right: 0; left: auto; background: #ffffff; box-shadow: 0 15px 35px rgba(0,0,0,0.15); border-radius: 12px; padding: 20px; display: flex; gap: 15px; opacity: 0; visibility: hidden; transition: opacity 0.25s ease, transform 0.25s ease, visibility 0.25s ease; border-top: 4px solid var(--brand-red); min-width: 580px; z-index: 99999; transform: translateY(15px); pointer-events: none; }
         @media (min-width: 769px) { .nav-item:hover .mega-menu { opacity: 1; visibility: visible; transform: translateY(0); pointer-events: auto; } }
         .mega-item { flex: 1; text-align: center; text-decoration: none; color: var(--text-dark); padding: 12px 8px; border-radius: 8px; background: var(--bg-cream); display: block; }
         .mega-item:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.08); background: #fff; }
         .mega-img { width: 100%; height: 75px; object-fit: contain; margin-bottom: 8px; border-radius: 6px; }
         .mega-item span { display: block; font-weight: 800; font-size: 0.85rem; color: var(--brand-blue); }
+        
         .burger-btn { display: none; background: none; border: none; cursor: pointer; padding: 10px; z-index: 100001; }
         .burger-bar { display: block; width: 25px; height: 3px; margin: 5px auto; background-color: var(--text-dark); transition: all 0.3s ease; }
         
@@ -69,7 +77,7 @@
             .nav-item-has-submenu > .nav-link::after { content: " ▾"; font-size: 0.85rem; display: inline-block; transition: transform 0.2s ease; }
             .nav-item-has-submenu.open-caret > .nav-link::after { transform: rotate(180deg); }
         }
-        .auth-btn { background: var(--brand-red); color: #fff; border: none; padding: 8px 20px; border-radius: 20px; font-weight: 700; cursor: pointer; transition: 0.3s; margin-left: 10px; }
+        .auth-btn { background: var(--brand-red); color: #fff; border: none; padding: 8px 20px; border-radius: 20px; font-weight: 700; cursor: pointer; transition: 0.3s; }
         .auth-btn:hover { background: #b7171c; }
 
         /* Checkout Container Layout */
@@ -94,7 +102,7 @@
         .order-summary h4 { margin: 0 0 15px 0; color: var(--brand-blue); font-size: 1.25rem; border-bottom: 1px solid #e5e0d0; padding-bottom: 10px; }
         .summary-total { font-weight: 800; font-size: 1.2rem; color: var(--brand-red); margin-top: 20px; text-align: right; border-top: 1px solid #e5e0d0; padding-top: 12px; }
 
-        /* Footer (Exact Index/Theme match) */
+        /* Footer */
         footer { background: var(--text-dark); color: #aaa; padding: 3rem 2rem; font-size: 0.9rem; margin-top: 60px; }
         .footer-container { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; text-align: left; }
         .footer-col h5 { color: var(--white); margin-bottom: 15px; text-transform: uppercase; letter-spacing: 1px; }
@@ -142,6 +150,8 @@
                 </div>
             </li>
             <li class="nav-item"><a href="index.html" class="nav-link">Contact Us</a></li>
+            <li class="nav-item" id="cart-nav-item" style="cursor: pointer; font-weight: 700;">🛒 Cart (<span id="cart-count">0</span>)</li>
+            <li class="nav-item"><a href="orders.html" class="nav-link" style="display:inline-block;">📦 My Orders</a></li>
             <li class="nav-item"><button id="auth-btn" class="auth-btn">Login</button></li>
         </ul>
     </div>
@@ -201,7 +211,7 @@
 <script src="cart-system.js"></script>
 
 <script>
-    // Burger Menu & Submenu Toggle Script (from theme.js)
+    // Burger Menu & Submenu Toggle Script
     document.getElementById('mobile-burger-trigger').addEventListener('click', () => {
         document.getElementById('navigation-drawer-menu').classList.toggle('active');
         document.getElementById('mobile-burger-trigger').classList.toggle('active');
@@ -218,7 +228,7 @@
     let authUser = null;
     let pendingOrderPayload = null;
 
-    // Firebase Auth & Cart Summary Logic (Fully Intact)
+    // Firebase Auth & Cart Summary Logic
     firebase.auth().onAuthStateChanged(async (user) => { 
         authUser = user; 
         const authBtn = document.getElementById('auth-btn');
@@ -237,6 +247,7 @@
 
     async function loadCartSummary() {
         try {
+            if (!authUser) return;
             const db = firebase.firestore();
             const cartRef = db.collection("users").doc(authUser.uid).collection("cart");
             const cartSnapshot = await cartRef.get();
