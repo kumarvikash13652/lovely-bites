@@ -5,10 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/png" href="https://i.ibb.co/mFyGcMzs/Whats-App-Image-2026-04-21-at-12-22-57-removebg-preview.png">
     <title>Product Details | Lovely Bites</title>
+    <meta name="description" content="Pure, organic, and traditionally processed healthy snack from Bihar.">
 
     <style>
         :root { 
-            --brand-red: #e31e24;      
+            --brand-red: #e31e24;     
             --brand-yellow: #ffcb05;   
             --brand-blue: #0054a6;     
             --brand-orange: #f58220;   
@@ -200,8 +201,21 @@
                 category: data.category || data.type || "General",
                 price: Number(data.price || data.amount || 0),
                 description: data.description || "Pure, organic, and traditionally processed healthy snack from Bihar.",
-                imageUrl: data.imageUrl || data.image || 'https://i.ibb.co/mFyGcMzs/Whats-App-Image-2026-04-21-at-12-22-57-removebg-preview.png'
+                imageUrl: data.imageUrl || data.image || 'https://i.ibb.co/mFyGcMzs/Whats-App-Image-2026-04-21-at-12-22-57-removebg-preview.png',
+                // SEO dynamic fields mapping from Firebase/CSV
+                metaTitle: data.meta_title || data.metaTitle || `${data.productName || data.name || 'Product'} | Lovely Bites`,
+                metaDesc: data.meta_desc || data.metaDesc || data.description || "Buy pure and traditional products from Lovely Bites."
             };
+
+            // Dynamically update Page Title and Meta Description for SEO
+            document.title = currentProduct.metaTitle;
+            let metaDescTag = document.querySelector('meta[name="description"]');
+            if (!metaDescTag) {
+                metaDescTag = document.createElement('meta');
+                metaDescTag.name = 'description';
+                document.head.appendChild(metaDescTag);
+            }
+            metaDescTag.content = currentProduct.metaDesc;
 
             container.innerHTML = `
                 <div class="pdp-img-box">
