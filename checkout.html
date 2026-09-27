@@ -16,7 +16,7 @@
     
     <title>Checkout | Lovely Bites</title>
 
-    <!-- Firebase SDK Scripts (Mandatory for Auth & Firestore) -->
+    <!-- Firebase SDK Scripts -->
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
@@ -47,9 +47,9 @@
 
         /* Navigation Styles */
         .nav-wrapper { display: flex; align-items: center; justify-content: space-between; max-width: 1200px; margin: 0 auto; padding: 10px 20px 0 20px; position: relative; width: 100%; }
-        .nav-menu { display: flex; list-style: none; margin: 0; padding: 0; gap: 25px; align-items: center; }
+        .nav-menu { display: flex; list-style: none; margin: 0; padding: 0; gap: 20px; align-items: center; }
         .nav-item { position: relative; }
-        .nav-link { text-decoration: none; color: var(--text-dark); font-weight: 700; font-size: 1rem; padding: 15px 0; display: block; cursor: pointer; user-select: none; }
+        .nav-link { text-decoration: none; color: var(--text-dark); font-weight: 700; font-size: 0.95rem; padding: 15px 0; display: block; cursor: pointer; user-select: none; }
         .nav-link:hover { color: var(--brand-red); }
         
         .mega-menu { position: absolute; top: 100%; right: 0; left: auto; background: #ffffff; box-shadow: 0 15px 35px rgba(0,0,0,0.15); border-radius: 12px; padding: 20px; display: flex; gap: 15px; opacity: 0; visibility: hidden; transition: opacity 0.25s ease, transform 0.25s ease, visibility 0.25s ease; border-top: 4px solid var(--brand-red); min-width: 580px; z-index: 99999; transform: translateY(15px); pointer-events: none; }
@@ -129,7 +129,6 @@
 <div class="lang-bar">
     <button class="lang-btn" onclick="location.reload()">English</button>
     <button class="lang-btn" onclick="changeLanguage('hi')">हिंदी</button>
-    <div id="google_translate_element"></div>
 </div>
 
 <header>
@@ -151,7 +150,7 @@
             </li>
             <li class="nav-item"><a href="index.html" class="nav-link">Contact Us</a></li>
             <li class="nav-item" id="cart-nav-item" style="cursor: pointer; font-weight: 700;">🛒 Cart (<span id="cart-count">0</span>)</li>
-            <li class="nav-item"><a href="orders.html" class="nav-link" style="display:inline-block;">📦 My Orders</a></li>
+            <li class="nav-item"><a href="orders.html" class="nav-link">📦 My Orders</a></li>
             <li class="nav-item"><button id="auth-btn" class="auth-btn">Login</button></li>
         </ul>
     </div>
