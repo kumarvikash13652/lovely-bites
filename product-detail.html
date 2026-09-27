@@ -198,7 +198,7 @@
                 id: doc.id,
                 productName: data.productName || data.name || "Lovely Bites Product",
                 category: data.category || data.type || "General",
-                price: data.price || data.amount || 0,
+                price: Number(data.price || data.amount || 0),
                 description: data.description || "Pure, organic, and traditionally processed healthy snack from Bihar.",
                 imageUrl: data.imageUrl || data.image || 'https://i.ibb.co/mFyGcMzs/Whats-App-Image-2026-04-21-at-12-22-57-removebg-preview.png'
             };
@@ -254,9 +254,18 @@
             const doc = await cartRef.get();
 
             if (doc.exists) {
-                await cartRef.update({ qty: (doc.data().qty || 1) + qty });
+                await cartRef.update({ 
+                    qty: (doc.data().qty || 1) + qty,
+                    price: currentProduct.price,
+                    productName: currentProduct.productName
+                });
             } else {
-                await cartRef.set({ productId: currentProduct.id, productName: currentProduct.productName, price: currentProduct.price, qty: qty });
+                await cartRef.set({ 
+                    productId: currentProduct.id, 
+                    productName: currentProduct.productName, 
+                    price: currentProduct.price, 
+                    qty: qty 
+                });
             }
             alert(`${currentProduct.productName} (${qty} item) cart me add ho gaya!`);
         } catch (e) {
