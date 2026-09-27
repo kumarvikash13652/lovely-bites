@@ -49,24 +49,32 @@
         .auth-btn { background: var(--brand-red); color: #fff; border: none; padding: 8px 20px; border-radius: 20px; font-weight: 700; cursor: pointer; transition: 0.3s; }
         .auth-btn:hover { background: #b7171c; }
 
-        /* PLP Grid Container */
-        .plp-container { max-width: 1200px; margin: 40px auto; padding: 0 20px; }
-        .section-title { font-size: 2.2rem; color: var(--brand-blue); margin-bottom: 30px; font-weight: 900; text-align: center; }
-        
-        .products-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; }
-        @media(max-width: 992px) { .products-grid { grid-template-columns: repeat(2, 1fr); } }
-        @media(max-width: 576px) { .products-grid { grid-template-columns: 1fr; } }
+        /* PLP Container & Controls */
+        .plp-container { max-width: 1200px; margin: 30px auto; padding: 0 20px; }
+        .section-title { font-size: 2.2rem; color: var(--brand-blue); margin-bottom: 20px; font-weight: 900; text-align: center; }
 
-        .product-card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.05); transition: transform 0.3s; display: flex; flex-direction: column; text-decoration: none; color: inherit; border-bottom: 4px solid var(--brand-yellow); }
-        .product-card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        .controls-bar { display: flex; justify-content: space-between; align-items: center; background: white; padding: 15px 20px; border-radius: 10px; margin-bottom: 30px; box-shadow: 0 2px 10px rgba(0,0,0,0.03); flex-wrap: wrap; gap: 15px; }
+        .filter-group, .sort-group { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+        .filter-group select, .sort-group select { padding: 8px 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 0.9rem; background: #fff; cursor: pointer; outline: none; }
+
+        /* Products Grid - Mobile 2 items per row */
+        .products-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; }
+        @media(max-width: 992px) { .products-grid { grid-template-columns: repeat(2, 1fr); gap: 15px; } }
+        @media(max-width: 576px) { .products-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; } }
+
+        .product-card { background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.05); transition: transform 0.3s; display: flex; flex-direction: column; text-decoration: none; color: inherit; border-bottom: 4px solid var(--brand-yellow); }
+        .product-card:hover { transform: translateY(-4px); box-shadow: 0 8px 20px rgba(0,0,0,0.1); }
         
-        .product-img-box { height: 220px; background: #f9f9f9; display: flex; align-items: center; justify-content: center; padding: 15px; }
+        .product-img-box { height: 180px; background: #f9f9f9; display: flex; align-items: center; justify-content: center; padding: 10px; position: relative; }
+        @media(min-width: 577px) { .product-img-box { height: 220px; } }
         .product-img-box img { max-height: 100%; max-width: 100%; object-fit: contain; }
         
-        .product-info { padding: 20px; display: flex; flex-direction: column; flex-grow: 1; }
-        .product-category { font-size: 11px; color: var(--brand-orange); text-transform: uppercase; font-weight: 800; margin-bottom: 6px; letter-spacing: 1px; }
-        .product-name { font-size: 1.2rem; font-weight: 800; color: var(--text-dark); margin-bottom: 10px; }
-        .product-price { font-size: 1.3rem; font-weight: 900; color: var(--brand-red); margin-top: auto; padding-top: 10px; }
+        .product-info { padding: 15px; display: flex; flex-direction: column; flex-grow: 1; }
+        .product-category { font-size: 10px; color: var(--brand-orange); text-transform: uppercase; font-weight: 800; margin-bottom: 4px; letter-spacing: 1px; }
+        .product-name { font-size: 1.05rem; font-weight: 800; color: var(--text-dark); margin-bottom: 8px; }
+        .price-row { display: flex; align-items: center; gap: 8px; margin-top: auto; padding-top: 8px; flex-wrap: wrap; }
+        .product-price { font-size: 1.15rem; font-weight: 900; color: var(--brand-red); }
+        .product-mrp { font-size: 0.85rem; color: #888; text-decoration: line-through; }
 
         /* Footer */
         footer { background: var(--text-dark); color: #aaa; padding: 3rem 2rem; font-size: 0.9rem; margin-top: 50px; }
@@ -100,6 +108,35 @@
 
 <main class="plp-container">
     <h2 class="section-title">Our Premium Products</h2>
+    
+    <!-- Filter & Sort Controls Bar -->
+    <div class="controls-bar">
+        <div class="filter-group">
+            <label for="category-filter" style="font-size: 0.9rem; font-weight: 600;">Category:</label>
+            <select id="category-filter" onchange="filterAndRenderProducts()">
+                <option value="all">All Categories</option>
+            </select>
+
+            <label for="price-filter" style="font-size: 0.9rem; font-weight: 600; margin-left: 10px;">Price:</label>
+            <select id="price-filter" onchange="filterAndRenderProducts()">
+                <option value="all">All Prices</option>
+                <option value="under100">Under ₹100</option>
+                <option value="100to500">₹100 - ₹500</option>
+                <option value="above500">Above ₹500</option>
+            </select>
+        </div>
+
+        <div class="sort-group">
+            <label for="sort-select" style="font-size: 0.9rem; font-weight: 600;">Sort By:</label>
+            <select id="sort-select" onchange="filterAndRenderProducts()">
+                <option value="relevance">Relevance (Rank)</option>
+                <option value="low-high">Price: Low to High</option>
+                <option value="high-low">Price: High to Low</option>
+                <option value="latest">Latest Product</option>
+            </select>
+        </div>
+    </div>
+
     <div class="products-grid" id="products-grid-wrapper">
         <p style="grid-column: 1/-1; text-align: center; padding: 40px;">Loading products...</p>
     </div>
@@ -133,12 +170,15 @@
         firebase.initializeApp(firebaseConfig);
     }
 
+    let allProducts = [];
+
     document.addEventListener('DOMContentLoaded', () => {
         const burger = document.getElementById('mobile-burger-trigger');
         const menu = document.getElementById('navigation-drawer-menu');
         if (burger && menu) {
             burger.addEventListener('click', () => menu.classList.toggle('active'));
         }
+        fetchProductsFromFirebase();
     });
 
     firebase.auth().onAuthStateChanged((user) => {
@@ -165,11 +205,9 @@
         } else {
             if (cartBadge) cartBadge.innerText = "0";
         }
-
-        fetchProductsGrid();
     });
 
-    async function fetchProductsGrid() {
+    async function fetchProductsFromFirebase() {
         const gridWrapper = document.getElementById('products-grid-wrapper');
         try {
             const snapshot = await firebase.firestore().collection("products").get();
@@ -178,52 +216,110 @@
                 return;
             }
 
-            let gridHTML = "";
-            let inStockCount = 0;
+            allProducts = [];
+            let categoriesSet = new Set();
 
             snapshot.forEach(doc => {
                 const data = doc.data();
                 
-                // --- IN-STOCK CHECK LOGIC ---
-                // Agar database mein 'inStock' field false hai, ya 'stock' 0 hai, ya 'status' "out_of_stock" hai, toh skip kar do.
-                // Agar field nahi bani hui hai (undefined), toh default man kar chalenge ki in-stock hai.
-                const isInStock = data.inStock !== false && data.stock !== 0 && data.status !== "out_of_stock" && data.status !== "OOS";
+                // Sirf wahi item lo jo stock mein hain (stock > 0 ya inStock true)
+                const stockVal = Number(data.stock !== undefined ? data.stock : 1);
+                const isInStock = data.inStock !== false && stockVal > 0 && data.status !== "out_of_stock" && data.status !== "OOS";
                 
-                if (!isInStock) {
-                    return; // Yeh item OOS hai, isko loop mein skip kar do taaki screen par na dikhe
+                if (isInStock) {
+                    const cat = data.category || data.type || "General";
+                    categoriesSet.add(cat);
+
+                    allProducts.push({
+                        id: doc.id,
+                        name: data.name || data.productName || "Lovely Bites Product",
+                        category: cat,
+                        price: Number(data.price || data.amount || 0),
+                        mrp: Number(data.mrp || 0),
+                        imageUrl: data.image_url || data.imageUrl || data.image || 'https://i.ibb.co/mFyGcMzs/Whats-App-Image-2026-04-21-at-12-22-57-removebg-preview.png',
+                        rank: Number(data.rank || 999),
+                        createdAt: data.createdAt || data.timestamp || null
+                    });
                 }
-
-                inStockCount++;
-                const pId = doc.id;
-                const pName = data.productName || data.name || "Lovely Bites Product";
-                const pCat = data.category || data.type || "Snacks";
-                const pPrice = data.price || data.amount || 0;
-                const pImg = data.imageUrl || data.image || 'https://i.ibb.co/mFyGcMzs/Whats-App-Image-2026-04-21-at-12-22-57-removebg-preview.png';
-
-                gridHTML += `
-                    <a href="product-detail.html?id=${pId}" class="product-card">
-                        <div class="product-img-box">
-                            <img src="${pImg}" alt="${pName}">
-                        </div>
-                        <div class="product-info">
-                            <span class="product-category">${pCat}</span>
-                            <h3 class="product-name">${pName}</h3>
-                            <div class="product-price">₹${pPrice}</div>
-                        </div>
-                    </a>
-                `;
             });
 
-            if (inStockCount === 0) {
-                gridWrapper.innerHTML = "<p style='grid-column: 1/-1; text-align: center; padding: 40px;'>Filhal koi bhi product stock mein available nahi hai.</p>";
-            } else {
-                gridWrapper.innerHTML = gridHTML;
-            }
+            // Populate Category Filter Dropdown
+            const categorySelect = document.getElementById('category-filter');
+            categorySelect.innerHTML = '<option value="all">All Categories</option>';
+            categoriesSet.forEach(cat => {
+                categorySelect.innerHTML += `<option value="${cat}">${cat}</option>`;
+            });
+
+            filterAndRenderProducts();
 
         } catch (e) {
             console.error("Error fetching products:", e);
             gridWrapper.innerHTML = "<p style='grid-column: 1/-1; text-align: center; color: red;'>Error loading products.</p>";
         }
+    }
+
+    function filterAndRenderProducts() {
+        const gridWrapper = document.getElementById('products-grid-wrapper');
+        const selectedCategory = document.getElementById('category-filter').value;
+        const selectedPriceRange = document.getElementById('price-filter').value;
+        const selectedSort = document.getElementById('sort-select').value;
+
+        // 1. Filtering
+        let filtered = allProducts.filter(item => {
+            // Category filter
+            if (selectedCategory !== 'all' && item.category !== selectedCategory) {
+                return false;
+            }
+            // Price bracket filter
+            if (selectedPriceRange === 'under100' && item.price >= 100) return false;
+            if (selectedPriceRange === '100to500' && (item.price < 100 || item.price > 500)) return false;
+            if (selectedPriceRange === 'above500' && item.price <= 500) return false;
+
+            return true;
+        });
+
+        // 2. Sorting
+        filtered.sort((a, b) => {
+            if (selectedSort === 'relevance') {
+                return a.rank - b.rank; // Lower rank comes first
+            } else if (selectedSort === 'low-high') {
+                return a.price - b.price;
+            } else if (selectedSort === 'high-low') {
+                return b.price - a.price;
+            } else if (selectedSort === 'latest') {
+                let timeA = a.createdAt?.seconds || 0;
+                let timeB = b.createdAt?.seconds || 0;
+                return timeB - timeA;
+            }
+            return 0;
+        });
+
+        // 3. Rendering
+        if (filtered.length === 0) {
+            gridWrapper.innerHTML = "<p style='grid-column: 1/-1; text-align: center; padding: 40px;'>Is filter ke mutabiq koi product nahi mila.</p>";
+            return;
+        }
+
+        let gridHTML = "";
+        filtered.forEach(item => {
+            gridHTML += `
+                <a href="product-detail.html?id=${item.id}" class="product-card">
+                    <div class="product-img-box">
+                        <img src="${item.imageUrl}" alt="${item.name}">
+                    </div>
+                    <div class="product-info">
+                        <span class="product-category">${item.category}</span>
+                        <h3 class="product-name">${item.name}</h3>
+                        <div class="price-row">
+                            <span class="product-price">₹${item.price}</span>
+                            ${item.mrp > item.price ? `<span class="product-mrp">₹${item.mrp}</span>` : ''}
+                        </div>
+                    </div>
+                </a>
+            `;
+        });
+
+        gridWrapper.innerHTML = gridHTML;
     }
 </script>
 </body>
