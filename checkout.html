@@ -4,24 +4,41 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Checkout | Lovely Bites</title>
-    <!-- Favicon dynamically loaded via JS or fallback -->
+    <!-- Favicon dynamically loaded -->
     <link rel="icon" id="dynamic-favicon" href="">
-    <!-- Cashfree SDK Script Added -->
+    <!-- Cashfree SDK Script -->
     <script src="https://sdk.cashfree.com/js/v3/cashfree.js"></script>
     <style>
         :root { --brand-red: #e31e24; --bg-cream: #fffdf5; --brand-blue: #0054a6; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg-cream); margin: 0; padding: 15px; color: #333; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg-cream); margin: 0; padding: 0; color: #333; }
         
-        /* Header / Navbar Styling */
-        .site-header { background: white; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; border-radius: 12px; max-width: 900px; margin: 0 auto 20px auto; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
-        .brand-container { display: flex; align-items: center; gap: 12px; text-decoration: none; }
-        .brand-logo { width: 45px; height: 45px; object-fit: contain; border-radius: 50%; }
-        .brand-name { font-size: 20px; font-weight: bold; color: var(--brand-red); }
+        /* Navbar & Header Styles */
+        .site-header { background: white; padding: 12px 25px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.04); }
+        .brand-container { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+        .brand-logo { width: 40px; height: 40px; object-fit: contain; border-radius: 50%; }
+        .brand-name { font-size: 18px; font-weight: bold; color: var(--brand-red); }
 
-        .checkout-container { max-width: 900px; margin: 0 auto 30px auto; background: white; padding: 30px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+        .nav-links { display: flex; gap: 20px; align-items: center; }
+        .nav-links a { text-decoration: none; color: #444; font-size: 14px; font-weight: 600; transition: color 0.2s; }
+        .nav-links a:hover { color: var(--brand-red); }
+
+        /* Mobile Hamburger & Sidebar */
+        .hamburger { display: none; font-size: 24px; cursor: pointer; background: none; border: none; color: #333; }
+        .mobile-sidebar { position: fixed; top: 0; right: -260px; width: 250px; height: 100%; background: white; box-shadow: -5px 0 15px rgba(0,0,0,0.1); z-index: 2000; transition: right 0.3s ease; display: flex; flexDirection: column; padding: 20px; box-sizing: border-box; }
+        .mobile-sidebar.active { right: 0; }
+        .sidebar-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding-bottom: 12px; margin-bottom: 15px; }
+        .close-sidebar { font-size: 22px; cursor: pointer; background: none; border: none; }
+        .mobile-sidebar a { text-decoration: none; color: #333; font-size: 16px; font-weight: 600; padding: 10px 0; border-bottom: 1px dashed #f0f0f0; }
+
+        @media(max-width: 768px) {
+            .nav-links { display: none; }
+            .hamburger { display: block; }
+        }
+
+        /* Checkout Container Grid */
+        .checkout-container { max-width: 900px; margin: 30px auto; background: white; padding: 30px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
         @media(max-width: 768px) { 
-            .checkout-container { grid-template-columns: 1fr; padding: 20px; margin: 10px; } 
-            .site-header { padding: 12px 15px; }
+            .checkout-container { grid-template-columns: 1fr; padding: 20px; margin: 15px; } 
         }
 
         .checkout-section h2 { margin-top: 0; color: #111; font-size: 22px; border-bottom: 2px solid #f0f0f0; padding-bottom: 10px; margin-bottom: 20px; }
@@ -39,8 +56,8 @@
         .order-summary h4 { margin: 0 0 15px 0; color: var(--brand-blue); font-size: 18px; border-bottom: 1px solid #eee; padding-bottom: 8px; }
         .summary-total { font-weight: bold; font-size: 18px; color: var(--brand-red); margin-top: 15px; text-align: right; border-top: 1px solid #eee; padding-top: 10px; }
         
-        /* Footer Details Styling */
-        .site-footer { max-width: 900px; margin: 0 auto; background: #fff; padding: 20px; border-radius: 12px; text-align: center; font-size: 13px; color: #666; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        /* Footer Styles */
+        .site-footer { max-width: 900px; margin: 0 auto 30px auto; background: #fff; padding: 20px; border-radius: 12px; text-align: center; font-size: 13px; color: #666; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
         .site-footer p { margin: 5px 0; }
 
         /* Cashfree Simulator Modal Styles */
@@ -53,14 +70,32 @@
 </head>
 <body>
 
-<!-- Dynamic Header Injection from Firestore -->
+<!-- Dynamic Navigation Bar (Index Style) -->
 <header class="site-header">
     <a href="index.html" class="brand-container">
         <img id="header-logo" src="" alt="Logo" class="brand-logo" style="display:none;">
         <span class="brand-name" id="header-brand-name">Lovely Bites</span>
     </a>
-    <div style="font-size: 14px; font-weight: 600; color: var(--brand-blue);">Secure Checkout</div>
+    <nav class="nav-links" id="desktop-nav-links">
+        <a href="index.html">Home</a>
+        <a href="orders.html">My Orders</a>
+        <a href="cart.html">Cart</a>
+    </nav>
+    <button class="hamburger" onclick="toggleSidebar()">☰</button>
 </header>
+
+<!-- Mobile Sidebar Drawer -->
+<div class="mobile-sidebar" id="mobileSidebar">
+    <div class="sidebar-header">
+        <span style="font-weight: bold; color: var(--brand-red);">Menu</span>
+        <button class="close-sidebar" onclick="toggleSidebar()">&times;</button>
+    </div>
+    <div id="mobile-nav-links" style="display: flex; flex-direction: column;">
+        <a href="index.html">Home</a>
+        <a href="orders.html">My Orders</a>
+        <a href="cart.html">Cart</a>
+    </div>
+</div>
 
 <div class="checkout-container">
     <!-- Left Column: Order Summary -->
@@ -92,7 +127,7 @@
     </main>
 </div>
 
-<!-- Dynamic Footer Injection from Firestore -->
+<!-- Dynamic Footer Injection -->
 <footer class="site-footer">
     <p id="footer-address"></p>
     <p id="footer-gstin"></p>
@@ -121,10 +156,14 @@
     let authUser = null;
     let pendingOrderPayload = null;
 
-    // Set current year in footer
     document.getElementById('current-year').textContent = new Date().getFullYear();
 
-    // Load Global Config from Firestore (settings/global_config)
+    // Toggle Mobile Sidebar Drawer
+    function toggleSidebar() {
+        document.getElementById('mobileSidebar').classList.toggle('active');
+    }
+
+    // Load Global Config & Mega Menu from Firestore
     async function loadGlobalConfig() {
         try {
             const db = firebase.firestore();
@@ -134,24 +173,17 @@
             if (docSnap.exists) {
                 const data = docSnap.data();
                 
-                // Brand Name Update
                 if (data.brandName) {
                     document.getElementById('header-brand-name').textContent = data.brandName;
                 }
-
-                // Logo Update
                 if (data.logoUrl) {
                     const logoImg = document.getElementById('header-logo');
                     logoImg.src = data.logoUrl;
                     logoImg.style.display = 'block';
                 }
-
-                // Favicon Update[cite: 14]
                 if (data.faviconUrl) {
                     document.getElementById('dynamic-favicon').href = data.faviconUrl;
                 }
-
-                // Footer Details Update[cite: 14, 15, 16]
                 if (data.addressText) {
                     document.getElementById('footer-address').textContent = "Address: " + data.addressText;
                 }
@@ -160,6 +192,17 @@
                 }
                 if (data.fssaiText) {
                     document.getElementById('footer-fssai').textContent = data.fssaiText;
+                }
+
+                // Optional: If megaMenuLinks or custom links are stored in global_config
+                if (data.megaMenuLinks && Array.isArray(data.megaMenuLinks)) {
+                    let linksHtml = '<a href="index.html">Home</a>';
+                    data.megaMenuLinks.forEach(link => {
+                        linksHtml += `<a href="${link.url}">${link.title}</a>`;
+                    });
+                    linksHtml += '<a href="orders.html">My Orders</a><a href="cart.html">Cart</a>';
+                    document.getElementById('desktop-nav-links').innerHTML = linksHtml;
+                    document.getElementById('mobile-nav-links').innerHTML = linksHtml;
                 }
             }
         } catch (err) {
@@ -273,14 +316,7 @@
                     ...shippingDetails
                 });
             } else {
-                // Save payload for simulator
-                pendingOrderPayload = {
-                    orderItems,
-                    totalAmount,
-                    shippingDetails
-                };
-                
-                // Open Cashfree Simulator Modal instead of failing session
+                pendingOrderPayload = { orderItems, totalAmount, shippingDetails };
                 document.getElementById('cashfree-simulator-modal').style.display = 'flex';
             }
 
