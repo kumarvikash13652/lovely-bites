@@ -190,7 +190,6 @@
                     const payMode = (order.paymentMode || order.payment_mode || order.mode || 'Online').toUpperCase();
                     let payStatus = (order.paymentStatus || order.payment_status || order.status || 'PENDING').toUpperCase();
                     
-                    // Agar cash/COD hai ya pre-paid status fetch karna ho
                     let statusBadgeClass = 'bg-yellow-100 text-yellow-700';
                     if (payStatus === 'SUCCESS' || payStatus === 'PAID' || payStatus === 'PREPAID') {
                         statusBadgeClass = 'bg-green-100 text-green-700';
@@ -294,7 +293,7 @@
             .catch(err => alert("Error: " + err.message));
         }
 
-        // CSV Bulk Sync
+        // CSV Bulk Sync (Fixed indices and line splitting issue)
         function uploadCSV() {
             const fileInput = document.getElementById('csvFile');
             const statusText = document.getElementById('csv-status');
@@ -313,14 +312,14 @@
 
                 for (let i = 1; i < lines.length; i++) {
                     if (!lines[i].trim()) continue;
-                    const data = lines.split(",").map(val => val.trim());
-                    const productId = data;
+                    const data = lines[i].split(",").map(val => val.trim()); // Fixed: lines[i].split instead of lines.split
+                    const productId = data[0];
                     const productData = {
-                        name: data,
-                        price: parseFloat(data) || 0,
-                        mrp: parseFloat(data) || 0,
-                        stock: parseInt(data) || 0,
-                        category: data || 'General'
+                        name: data[1],
+                        price: parseFloat(data[2]) || 0,
+                        mrp: parseFloat(data[3]) || 0,
+                        stock: parseInt(data[4]) || 0,
+                        category: data[5] || 'General'
                     };
 
                     if (productId) {
