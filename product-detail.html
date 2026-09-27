@@ -50,14 +50,17 @@
         .auth-btn { background: var(--brand-red); color: #fff; border: none; padding: 8px 20px; border-radius: 20px; font-weight: 700; cursor: pointer; transition: 0.3s; }
         .auth-btn:hover { background: #b7171c; }
 
-        /* PDP Container */
-        .pdp-container { max-width: 1100px; margin: 50px auto; padding: 40px; display: grid; grid-template-columns: 1fr 1fr; gap: 40px; background: white; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); overflow: hidden; }
+        /* Main Wrapper */
+        .main-wrapper { max-width: 1100px; margin: 40px auto; padding: 0 20px; }
+
+        /* PDP Container (Top Section: Image left, Attributes right) */
+        .pdp-container { background: white; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); padding: 40px; display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: start; }
         @media(max-width: 768px) { .pdp-container { grid-template-columns: 1fr; padding: 20px; } }
 
-        .pdp-img-box { background: #f9f9f9; border-radius: 12px; display: flex; align-items: center; justify-content: center; padding: 20px; min-height: 350px; }
-        .pdp-img-box img { max-width: 100%; max-height: 350px; object-fit: contain; }
+        .pdp-img-box { background: #f9f9f9; border-radius: 12px; display: flex; align-items: center; justify-content: center; padding: 20px; min-height: 380px; position: sticky; top: 20px; }
+        .pdp-img-box img { max-width: 100%; max-height: 380px; object-fit: contain; }
 
-        .pdp-details { display: flex; flex-direction: column; justify-content: center; }
+        .pdp-details { display: flex; flex-direction: column; }
         .pdp-cat { font-size: 13px; color: var(--brand-orange); text-transform: uppercase; font-weight: 800; margin-bottom: 8px; letter-spacing: 1px; }
         .pdp-title { font-size: 2.2rem; font-weight: 900; color: var(--text-dark); margin: 0 0 15px 0; }
         
@@ -65,11 +68,9 @@
         .pdp-price { font-size: 2rem; font-weight: 900; color: var(--brand-red); }
         .pdp-mrp { font-size: 1.2rem; color: #888; text-decoration: line-through; }
         
-        .pdp-meta-info { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; font-size: 0.9rem; font-weight: 600; color: #555; }
+        .pdp-meta-info { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 25px; font-size: 0.9rem; font-weight: 600; color: #555; }
         .pdp-meta-badge { background: #f0f0f0; padding: 6px 12px; border-radius: 6px; }
 
-        .pdp-desc { color: #555; font-size: 0.95rem; margin-bottom: 25px; line-height: 1.8; white-space: pre-line; }
-        
         .quantity-wrapper { display: flex; align-items: center; gap: 15px; margin-bottom: 25px; }
         .qty-btn { background: #eee; border: none; width: 36px; height: 36px; font-weight: bold; font-size: 18px; border-radius: 6px; cursor: pointer; }
         .qty-input { width: 50px; text-align: center; font-size: 16px; font-weight: bold; border: 1px solid #ddd; border-radius: 6px; padding: 6px; }
@@ -79,6 +80,16 @@
         .btn-cart:hover { background: #003d7a; }
         .btn-buy { background: var(--brand-red); color: white; border: none; padding: 14px 28px; border-radius: 30px; font-weight: 800; cursor: pointer; font-size: 1rem; transition: 0.3s; flex: 1; text-align: center; text-decoration: none; display: inline-block; }
         .btn-buy:hover { background: #b7171c; }
+
+        /* Description Section (Bottom) */
+        .description-section { background: white; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); padding: 30px 40px; margin-top: 30px; }
+        .description-section h3 { font-size: 1.3rem; margin-top: 0; margin-bottom: 15px; color: var(--text-dark); border-bottom: 2px solid #eee; padding-bottom: 10px; }
+        .pdp-desc { color: #555; font-size: 0.95rem; line-height: 1.8; white-space: pre-line; overflow: hidden; transition: max-height 0.4s ease; }
+        .pdp-desc.collapsed { max-height: 120px; position: relative; }
+        .pdp-desc.collapsed::after { content: ""; position: absolute; bottom: 0; left: 0; width: 100%; height: 50px; background: linear-gradient(transparent, white); }
+        
+        .read-more-btn { background: none; border: none; color: var(--brand-blue); font-weight: 700; cursor: pointer; margin-top: 10px; padding: 0; font-size: 0.95rem; display: inline-block; }
+        .read-more-btn:hover { text-decoration: underline; }
 
         /* Footer */
         footer { background: var(--text-dark); color: #aaa; padding: 3rem 2rem; font-size: 0.9rem; margin-top: 50px; }
@@ -110,9 +121,15 @@
     </div>
 </header>
 
-<main>
-    <div class="pdp-container" id="pdp-main-content">
+<main class="main-wrapper">
+    <div class="pdp-container" id="pdp-top-section">
         <p style="grid-column: 1/-1; text-align: center; padding: 40px;">Loading product details...</p>
+    </div>
+
+    <div class="description-section" id="pdp-desc-section" style="display: none;">
+        <h3>Product Description</h3>
+        <div class="pdp-desc collapsed" id="desc-text-box"></div>
+        <button class="read-more-btn" id="read-more-toggle" onclick="toggleDescription()" style="display: none;">Read More</button>
     </div>
 </main>
 
@@ -187,17 +204,20 @@
     async function fetchProductDetails() {
         const urlParams = new URLSearchParams(window.location.search);
         const productId = urlParams.get('id');
-        const container = document.getElementById('pdp-main-content');
+        const topContainer = document.getElementById('pdp-top-section');
+        const descSection = document.getElementById('pdp-desc-section');
+        const descBox = document.getElementById('desc-text-box');
+        const readMoreBtn = document.getElementById('read-more-toggle');
 
         if (!productId) {
-            container.innerHTML = "<p style='grid-column: 1/-1; text-align: center; padding: 40px;'>Product ID missing hai URL me!</p>";
+            topContainer.innerHTML = "<p style='grid-column: 1/-1; text-align: center; padding: 40px;'>Product ID missing hai URL me!</p>";
             return;
         }
 
         try {
             const doc = await firebase.firestore().collection("products").doc(productId).get();
             if (!doc.exists) {
-                container.innerHTML = "<p style='grid-column: 1/-1; text-align: center; padding: 40px;'>Product database me nahi mila.</p>";
+                topContainer.innerHTML = "<p style='grid-column: 1/-1; text-align: center; padding: 40px;'>Product database me nahi mila.</p>";
                 return;
             }
 
@@ -211,7 +231,6 @@
                 weight: data.weight || "N/A",
                 origin: data.origin || "India",
                 sku: data.sku || "N/A",
-                // Fixed image fallback mapping across all formats (`image_url`, `imageUrl`, `image`)
                 imageUrl: data.image_url || data.imageUrl || data.image || 'https://i.ibb.co/mFyGcMzs/Whats-App-Image-2026-04-21-at-12-22-57-removebg-preview.png',
                 description: data.product_description || data.description || "Pure, organic, and traditionally processed healthy snack from Bihar.",
                 metaTitle: data.meta_title || data.metaTitle || `${data.productName || data.name || 'Product'} | Lovely Bites`,
@@ -228,7 +247,8 @@
             }
             metaDescTag.content = currentProduct.metaDesc;
 
-            container.innerHTML = `
+            // Render Top Section (Left Image, Right Attributes & CTAs)
+            topContainer.innerHTML = `
                 <div class="pdp-img-box">
                     <img src="${currentProduct.imageUrl}" alt="${currentProduct.productName}">
                 </div>
@@ -246,8 +266,6 @@
                         <span class="pdp-meta-badge">🌍 Origin: ${currentProduct.origin}</span>
                         <span class="pdp-meta-badge">🏷️ SKU: ${currentProduct.sku}</span>
                     </div>
-
-                    <div class="pdp-desc">${currentProduct.description}</div>
                     
                     <div class="quantity-wrapper">
                         <label style="font-weight: 700;">Quantity:</label>
@@ -262,9 +280,33 @@
                     </div>
                 </div>
             `;
+
+            // Render Description Section at Bottom
+            descBox.innerText = currentProduct.description;
+            descSection.style.display = "block";
+
+            // Check if description is long enough to warrant Read More toggle
+            if (currentProduct.description.length > 150) {
+                readMoreBtn.style.display = "inline-block";
+            } else {
+                descBox.classList.remove('collapsed');
+            }
+
         } catch (e) {
             console.error("Error fetching product:", e);
-            container.innerHTML = "<p style='grid-column: 1/-1; text-align: center; padding: 40px;'>Error loading product details.</p>";
+            topContainer.innerHTML = "<p style='grid-column: 1/-1; text-align: center; padding: 40px;'>Error loading product details.</p>";
+        }
+    }
+
+    function toggleDescription() {
+        const descBox = document.getElementById('desc-text-box');
+        const readMoreBtn = document.getElementById('read-more-toggle');
+        if (descBox.classList.contains('collapsed')) {
+            descBox.classList.remove('collapsed');
+            readMoreBtn.innerText = "Read Less";
+        } else {
+            descBox.classList.add('collapsed');
+            readMoreBtn.innerText = "Read More";
         }
     }
 
