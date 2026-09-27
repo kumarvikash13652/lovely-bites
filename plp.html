@@ -179,8 +179,21 @@
             }
 
             let gridHTML = "";
+            let inStockCount = 0;
+
             snapshot.forEach(doc => {
                 const data = doc.data();
+                
+                // --- IN-STOCK CHECK LOGIC ---
+                // Agar database mein 'inStock' field false hai, ya 'stock' 0 hai, ya 'status' "out_of_stock" hai, toh skip kar do.
+                // Agar field nahi bani hui hai (undefined), toh default man kar chalenge ki in-stock hai.
+                const isInStock = data.inStock !== false && data.stock !== 0 && data.status !== "out_of_stock" && data.status !== "OOS";
+                
+                if (!isInStock) {
+                    return; // Yeh item OOS hai, isko loop mein skip kar do taaki screen par na dikhe
+                }
+
+                inStockCount++;
                 const pId = doc.id;
                 const pName = data.productName || data.name || "Lovely Bites Product";
                 const pCat = data.category || data.type || "Snacks";
@@ -201,7 +214,12 @@
                 `;
             });
 
-            gridWrapper.innerHTML = gridHTML;
+            if (inStockCount === 0) {
+                gridWrapper.innerHTML = "<p style='grid-column: 1/-1; text-align: center; padding: 40px;'>Filhal koi bhi product stock mein available nahi hai.</p>";
+            } else {
+                gridWrapper.innerHTML = gridHTML;
+            }
+
         } catch (e) {
             console.error("Error fetching products:", e);
             gridWrapper.innerHTML = "<p style='grid-column: 1/-1; text-align: center; color: red;'>Error loading products.</p>";
