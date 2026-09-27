@@ -3,14 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="https://i.ibb.co/mFyGcMzs/Whats-App-Image-2026-04-21-at-12-22-57-removebg-preview.png">
     <title>Checkout | Lovely Bites</title>
-    <!-- Cashfree SDK Script Added -->
+    
+    <!-- Cashfree SDK Script -->
     <script src="https://sdk.cashfree.com/js/v3/cashfree.js"></script>
+
     <style>
-        :root { --brand-red: #e31e24; --bg-cream: #fffdf5; --brand-blue: #0054a6; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg-cream); margin: 0; padding: 15px; color: #333; }
+        :root { 
+            --brand-red: #e31e24;      
+            --brand-yellow: #ffcb05;   
+            --brand-blue: #0054a6;     
+            --brand-orange: #f58220;   
+            --bg-cream: #fffdf5;       
+            --text-dark: #2d2926;
+            --white: #ffffff;
+        }
+        * { box-sizing: border-box; } 
+        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background: var(--bg-cream); margin: 0; padding: 0; color: var(--text-dark); line-height: 1.6; }
         
-        .checkout-container { max-width: 900px; margin: 30px auto; background: white; padding: 30px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+        /* Navbar & Global styles from index_2 */
+        .lang-bar { background: var(--brand-blue); padding: 8px; text-align: center; display: flex; justify-content: center; align-items: center; gap: 10px; }
+        .lang-btn { background: rgba(255,255,255,0.2); border: 1px solid white; color: white; padding: 4px 12px; cursor: pointer; font-size: 12px; border-radius: 20px; }
+        header { background: var(--white); padding: 1rem 2rem; text-align: center; position: relative; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border-bottom: 4px solid var(--brand-red); }
+        .logo img { max-height: 110px; width: auto; filter: drop-shadow(2px 2px 0px var(--brand-blue)) drop-shadow(-2px -2px 0px var(--brand-orange)); padding: 5px; }
+        .gstin-top-right { position: absolute; top: 20px; right: 20px; color: #777; font-size: 0.7rem; text-align: right; font-family: monospace; }
+
+        /* Checkout Specific Layout */
+        .checkout-wrapper-section { padding: 40px 20px; }
+        .checkout-container { max-width: 900px; margin: 0 auto; background: white; padding: 30px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
         @media(max-width: 768px) { .checkout-container { grid-template-columns: 1fr; padding: 20px; margin: 10px; } }
 
         .checkout-section h2 { margin-top: 0; color: #111; font-size: 22px; border-bottom: 2px solid #f0f0f0; padding-bottom: 10px; margin-bottom: 20px; }
@@ -38,34 +59,39 @@
 </head>
 <body>
 
-<div class="checkout-container">
-    <!-- Left Column: Order Summary -->
-    <div class="order-summary">
-        <h4>Order Summary</h4>
-        <div id="summary-items">Loading items...</div>
-        <div class="summary-total" id="summary-total">Total: ₹0</div>
-    </div>
+<!-- Dynamic Header Hook -->
+<div id="global-header"></div>
 
-    <!-- Right Column: Delivery Details Form -->
-    <main class="checkout-section">
-        <h2>Delivery Details</h2>
-        
-        <input type="text" id="name" placeholder="Full Name" required>
-        <input type="email" id="email" placeholder="Email Address" required>
-        <input type="text" id="address1" placeholder="Flat/House No / Building" required>
-        <input type="text" id="address2" placeholder="Street/Locality/Landmark" required>
-        <input type="text" id="city" placeholder="City" required>
-        <input type="number" id="pincode" placeholder="Pincode" required>
-        <input type="number" id="phone" placeholder="Mobile Number" required>
-        
-        <label class="payment-label" for="paymentMethod">Select Payment Method:</label>
-        <select id="paymentMethod">
-            <option value="online">Online Payment (Cashfree Sandbox)</option>
-            <option value="cod">Cash on Delivery (COD)</option>
-        </select>
-        
-        <button type="button" id="order-btn" onclick="initiateCheckout()">PLACE ORDER</button>
-    </main>
+<div class="checkout-wrapper-section">
+    <div class="checkout-container">
+        <!-- Left Column: Order Summary -->
+        <div class="order-summary">
+            <h4>Order Summary</h4>
+            <div id="summary-items">Loading items...</div>
+            <div class="summary-total" id="summary-total">Total: ₹0</div>
+        </div>
+
+        <!-- Right Column: Delivery Details Form (Untouched Logic) -->
+        <main class="checkout-section">
+            <h2>Delivery Details</h2>
+            
+            <input type="text" id="name" placeholder="Full Name" required>
+            <input type="email" id="email" placeholder="Email Address" required>
+            <input type="text" id="address1" placeholder="Flat/House No / Building" required>
+            <input type="text" id="address2" placeholder="Street/Locality/Landmark" required>
+            <input type="text" id="city" placeholder="City" required>
+            <input type="number" id="pincode" placeholder="Pincode" required>
+            <input type="number" id="phone" placeholder="Mobile Number" required>
+            
+            <label class="payment-label" for="paymentMethod">Select Payment Method:</label>
+            <select id="paymentMethod">
+                <option value="online">Online Payment (Cashfree Sandbox)</option>
+                <option value="cod">Cash on Delivery (COD)</option>
+            </select>
+            
+            <button type="button" id="order-btn" onclick="initiateCheckout()">PLACE ORDER</button>
+        </main>
+    </div>
 </div>
 
 <!-- Cashfree Simulator Modal Popup -->
@@ -78,28 +104,31 @@
     </div>
 </div>
 
+<!-- Dynamic Footer Hook -->
+<div id="global-footer"></div>
+
+<!-- Firebase SDK Compat Scripts -->
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 
-<script src="firebase-init.js"></script>
+<!-- Global Theme & Cart System Scripts -->
+<script src="theme_2.js"></script>
+<script src="cart-system_2.js"></script>
 
 <script>
     const cashfree = Cashfree({ mode: "sandbox" });
     let authUser = null;
     let pendingOrderPayload = null;
 
-    // Fixed session persistence so login state carries over properly from index.html
-    firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL).then(() => {
-        firebase.auth().onAuthStateChanged(async (user) => { 
-            authUser = user; 
-            if (user) {
-                loadCartSummary();
-            } else {
-                alert("Please login first!");
-                window.location.href = "login.html";
-            }
-        });
+    firebase.auth().onAuthStateChanged(async (user) => { 
+        authUser = user; 
+        if (user) {
+            loadCartSummary();
+        } else {
+            alert("Please login first!");
+            window.location.href = "login.html";
+        }
     });
 
     async function loadCartSummary() {
@@ -201,7 +230,6 @@
                     totalAmount,
                     shippingDetails
                 };
-                
                 document.getElementById('cashfree-simulator-modal').style.display = 'flex';
             }
 
