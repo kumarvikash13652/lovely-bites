@@ -4,14 +4,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Checkout | Lovely Bites</title>
+    <!-- Favicon dynamically loaded via JS or fallback -->
+    <link rel="icon" id="dynamic-favicon" href="">
     <!-- Cashfree SDK Script Added -->
     <script src="https://sdk.cashfree.com/js/v3/cashfree.js"></script>
     <style>
         :root { --brand-red: #e31e24; --bg-cream: #fffdf5; --brand-blue: #0054a6; }
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg-cream); margin: 0; padding: 15px; color: #333; }
         
-        .checkout-container { max-width: 900px; margin: 30px auto; background: white; padding: 30px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
-        @media(max-width: 768px) { .checkout-container { grid-template-columns: 1fr; padding: 20px; margin: 10px; } }
+        /* Header / Navbar Styling */
+        .site-header { background: white; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; border-radius: 12px; max-width: 900px; margin: 0 auto 20px auto; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        .brand-container { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+        .brand-logo { width: 45px; height: 45px; object-fit: contain; border-radius: 50%; }
+        .brand-name { font-size: 20px; font-weight: bold; color: var(--brand-red); }
+
+        .checkout-container { max-width: 900px; margin: 0 auto 30px auto; background: white; padding: 30px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+        @media(max-width: 768px) { 
+            .checkout-container { grid-template-columns: 1fr; padding: 20px; margin: 10px; } 
+            .site-header { padding: 12px 15px; }
+        }
 
         .checkout-section h2 { margin-top: 0; color: #111; font-size: 22px; border-bottom: 2px solid #f0f0f0; padding-bottom: 10px; margin-bottom: 20px; }
         
@@ -28,6 +39,10 @@
         .order-summary h4 { margin: 0 0 15px 0; color: var(--brand-blue); font-size: 18px; border-bottom: 1px solid #eee; padding-bottom: 8px; }
         .summary-total { font-weight: bold; font-size: 18px; color: var(--brand-red); margin-top: 15px; text-align: right; border-top: 1px solid #eee; padding-top: 10px; }
         
+        /* Footer Details Styling */
+        .site-footer { max-width: 900px; margin: 0 auto; background: #fff; padding: 20px; border-radius: 12px; text-align: center; font-size: 13px; color: #666; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        .site-footer p { margin: 5px 0; }
+
         /* Cashfree Simulator Modal Styles */
         #cashfree-simulator-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 9999; justify-content: center; align-items: center; }
         .modal-content { background: white; padding: 30px; border-radius: 12px; max-width: 400px; width: 90%; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
@@ -37,6 +52,15 @@
     </style>
 </head>
 <body>
+
+<!-- Dynamic Header Injection from Firestore -->
+<header class="site-header">
+    <a href="index.html" class="brand-container">
+        <img id="header-logo" src="" alt="Logo" class="brand-logo" style="display:none;">
+        <span class="brand-name" id="header-brand-name">Lovely Bites</span>
+    </a>
+    <div style="font-size: 14px; font-weight: 600; color: var(--brand-blue);">Secure Checkout</div>
+</header>
 
 <div class="checkout-container">
     <!-- Left Column: Order Summary -->
@@ -68,6 +92,14 @@
     </main>
 </div>
 
+<!-- Dynamic Footer Injection from Firestore -->
+<footer class="site-footer">
+    <p id="footer-address"></p>
+    <p id="footer-gstin"></p>
+    <p id="footer-fssai"></p>
+    <p style="margin-top: 10px; font-size: 12px; color: #999;">© <span id="current-year"></span> Lovely Bites. All rights reserved.</p>
+</footer>
+
 <!-- Cashfree Simulator Modal Popup -->
 <div id="cashfree-simulator-modal">
     <div class="modal-content">
@@ -89,9 +121,57 @@
     let authUser = null;
     let pendingOrderPayload = null;
 
+    // Set current year in footer
+    document.getElementById('current-year').textContent = new Date().getFullYear();
+
+    // Load Global Config from Firestore (settings/global_config)
+    async function loadGlobalConfig() {
+        try {
+            const db = firebase.firestore();
+            const docRef = db.collection("settings").doc("global_config");
+            const docSnap = await docRef.get();
+
+            if (docSnap.exists) {
+                const data = docSnap.data();
+                
+                // Brand Name Update
+                if (data.brandName) {
+                    document.getElementById('header-brand-name').textContent = data.brandName;
+                }
+
+                // Logo Update
+                if (data.logoUrl) {
+                    const logoImg = document.getElementById('header-logo');
+                    logoImg.src = data.logoUrl;
+                    logoImg.style.display = 'block';
+                }
+
+                // Favicon Update[cite: 14]
+                if (data.faviconUrl) {
+                    document.getElementById('dynamic-favicon').href = data.faviconUrl;
+                }
+
+                // Footer Details Update[cite: 14, 15, 16]
+                if (data.addressText) {
+                    document.getElementById('footer-address').textContent = "Address: " + data.addressText;
+                }
+                if (data.gstinText) {
+                    document.getElementById('footer-gstin').textContent = data.gstinText;
+                }
+                if (data.fssaiText) {
+                    document.getElementById('footer-fssai').textContent = data.fssaiText;
+                }
+            }
+        } catch (err) {
+            console.error("Error loading global config:", err);
+        }
+    }
+
+    // Auth State & Cart Init
     firebase.auth().onAuthStateChanged(async (user) => { 
         authUser = user; 
         if (user) {
+            loadGlobalConfig();
             loadCartSummary();
         } else {
             alert("Please login first!");
