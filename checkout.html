@@ -9,7 +9,7 @@
     <style>
         :root { 
             --brand-red: #e31e24;     
-            --brand-yellow: #ffcb05;   
+            --brand-yellow: #ffcb05;    
             --brand-blue: #0054a6;     
             --brand-orange: #f58220;    
             --bg-cream: #fffdf5;        
@@ -92,7 +92,7 @@
 
 <div class="lang-bar"><button class="lang-btn" onclick="location.reload()">English</button><button class="lang-btn">हिंदी</button></div>
 <header>
-    <div class="gstin-top-right">K L ENTERPRISE | GSTIN: 10JQBPK5246N1ZO</div>
+    <div class="gstin-top-right">K L ENTERPRISE | GSTIN: [Aadhaar Redacted]</div>
     <div class="nav-wrapper">
         <div class="logo"><a href="index.html"><img src="https://i.ibb.co/mFyGcMzs/Whats-App-Image-2026-04-21-at-12-22-57-removebg-preview.png" alt="Logo"></a></div>
         <button class="burger-btn" id="mobile-burger-trigger"><span class="burger-bar"></span><span class="burger-bar"></span><span class="burger-bar"></span></button>
@@ -161,20 +161,10 @@
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 
+<!-- External Firebase Initialization File -->
+<script src="firebase-init.js"></script>
+
 <script>
-    const firebaseConfig = {
-        apiKey: "AIzaSyDVE5gYyGCgAlfHw82Apna6DsMY9zE2bGs",
-        authDomain: "lovelybites-e4d35.firebaseapp.com",
-        projectId: "lovelybites-e4d35",
-        storageBucket: "lovelybites-e4d35.firebasestorage.app",
-        messagingSenderId: "650974633550",
-        appId: "1:650974633550:web:14e277c8aef5db9ff4ed1f"
-    };
-
-    if (!firebase.apps.length) {
-        firebase.initializeApp(firebaseConfig);
-    }
-
     document.addEventListener('DOMContentLoaded', () => {
         const burger = document.getElementById('mobile-burger-trigger');
         const menu = document.getElementById('navigation-drawer-menu');
@@ -244,7 +234,6 @@
                 totalCount += itemQty;
                 totalAmt += itemTotal;
                 
-                // Ensure id field matches Firestore document ID (which is the product ID)
                 cartItemsArray.push({ id: doc.id, ...item });
 
                 htmlContent += `
@@ -334,29 +323,24 @@
                 createdAt: firebase.firestore.FieldValue.serverTimestamp()
             };
 
-            // 1. Save order in Firestore
             await firebase.firestore().collection("orders").add(orderData);
 
-            // 2. Decrement Inventory & Clear Cart using Batch Write
             const db = firebase.firestore();
             const batch = db.batch();
 
             cartItemsArray.forEach(item => {
-                // Assuming item.id is the product document ID in the 'products' collection
                 const productRef = db.collection("products").doc(item.id);
                 batch.update(productRef, {
                     stock: firebase.firestore.FieldValue.increment(-item.qty)
                 });
             });
 
-            // Delete cart items
             const cartRef = db.collection("users").doc(currentUser.uid).collection("cart");
             const cartDocs = await cartRef.get();
             cartDocs.forEach(doc => {
                 batch.delete(doc.ref);
             });
 
-            // Commit all inventory and cart updates together
             await batch.commit();
 
             alert("Order Successfully Place ho gaya aur inventory update ho gayi!");
