@@ -21,62 +21,64 @@
         
         /* Language Bar */
         .lang-bar { background: var(--brand-blue); padding: 8px; text-align: center; display: flex; justify-content: center; align-items: center; gap: 10px; }
-        .lang-btn { background: rgba(255,255,255,0.2); border: 1px solid white; color: white; padding: 4px 12px; cursor: pointer; font-size: 12px; border-radius: 20px; }
+        .lang-btn { background: rgba(255,255,255,0.2); border: 1px solid white; color: white; padding: 4px 12px; cursor: pointer; font-size: 12px; border-radius: 20px; transition: 0.2s; }
+        .lang-btn:hover { background: rgba(255,255,255,0.4); }
 
-        /* Header & Navigation */
-        header { background: var(--white); padding: 1rem 2rem; position: relative; box-shadow: 0 4px 20px rgba(0,0,0,0.06); border-bottom: 3px solid var(--brand-red); }
-        .gstin-top-right { position: absolute; top: 15px; right: 25px; color: #777; font-size: 0.7rem; text-align: right; font-family: monospace; }
-        
-        .nav-wrapper { display: flex; align-items: center; justify-content: space-between; max-width: 1200px; margin: 0 auto; width: 100%; }
-        .logo img { max-height: 80px; width: auto; filter: drop-shadow(2px 2px 0px var(--brand-blue)); transition: transform 0.3s ease; }
+        /* Header */
+        header { background: var(--white); padding: 1rem 2rem; text-align: center; position: relative; box-shadow: 0 4px 20px rgba(0,0,0,0.06); border-bottom: 4px solid var(--brand-red); }
+        .logo img { max-height: 90px; width: auto; filter: drop-shadow(2px 2px 0px var(--brand-blue)); padding: 5px; transition: transform 0.3s ease; }
         .logo img:hover { transform: scale(1.02); }
-
+        .gstin-top-right { position: absolute; top: 20px; right: 20px; color: #777; font-size: 0.75rem; text-align: right; font-family: monospace; background: #f8f9fa; padding: 4px 10px; border-radius: 6px; border: 1px solid #eee; }
+        
+        /* Navigation - Desktop Premium Look */
+        .nav-wrapper { display: flex; align-items: center; justify-content: space-between; max-width: 1200px; margin: 0 auto; padding: 5px 10px; position: relative; width: 100%; }
         .nav-menu { display: flex; list-style: none; margin: 0; padding: 0; gap: 28px; align-items: center; }
         .nav-item { position: relative; }
-        .nav-link { text-decoration: none; color: var(--text-dark); font-weight: 600; font-size: 0.95rem; padding: 8px 0; display: block; transition: color 0.3s ease; position: relative; }
-        .nav-link::after { content: ''; position: absolute; bottom: 0; left: 0; width: 0; height: 2px; background: var(--brand-red); transition: width 0.3s ease; }
-        .nav-link:hover { color: var(--brand-red); }
-        .nav-link:hover::after { width: 100%; }
-
-        /* Premium Auth Button */
-        .auth-btn { background: linear-gradient(135deg, var(--brand-red), #b7171c); color: #fff; border: none; padding: 10px 22px; border-radius: 50px; font-weight: 700; font-size: 0.9rem; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(227,30,36,0.25); }
-        .auth-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(227,30,36,0.35); background: linear-gradient(135deg, #b7171c, #961216); }
-
-        /* Mobile Burger Styles */
-        .burger-btn { display: none; background: none; border: none; cursor: pointer; padding: 8px; z-index: 100001; }
-        .burger-bar { display: block; width: 24px; height: 2.5px; margin: 5px auto; background-color: var(--text-dark); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); border-radius: 2px; }
+        .nav-link { text-decoration: none; color: var(--text-dark); font-weight: 700; font-size: 0.95rem; padding: 8px 12px; display: block; cursor: pointer; transition: color 0.3s, background 0.3s; border-radius: 8px; }
+        .nav-link:hover { color: var(--brand-red); background: rgba(227, 30, 36, 0.04); }
         
-        /* Burger Animation Active State */
-        .burger-btn.active .burger-bar:nth-child(1) { transform: translateY(7.5px) rotate(45deg); }
-        .burger-btn.active .burger-bar:nth-child(2) { opacity: 0; }
-        .burger-btn.active .burger-bar:nth-child(3) { transform: translateY(-7.5px) rotate(-45deg); }
-
+        /* Burger Button - Premium Modern Look */
+        .burger-btn { display: none; background: #f8f9fa; border: 1px solid #e5e7eb; border-radius: 10px; cursor: pointer; padding: 10px 12px; z-index: 100001; transition: all 0.3s ease; }
+        .burger-btn:hover { background: #fee2e2; border-color: #fca5a5; }
+        .burger-bar { display: block; width: 22px; height: 2.5px; margin: 4px auto; background-color: var(--text-dark); border-radius: 2px; transition: all 0.3s ease; }
+        
+        /* Mobile Dropdown Menu Styling */
         @media (max-width: 768px) {
             header { padding: 0.8rem 1rem; }
-            .logo img { max-height: 60px; }
             .burger-btn { display: block; }
             .nav-menu { 
-                display: flex; 
-                position: fixed; 
-                top: 0; 
-                right: -100%; 
-                width: 280px; 
-                height: 100vh; 
+                display: none; 
+                position: absolute; 
+                top: calc(100% + 12px); 
+                left: 15px; 
+                right: 15px; 
+                width: auto; 
                 background: var(--white); 
                 flex-direction: column; 
-                align-items: flex-start; 
-                padding: 90px 25px 30px 25px; 
-                box-shadow: -10px 0 30px rgba(0,0,0,0.1); 
-                transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1); 
+                align-items: stretch; 
+                padding: 20px; 
+                box-shadow: 0 15px 35px rgba(0,0,0,0.12); 
+                border-radius: 16px; 
+                border: 1px solid rgba(0,0,0,0.06);
+                border-top: 4px solid var(--brand-red); 
                 z-index: 100000; 
+                gap: 8px;
+                animation: slideDown 0.25s cubic-bezier(0.16, 1, 0.3, 1);
             }
-            .nav-menu.active { right: 0; }
-            .nav-item { width: 100%; border-bottom: 1px solid rgba(0,0,0,0.06); padding: 12px 0; }
-            .nav-link { font-size: 1.05rem; width: 100%; }
-            .nav-link::after { display: none; }
-            .auth-btn { width: 100%; text-align: center; margin-top: 10px; padding: 12px; }
+            .nav-menu.active { display: flex; }
+            .nav-link { padding: 12px 16px; border-radius: 10px; font-size: 1rem; text-align: left; }
+            .nav-link:hover { background: rgba(227, 30, 36, 0.08); color: var(--brand-red); }
+            .auth-btn { width: 100%; margin-top: 5px; padding: 12px !important; text-align: center; }
             .gstin-top-right { display: none; }
         }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .auth-btn { background: var(--brand-red); color: #fff; border: none; padding: 10px 22px; border-radius: 20px; font-weight: 700; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(227,30,36,0.25); }
+        .auth-btn:hover { background: #b7171c; transform: translateY(-1px); box-shadow: 0 6px 15px rgba(227,30,36,0.35); }
 
         /* Checkout Container */
         .checkout-container { max-width: 1200px; margin: 40px auto; padding: 0 20px; display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 30px; }
@@ -121,7 +123,7 @@
 
 <div class="lang-bar"><button class="lang-btn" onclick="location.reload()">English</button><button class="lang-btn">हिंदी</button></div>
 <header>
-    <div class="gstin-top-right">K L ENTERPRISE | GSTIN: [Aadhaar Redacted]</div>
+    <div class="gstin-top-right">K L ENTERPRISE | GSTIN: 10JQBPK5246N1ZO</div>
     <div class="nav-wrapper">
         <div class="logo"><a href="index.html"><img src="https://i.ibb.co/mFyGcMzs/Whats-App-Image-2026-04-21-at-12-22-57-removebg-preview.png" alt="Logo"></a></div>
         <button class="burger-btn" id="mobile-burger-trigger"><span class="burger-bar"></span><span class="burger-bar"></span><span class="burger-bar"></span></button>
@@ -199,7 +201,6 @@
         const menu = document.getElementById('navigation-drawer-menu');
         if (burger && menu) {
             burger.addEventListener('click', () => {
-                burger.classList.toggle('active');
                 menu.classList.toggle('active');
             });
         }
@@ -383,5 +384,13 @@
         }
     }
 </script>
+
+<!-- Floating WhatsApp Button -->
+<a href="https://wa.me/919546773070?text=Hello%20Lovely%20Bites,%20mujhe%20products%20ke%20bare%2520me%20jaanna%20hai" 
+   target="_blank" 
+   style="position: fixed; bottom: 20px; right: 20px; background-color: #25d366; color: white; border-radius: 50px; padding: 12px 20px; display: flex; align-items: center; gap: 8px; text-decoration: none; font-weight: bold; box-shadow: 0 4px 10px rgba(0,0,0,0.3); z-index: 99999; font-size: 14px;">
+   <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp" style="width: 24px; height: 24px;">
+   Chat with Us
+</a>
 </body>
 </html>
