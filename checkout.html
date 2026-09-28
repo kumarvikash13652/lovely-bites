@@ -23,31 +23,60 @@
         .lang-bar { background: var(--brand-blue); padding: 8px; text-align: center; display: flex; justify-content: center; align-items: center; gap: 10px; }
         .lang-btn { background: rgba(255,255,255,0.2); border: 1px solid white; color: white; padding: 4px 12px; cursor: pointer; font-size: 12px; border-radius: 20px; }
 
-        /* Header */
-        header { background: var(--white); padding: 1rem 2rem; text-align: center; position: relative; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border-bottom: 4px solid var(--brand-red); }
-        .logo img { max-height: 100px; width: auto; filter: drop-shadow(2px 2px 0px var(--brand-blue)); padding: 5px; }
-        .gstin-top-right { position: absolute; top: 20px; right: 20px; color: #777; font-size: 0.7rem; text-align: right; font-family: monospace; }
+        /* Header & Navigation */
+        header { background: var(--white); padding: 1rem 2rem; position: relative; box-shadow: 0 4px 20px rgba(0,0,0,0.06); border-bottom: 3px solid var(--brand-red); }
+        .gstin-top-right { position: absolute; top: 15px; right: 25px; color: #777; font-size: 0.7rem; text-align: right; font-family: monospace; }
         
-        /* Navigation */
-        .nav-wrapper { display: flex; align-items: center; justify-content: space-between; max-width: 1200px; margin: 0 auto; padding: 10px 20px 0 20px; position: relative; width: 100%; }
-        .nav-menu { display: flex; list-style: none; margin: 0; padding: 0; gap: 20px; align-items: center; }
+        .nav-wrapper { display: flex; align-items: center; justify-content: space-between; max-width: 1200px; margin: 0 auto; width: 100%; }
+        .logo img { max-height: 80px; width: auto; filter: drop-shadow(2px 2px 0px var(--brand-blue)); transition: transform 0.3s ease; }
+        .logo img:hover { transform: scale(1.02); }
+
+        .nav-menu { display: flex; list-style: none; margin: 0; padding: 0; gap: 28px; align-items: center; }
         .nav-item { position: relative; }
-        .nav-link { text-decoration: none; color: var(--text-dark); font-weight: 700; font-size: 0.95rem; padding: 15px 0; display: block; cursor: pointer; }
+        .nav-link { text-decoration: none; color: var(--text-dark); font-weight: 600; font-size: 0.95rem; padding: 8px 0; display: block; transition: color 0.3s ease; position: relative; }
+        .nav-link::after { content: ''; position: absolute; bottom: 0; left: 0; width: 0; height: 2px; background: var(--brand-red); transition: width 0.3s ease; }
         .nav-link:hover { color: var(--brand-red); }
+        .nav-link:hover::after { width: 100%; }
+
+        /* Premium Auth Button */
+        .auth-btn { background: linear-gradient(135deg, var(--brand-red), #b7171c); color: #fff; border: none; padding: 10px 22px; border-radius: 50px; font-weight: 700; font-size: 0.9rem; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(227,30,36,0.25); }
+        .auth-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(227,30,36,0.35); background: linear-gradient(135deg, #b7171c, #961216); }
+
+        /* Mobile Burger Styles */
+        .burger-btn { display: none; background: none; border: none; cursor: pointer; padding: 8px; z-index: 100001; }
+        .burger-bar { display: block; width: 24px; height: 2.5px; margin: 5px auto; background-color: var(--text-dark); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); border-radius: 2px; }
         
-        /* Mobile Burger */
-        .burger-btn { display: none; background: none; border: none; cursor: pointer; padding: 10px; z-index: 100001; }
-        .burger-bar { display: block; width: 25px; height: 3px; margin: 5px auto; background-color: var(--text-dark); transition: all 0.3s ease; }
-        
+        /* Burger Animation Active State */
+        .burger-btn.active .burger-bar:nth-child(1) { transform: translateY(7.5px) rotate(45deg); }
+        .burger-btn.active .burger-bar:nth-child(2) { opacity: 0; }
+        .burger-btn.active .burger-bar:nth-child(3) { transform: translateY(-7.5px) rotate(-45deg); }
+
         @media (max-width: 768px) {
+            header { padding: 0.8rem 1rem; }
+            .logo img { max-height: 60px; }
             .burger-btn { display: block; }
-            .nav-menu { display: none; position: absolute; top: 100%; left: 0; width: 100%; background: white; flex-direction: column; align-items: flex-start; padding: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.15); border-bottom: 3px solid var(--brand-red); z-index: 100000; }
-            .nav-menu.active { display: flex; }
+            .nav-menu { 
+                display: flex; 
+                position: fixed; 
+                top: 0; 
+                right: -100%; 
+                width: 280px; 
+                height: 100vh; 
+                background: var(--white); 
+                flex-direction: column; 
+                align-items: flex-start; 
+                padding: 90px 25px 30px 25px; 
+                box-shadow: -10px 0 30px rgba(0,0,0,0.1); 
+                transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1); 
+                z-index: 100000; 
+            }
+            .nav-menu.active { right: 0; }
+            .nav-item { width: 100%; border-bottom: 1px solid rgba(0,0,0,0.06); padding: 12px 0; }
+            .nav-link { font-size: 1.05rem; width: 100%; }
+            .nav-link::after { display: none; }
+            .auth-btn { width: 100%; text-align: center; margin-top: 10px; padding: 12px; }
             .gstin-top-right { display: none; }
         }
-
-        .auth-btn { background: var(--brand-red); color: #fff; border: none; padding: 8px 20px; border-radius: 20px; font-weight: 700; cursor: pointer; transition: 0.3s; }
-        .auth-btn:hover { background: #b7171c; }
 
         /* Checkout Container */
         .checkout-container { max-width: 1200px; margin: 40px auto; padding: 0 20px; display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 30px; }
@@ -169,7 +198,10 @@
         const burger = document.getElementById('mobile-burger-trigger');
         const menu = document.getElementById('navigation-drawer-menu');
         if (burger && menu) {
-            burger.addEventListener('click', () => menu.classList.toggle('active'));
+            burger.addEventListener('click', () => {
+                burger.classList.toggle('active');
+                menu.classList.toggle('active');
+            });
         }
     });
 
