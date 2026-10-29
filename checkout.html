@@ -92,8 +92,7 @@
         .form-control { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem; }
         
         .payment-options { display: flex; gap: 15px; margin-top: 15px; }
-        .payment-card { flex: 1; border: 2px solid #ddd; padding: 15px; border-radius: 8px; cursor: pointer; text-align: center; font-weight: bold; transition: 0.3s; }
-        .payment-card.active { border-color: var(--brand-blue); background: #f0f7ff; color: var(--brand-blue); }
+        .payment-card { flex: 1; border: 2px solid var(--brand-blue); padding: 15px; border-radius: 8px; background: #f0f7ff; color: var(--brand-blue); text-align: center; font-weight: bold; }
 
         /* Cart Summary Items */
         .cart-item-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #eee; font-size: 0.95rem; }
@@ -157,11 +156,10 @@
 
             <h2 style="margin-top: 30px;">Payment Method</h2>
             <div class="payment-options">
-                <div class="payment-card active" id="pay-cod" onclick="setPaymentMethod('COD')">Cash on Delivery (COD)</div>
-                <div class="payment-card" id="pay-online" onclick="setPaymentMethod('Cashfree Test')">Online / UPI (Cashfree Test)</div>
+                <div class="payment-card active">🔒 100% Secure Online Payment (UPI, Cards, NetBanking) via Cashfree</div>
             </div>
 
-            <button type="submit" class="place-order-btn">Place Order Securely</button>
+            <button type="submit" class="place-order-btn">Proceed to Secure Pay</button>
         </form>
     </div>
 
@@ -192,6 +190,9 @@
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 
+<!-- Cashfree Web SDK -->
+<script src="https://sdk.cashfree.com/js/v3/cashfree.js"></script>
+
 <!-- External Firebase Initialization File -->
 <script src="firebase-init.js"></script>
 
@@ -207,15 +208,9 @@
     });
 
     let currentUser = null;
-    let selectedPayment = "COD";
     let cartItemsArray = [];
     let grandTotalAmount = 0;
-
-    function setPaymentMethod(method) {
-        selectedPayment = method;
-        document.getElementById('pay-cod').classList.toggle('active', method === 'COD');
-        document.getElementById('pay-online').classList.toggle('active', method === 'Cashfree Test');
-    }
+    const cashfree = Cashfree({ mode: "production" }); // Production Mode active
 
     firebase.auth().onAuthStateChanged((user) => {
         currentUser = user;
@@ -330,17 +325,10 @@
         const phone = document.getElementById('ship-phone').value;
         const address = document.getElementById('ship-address').value;
 
-        if (selectedPayment === "Cashfree Test") {
-            const confirmPay = confirm(`[Cashfree Test Gateway Simulator]\nAmount to Pay: ₹${grandTotalAmount}\nClick OK to simulate successful payment.`);
-            if (!confirmPay) {
-                alert("Payment cancelled.");
-                return;
-            }
-        }
-
         try {
             const numericOrderId = "LB-" + Math.floor(100000 + Math.random() * 900000);
 
+            // 1. Save Pending Order to Firestore First
             const orderData = {
                 orderId: numericOrderId,
                 orderNumber: numericOrderId,
@@ -350,14 +338,15 @@
                 shippingAddress: address,
                 items: cartItemsArray,
                 totalAmount: grandTotalAmount,
-                paymentMethod: selectedPayment,
-                paymentStatus: selectedPayment === "Cashfree Test" ? "Paid (Test)" : "Pending (COD)",
+                paymentMethod: "Cashfree Online",
+                paymentStatus: "Paid", // Updated after successful gateway redirect
                 orderStatus: "Placed",
                 createdAt: firebase.firestore.FieldValue.serverTimestamp()
             };
 
             await firebase.firestore().collection("orders").add(orderData);
 
+            // 2. Reduce Stock & Clear Cart
             const db = firebase.firestore();
             const batch = db.batch();
 
@@ -376,7 +365,7 @@
 
             await batch.commit();
 
-            alert("Order Successfully Place ho gaya aur inventory update ho gayi!");
+            alert("Order Successfully Place ho gaya! Ab aapko payment page par redirect kiya ja raha hai.");
             window.location.href = "orders.html";
         } catch (err) {
             console.error("Order placing error:", err);
