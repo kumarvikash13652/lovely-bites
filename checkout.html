@@ -102,7 +102,7 @@
             </div>
 
             <h2 style="margin-top: 30px;">Payment Method</h2>
-            <div class="payment-card">🔒 100% Secure Online Payment via Cashfree (Sandbox)</div>
+            <div class="payment-card">🔒 100% Secure Online Payment via Cashfree</div>
 
             <button type="submit" class="place-order-btn">Proceed to Pay Securely</button>
         </form>
@@ -138,7 +138,7 @@
     let currentUser = null;
     let cartItemsArray = [];
     let grandTotalAmount = 0;
-    const cashfree = Cashfree({ mode: "production" }); // Sandbox mode enabled
+    const cashfree = Cashfree({ mode: "production" }); // Production mode enabled
 
     firebase.auth().onAuthStateChanged((user) => {
         currentUser = user;
@@ -232,7 +232,7 @@
                 shippingAddress: address,
                 items: cartItemsArray,
                 totalAmount: grandTotalAmount,
-                paymentMethod: "Cashfree Sandbox",
+                paymentMethod: "Cashfree Online",
                 paymentStatus: "Pending",
                 orderStatus: "Pending Payment",
                 createdAt: firebase.firestore.FieldValue.serverTimestamp()
