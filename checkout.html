@@ -138,7 +138,7 @@
     let currentUser = null;
     let cartItemsArray = [];
     let grandTotalAmount = 0;
-    const cashfree = Cashfree({ mode: "sandbox" }); // Sandbox mode enabled
+    const cashfree = Cashfree({ mode: "production" }); // Sandbox mode enabled
 
     firebase.auth().onAuthStateChanged((user) => {
         currentUser = user;
