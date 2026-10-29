@@ -19,68 +19,30 @@
         * { box-sizing: border-box; } 
         body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background: var(--bg-cream); margin: 0; padding: 0; color: var(--text-dark); line-height: 1.6; }
         
-        /* Language Bar */
-        .lang-bar { background: var(--brand-blue); padding: 8px; text-align: center; display: flex; justify-content: center; align-items: center; gap: 10px; }
-        .lang-btn { background: rgba(255,255,255,0.2); border: 1px solid white; color: white; padding: 4px 12px; cursor: pointer; font-size: 12px; border-radius: 20px; transition: 0.2s; }
-        .lang-btn:hover { background: rgba(255,255,255,0.4); }
-
         /* Header */
         header { background: var(--white); padding: 1rem 2rem; text-align: center; position: relative; box-shadow: 0 4px 20px rgba(0,0,0,0.06); border-bottom: 4px solid var(--brand-red); }
         .logo img { max-height: 90px; width: auto; filter: drop-shadow(2px 2px 0px var(--brand-blue)); padding: 5px; transition: transform 0.3s ease; }
-        .logo img:hover { transform: scale(1.02); }
         .gstin-top-right { position: absolute; top: 20px; right: 20px; color: #777; font-size: 0.75rem; text-align: right; font-family: monospace; background: #f8f9fa; padding: 4px 10px; border-radius: 6px; border: 1px solid #eee; }
         
-        /* Navigation - Desktop Premium Look */
+        /* Navigation */
         .nav-wrapper { display: flex; align-items: center; justify-content: space-between; max-width: 1200px; margin: 0 auto; padding: 5px 10px; position: relative; width: 100%; }
         .nav-menu { display: flex; list-style: none; margin: 0; padding: 0; gap: 28px; align-items: center; }
-        .nav-item { position: relative; }
-        .nav-link { text-decoration: none; color: var(--text-dark); font-weight: 700; font-size: 0.95rem; padding: 8px 12px; display: block; cursor: pointer; transition: color 0.3s, background 0.3s; border-radius: 8px; }
+        .nav-link { text-decoration: none; color: var(--text-dark); font-weight: 700; font-size: 0.95rem; padding: 8px 12px; display: block; transition: color 0.3s; border-radius: 8px; }
         .nav-link:hover { color: var(--brand-red); background: rgba(227, 30, 36, 0.04); }
         
-        /* Burger Button - Premium Modern Look */
-        .burger-btn { display: none; background: #f8f9fa; border: 1px solid #e5e7eb; border-radius: 10px; cursor: pointer; padding: 10px 12px; z-index: 100001; transition: all 0.3s ease; }
-        .burger-btn:hover { background: #fee2e2; border-color: #fca5a5; }
-        .burger-bar { display: block; width: 22px; height: 2.5px; margin: 4px auto; background-color: var(--text-dark); border-radius: 2px; transition: all 0.3s ease; }
-        
-        /* Mobile Dropdown Menu Styling */
+        .burger-btn { display: none; background: #f8f9fa; border: 1px solid #e5e7eb; border-radius: 10px; cursor: pointer; padding: 10px 12px; }
+        .burger-bar { display: block; width: 22px; height: 2.5px; margin: 4px auto; background-color: var(--text-dark); border-radius: 2px; }
+
         @media (max-width: 768px) {
-            header { padding: 0.8rem 1rem; }
             .burger-btn { display: block; }
-            .nav-menu { 
-                display: none; 
-                position: absolute; 
-                top: calc(100% + 12px); 
-                left: 15px; 
-                right: 15px; 
-                width: auto; 
-                background: var(--white); 
-                flex-direction: column; 
-                align-items: stretch; 
-                padding: 20px; 
-                box-shadow: 0 15px 35px rgba(0,0,0,0.12); 
-                border-radius: 16px; 
-                border: 1px solid rgba(0,0,0,0.06);
-                border-top: 4px solid var(--brand-red); 
-                z-index: 100000; 
-                gap: 8px;
-                animation: slideDown 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-            }
+            .nav-menu { display: none; position: absolute; top: calc(100% + 12px); left: 15px; right: 15px; background: var(--white); flex-direction: column; padding: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.12); border-radius: 16px; border-top: 4px solid var(--brand-red); z-index: 100000; gap: 8px; }
             .nav-menu.active { display: flex; }
-            .nav-link { padding: 12px 16px; border-radius: 10px; font-size: 1rem; text-align: left; }
-            .nav-link:hover { background: rgba(227, 30, 36, 0.08); color: var(--brand-red); }
-            .auth-btn { width: 100%; margin-top: 5px; padding: 12px !important; text-align: center; }
             .gstin-top-right { display: none; }
         }
 
-        @keyframes slideDown {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .auth-btn { background: var(--brand-red); color: #fff; border: none; padding: 10px 22px; border-radius: 20px; font-weight: 700; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(227,30,36,0.25); }
-        .auth-btn:hover { background: #b7171c; transform: translateY(-1px); box-shadow: 0 6px 15px rgba(227,30,36,0.35); }
-
-        /* Checkout Container */
+        .auth-btn { background: var(--brand-red); color: #fff; border: none; padding: 10px 22px; border-radius: 20px; font-weight: 700; cursor: pointer; }
+        
+        /* Checkout Layout */
         .checkout-container { max-width: 1200px; margin: 40px auto; padding: 0 20px; display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 30px; }
         @media(max-width: 900px) { .checkout-container { grid-template-columns: 1fr; } }
 
@@ -91,36 +53,22 @@
         .form-group label { display: block; font-weight: 700; margin-bottom: 6px; font-size: 0.9rem; }
         .form-control { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem; }
         
-        .payment-options { display: flex; gap: 15px; margin-top: 15px; }
-        .payment-card { flex: 1; border: 2px solid var(--brand-blue); padding: 15px; border-radius: 8px; background: #f0f7ff; color: var(--brand-blue); text-align: center; font-weight: bold; }
+        .payment-card { border: 2px solid var(--brand-blue); padding: 15px; border-radius: 8px; background: #f0f7ff; color: var(--brand-blue); text-align: center; font-weight: bold; margin-top: 15px; }
 
-        /* Cart Summary Items */
         .cart-item-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #eee; font-size: 0.95rem; }
         .item-controls { display: flex; align-items: center; gap: 8px; margin-top: 5px; }
         .qty-mini-btn { background: #eee; border: none; width: 26px; height: 26px; font-weight: bold; border-radius: 4px; cursor: pointer; }
         .delete-btn { background: #ffebee; color: var(--brand-red); border: none; padding: 4px 8px; font-size: 12px; font-weight: bold; border-radius: 4px; cursor: pointer; }
-        .delete-btn:hover { background: var(--brand-red); color: white; }
 
         .summary-total { display: flex; justify-content: space-between; font-size: 1.3rem; font-weight: 900; color: var(--brand-red); margin-top: 20px; padding-top: 15px; border-top: 2px dashed #ddd; }
-
-        .place-order-btn { background: var(--brand-red); color: white; border: none; width: 100%; padding: 14px; border-radius: 30px; font-weight: 800; font-size: 1.1rem; cursor: pointer; margin-top: 25px; transition: 0.3s; box-shadow: 0 5px 15px rgba(227,30,36,0.3); }
+        .place-order-btn { background: var(--brand-red); color: white; border: none; width: 100%; padding: 14px; border-radius: 30px; font-weight: 800; font-size: 1.1rem; cursor: pointer; margin-top: 25px; box-shadow: 0 5px 15px rgba(227,30,36,0.3); }
         .place-order-btn:hover { background: #b7171c; }
 
-        /* Footer */
-        footer { background: var(--text-dark); color: #aaa; padding: 3rem 2rem; font-size: 0.9rem; margin-top: 50px; }
-        .footer-container { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; text-align: left; }
-        @media(max-width: 768px) { .footer-container { grid-template-columns: 1fr; } }
-        .footer-col h5 { color: var(--white); margin-bottom: 15px; text-transform: uppercase; letter-spacing: 1px; }
-        .footer-platforms { margin: 10px 0; display: flex; flex-wrap: wrap; gap: 15px; align-items: center; }
-        .platform-link img { height: 25px; filter: grayscale(1) brightness(2); opacity: 0.7; transition: 0.3s; }
-        .platform-link:hover img { filter: grayscale(0) brightness(1); opacity: 1; }
-        .msme-logo { height: 60px !important; filter: none !important; opacity: 1 !important; margin-top: 10px; }
-        .footer-bottom { grid-column: 1 / -1; text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); font-size: 11px; opacity: 0.5; }
+        footer { background: var(--text-dark); color: #aaa; padding: 3rem 2rem; font-size: 0.9rem; margin-top: 50px; text-align: center; }
     </style>
 </head>
 <body>
 
-<div class="lang-bar"><button class="lang-btn" onclick="location.reload()">English</button><button class="lang-btn">हिंदी</button></div>
 <header>
     <div class="gstin-top-right">K L ENTERPRISE | GSTIN: 10JQBPK5246N1ZO</div>
     <div class="nav-wrapper">
@@ -137,7 +85,6 @@
 </header>
 
 <main class="checkout-container">
-    <!-- Shipping & Payment Form -->
     <div class="checkout-box">
         <h2>Shipping Address & Details</h2>
         <form id="checkout-form" onsubmit="handlePlaceOrder(event)">
@@ -155,34 +102,21 @@
             </div>
 
             <h2 style="margin-top: 30px;">Payment Method</h2>
-            <div class="payment-options">
-                <div class="payment-card active">🔒 100% Secure Online Payment (UPI, Cards, NetBanking) via Cashfree</div>
-            </div>
+            <div class="payment-card">🔒 100% Secure Online Payment via Cashfree</div>
 
-            <button type="submit" class="place-order-btn">Proceed to Secure Pay</button>
+            <button type="submit" class="place-order-btn">Proceed to Pay Securely</button>
         </form>
     </div>
 
-    <!-- Order Summary -->
     <div class="checkout-box">
         <h2>Order Summary</h2>
-        <div id="checkout-items-list">
-            <p>Loading cart items...</p>
-        </div>
-        <div class="summary-total">
-            <span>Total Amount:</span>
-            <span id="summary-grand-total">₹0</span>
-        </div>
+        <div id="checkout-items-list"><p>Loading cart items...</p></div>
+        <div class="summary-total"><span>Total Amount:</span><span id="summary-grand-total">₹0</span></div>
     </div>
 </main>
 
-<footer id="contact">
-    <div class="footer-container">
-        <div class="footer-col"><h5>Quality & Certification</h5><p><strong>FSSAI: 20426290000095</strong></p><img src="https://i.ibb.co/ds7NhrHf/New-Project-5.png" class="msme-logo" alt="MSME"></div>
-        <div class="footer-col"><h5>Shop Online</h5><p>Find us on Marketplaces:</p><div class="footer-platforms"><a href="#" class="platform-link"><img src="https://i.ibb.co/hRB8h7zS/Amazon-Logo-White-PNG.png" alt="Amazon"></a><a href="#" class="platform-link"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/33/Meesho_logo.png/250px-Meesho_logo.png" alt="Meesho"></a><a href="#" class="platform-link"><img src="https://i.ibb.co/HT14SWjR/tradeindia-logo-rounded-glossy-icon-with-transparent-background-free-png.webp" alt="TradeIndia"></a></div></div>
-        <div class="footer-col"><h5>Contact Us</h5><p>Shiv Kala Bhawan, Maharshi Menhi Nagar, Madhepura, Bihar 852113</p><p>Email: support@lovelybites.online</p></div>
-        <div class="footer-bottom">&copy; 2026 Lovely Bites. All Rights Reserved.</div>
-    </div>
+<footer>
+    <p>FSSAI: 20426290000095 | &copy; 2026 Lovely Bites. All Rights Reserved.</p>
 </footer>
 
 <!-- Firebase SDKs -->
@@ -192,65 +126,43 @@
 
 <!-- Cashfree Web SDK -->
 <script src="https://sdk.cashfree.com/js/v3/cashfree.js"></script>
-
-<!-- External Firebase Initialization File -->
 <script src="firebase-init.js"></script>
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {
         const burger = document.getElementById('mobile-burger-trigger');
         const menu = document.getElementById('navigation-drawer-menu');
-        if (burger && menu) {
-            burger.addEventListener('click', () => {
-                menu.classList.toggle('active');
-            });
-        }
+        if (burger && menu) burger.addEventListener('click', () => menu.classList.toggle('active'));
     });
 
     let currentUser = null;
     let cartItemsArray = [];
     let grandTotalAmount = 0;
-    const cashfree = Cashfree({ mode: "production" }); // Production Mode active
+    const cashfree = Cashfree({ mode: "production" });
 
     firebase.auth().onAuthStateChanged((user) => {
         currentUser = user;
         const authBtn = document.getElementById('auth-btn');
-        const cartBadge = document.getElementById('cart-count-badge');
-        
         if (authBtn) {
             authBtn.innerText = user ? "Logout" : "Login";
-            authBtn.onclick = () => {
-                if (user) {
-                    firebase.auth().signOut();
-                } else {
-                    firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider());
-                }
-            };
+            authBtn.onclick = () => user ? firebase.auth().signOut() : firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider());
         }
-
-        if (user) {
-            loadCartSummary(user.uid);
-        } else {
-            if (cartBadge) cartBadge.innerText = "0";
-            document.getElementById('checkout-items-list').innerHTML = "<p style='color:red;'>Pehle login karein checkout karne ke liye.</p>";
-        }
+        if (user) loadCartSummary(user.uid);
+        else document.getElementById('checkout-items-list').innerHTML = "<p style='color:red;'>Pehle login karein checkout karne ke liye.</p>";
     });
 
     function loadCartSummary(uid) {
-        const cartBadge = document.getElementById('cart-count-badge');
         const itemsContainer = document.getElementById('checkout-items-list');
         const totalSpan = document.getElementById('summary-grand-total');
 
         firebase.firestore().collection("users").doc(uid).collection("cart").onSnapshot((snapshot) => {
             cartItemsArray = [];
-            let totalCount = 0;
             let totalAmt = 0;
             let htmlContent = "";
 
             if (snapshot.empty) {
                 itemsContainer.innerHTML = "<p>Aapka cart khaali hai!</p>";
                 totalSpan.innerText = "₹0";
-                if (cartBadge) cartBadge.innerText = "0";
                 return;
             }
 
@@ -259,9 +171,7 @@
                 const itemQty = item.qty || 1;
                 const itemPrice = item.price || 0;
                 const itemTotal = itemPrice * itemQty;
-                totalCount += itemQty;
                 totalAmt += itemTotal;
-                
                 cartItemsArray.push({ id: doc.id, ...item });
 
                 htmlContent += `
@@ -269,12 +179,6 @@
                         <div>
                             <strong>${item.productName}</strong><br>
                             <span style="font-size: 0.85rem; color: #666;">₹${itemPrice} x ${itemQty} = <strong>₹${itemTotal}</strong></span>
-                            <div class="item-controls">
-                                <button class="qty-mini-btn" onclick="updateCartQty('${doc.id}', ${itemQty - 1}, ${itemPrice}, '${item.productName}')">-</button>
-                                <span style="font-size: 0.9rem; font-weight: bold; padding: 0 5px;">${itemQty}</span>
-                                <button class="qty-mini-btn" onclick="updateCartQty('${doc.id}', ${itemQty + 1}, ${itemPrice}, '${item.productName}')">+</button>
-                                <button class="delete-btn" onclick="deleteCartItem('${doc.id}')">Delete</button>
-                            </div>
                         </div>
                         <div style="font-weight: bold; color: var(--brand-red);">₹${itemTotal}</div>
                     </div>
@@ -284,42 +188,13 @@
             itemsContainer.innerHTML = htmlContent;
             totalSpan.innerText = `₹${totalAmt}`;
             grandTotalAmount = totalAmt;
-            if (cartBadge) cartBadge.innerText = totalCount;
         });
-    }
-
-    async function updateCartQty(productId, newQty, price, productName) {
-        if (!currentUser) return;
-        const cartRef = firebase.firestore().collection("users").doc(currentUser.uid).collection("cart").doc(productId);
-        
-        if (newQty <= 0) {
-            await cartRef.delete();
-        } else {
-            await cartRef.update({
-                qty: newQty,
-                price: price,
-                productName: productName
-            });
-        }
-    }
-
-    async function deleteCartItem(productId) {
-        if (!currentUser) return;
-        if (confirm("Kya aap is item ko cart se hatana chahte hain?")) {
-            await firebase.firestore().collection("users").doc(currentUser.uid).collection("cart").doc(productId).delete();
-        }
     }
 
     async function handlePlaceOrder(e) {
         e.preventDefault();
-        if (!currentUser) {
-            alert("Pehle login karein!");
-            return;
-        }
-        if (cartItemsArray.length === 0) {
-            alert("Cart me koi item nahi hai!");
-            return;
-        }
+        if (!currentUser) { alert("Pehle login karein!"); return; }
+        if (cartItemsArray.length === 0) { alert("Cart khaali hai!"); return; }
 
         const name = document.getElementById('ship-name').value;
         const phone = document.getElementById('ship-phone').value;
@@ -328,7 +203,26 @@
         try {
             const numericOrderId = "LB-" + Math.floor(100000 + Math.random() * 900000);
 
-            // 1. Save Pending Order to Firestore First
+            // 1. Call Cloud Function to get Cashfree Session ID
+            const response = await fetch("https://us-central1-YOUR_PROJECT_ID.cloudfunctions.net/createCashfreeOrder", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    orderId: numericOrderId,
+                    orderAmount: grandTotalAmount,
+                    customerName: name,
+                    customerPhone: phone,
+                    userId: currentUser.uid
+                })
+            });
+
+            const result = await response.json();
+            if (!result.success) {
+                alert("Payment session create nahi ho paya. Dobara koshish karein.");
+                return;
+            }
+
+            // 2. Save order in Firestore as Pending Payment
             const orderData = {
                 orderId: numericOrderId,
                 orderNumber: numericOrderId,
@@ -339,47 +233,27 @@
                 items: cartItemsArray,
                 totalAmount: grandTotalAmount,
                 paymentMethod: "Cashfree Online",
-                paymentStatus: "Paid", // Updated after successful gateway redirect
-                orderStatus: "Placed",
+                paymentStatus: "Pending",
+                orderStatus: "Pending Payment",
                 createdAt: firebase.firestore.FieldValue.serverTimestamp()
             };
-
             await firebase.firestore().collection("orders").add(orderData);
 
-            // 2. Reduce Stock & Clear Cart
-            const db = firebase.firestore();
-            const batch = db.batch();
+            // 3. Trigger Cashfree Checkout Popup
+            let checkoutOptions = {
+                paymentSessionId: result.payment_session_id,
+                returnUrl: window.location.origin + "/orders.html"
+            };
 
-            cartItemsArray.forEach(item => {
-                const productRef = db.collection("products").doc(item.id);
-                batch.update(productRef, {
-                    stock: firebase.firestore.FieldValue.increment(-item.qty)
-                });
+            cashfree.checkout(checkoutOptions).then(function(res) {
+                if (res.error) alert(res.error.message);
             });
 
-            const cartRef = db.collection("users").doc(currentUser.uid).collection("cart");
-            const cartDocs = await cartRef.get();
-            cartDocs.forEach(doc => {
-                batch.delete(doc.ref);
-            });
-
-            await batch.commit();
-
-            alert("Order Successfully Place ho gaya! Ab aapko payment page par redirect kiya ja raha hai.");
-            window.location.href = "orders.html";
         } catch (err) {
-            console.error("Order placing error:", err);
-            alert("Order place karte waqt error aayi.");
+            console.error("Payment Error:", err);
+            alert("Kuch error aa gayi payment process me.");
         }
     }
 </script>
-
-<!-- Floating WhatsApp Button -->
-<a href="https://wa.me/919546773070?text=Hello%20Lovely%20Bites,%20mujhe%20products%20ke%20bare%2520me%20jaanna%20hai" 
-   target="_blank" 
-   style="position: fixed; bottom: 20px; right: 20px; background-color: #25d366; color: white; border-radius: 50px; padding: 12px 20px; display: flex; align-items: center; gap: 8px; text-decoration: none; font-weight: bold; box-shadow: 0 4px 10px rgba(0,0,0,0.3); z-index: 99999; font-size: 14px;">
-   <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp" style="width: 24px; height: 24px;">
-   Chat with Us
-</a>
 </body>
 </html>
