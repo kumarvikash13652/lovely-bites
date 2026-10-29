@@ -138,7 +138,7 @@
     let currentUser = null;
     let cartItemsArray = [];
     let grandTotalAmount = 0;
-    const cashfree = Cashfree({ mode: "production" }); // Production mode enabled
+    const cashfree = Cashfree({ mode: "production" }); // Production mode explicitly enabled
 
     firebase.auth().onAuthStateChanged((user) => {
         currentUser = user;
@@ -218,7 +218,7 @@
 
             const result = await response.json();
             if (!result.success) {
-                alert("Payment session create nahi ho paya. Dobara koshish karein.");
+                alert("Payment session create nahi ho paya. Error: " + JSON.stringify(result.error));
                 return;
             }
 
