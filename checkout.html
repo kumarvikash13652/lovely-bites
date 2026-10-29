@@ -203,8 +203,8 @@
         try {
             const numericOrderId = "LB-" + Math.floor(100000 + Math.random() * 900000);
 
-            // 1. Call Cloud Function to get Cashfree Session ID
-            const response = await fetch("https://us-central1-YOUR_PROJECT_ID.cloudfunctions.net/createCashfreeOrder", {
+            // 1. Call deployed Cloud Function to get Cashfree Session ID[cite: 14]
+            const response = await fetch("https://us-central1-lovelybites-e4d35.cloudfunctions.net/createCashfreeSession", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
