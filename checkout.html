@@ -56,6 +56,9 @@
         .payment-card { border: 2px solid var(--brand-blue); padding: 15px; border-radius: 8px; background: #f0f7ff; color: var(--brand-blue); text-align: center; font-weight: bold; margin-top: 15px; }
 
         .cart-item-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #eee; font-size: 0.95rem; }
+        .item-controls { display: flex; align-items: center; gap: 8px; margin-top: 5px; }
+        .qty-mini-btn { background: #eee; border: none; width: 26px; height: 26px; font-weight: bold; border-radius: 4px; cursor: pointer; }
+        .delete-btn { background: #ffebee; color: var(--brand-red); border: none; padding: 4px 8px; font-size: 12px; font-weight: bold; border-radius: 4px; cursor: pointer; }
 
         .summary-total { display: flex; justify-content: space-between; font-size: 1.3rem; font-weight: 900; color: var(--brand-red); margin-top: 20px; padding-top: 15px; border-top: 2px dashed #ddd; }
         .place-order-btn { background: var(--brand-red); color: white; border: none; width: 100%; padding: 14px; border-radius: 30px; font-weight: 800; font-size: 1.1rem; cursor: pointer; margin-top: 25px; box-shadow: 0 5px 15px rgba(227,30,36,0.3); }
@@ -145,11 +148,8 @@
             authBtn.innerText = user ? "Logout" : "Login";
             authBtn.onclick = () => user ? firebase.auth().signOut() : firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider());
         }
-        if (user) {
-            loadCartSummary(user.uid);
-        } else {
-            document.getElementById('checkout-items-list').innerHTML = "<p style='color:red;'>Pehle login karein checkout karne ke liye.</p>";
-        }
+        if (user) loadCartSummary(user.uid);
+        else document.getElementById('checkout-items-list').innerHTML = "<p style='color:red;'>Pehle login karein checkout karne ke liye.</p>";
     });
 
     function loadCartSummary(uid) {
@@ -201,7 +201,7 @@
     async function handlePlaceOrder(e) {
         e.preventDefault();
         if (!currentUser) { alert("Pehle login karein!"); return; }
-        if (cartItemsArray.length === 0 || grandTotalAmount <= 0) { alert("Cart khaali hai ya amount invalid hai!"); return; }
+        if (cartItemsArray.length === 0 || grandTotalAmount <= 0) { alert("Cart khaali hai!"); return; }
 
         const submitBtn = document.getElementById('place-order-btn');
         const name = document.getElementById('ship-name').value.trim();
@@ -209,7 +209,7 @@
         const address = document.getElementById('ship-address').value.trim();
 
         submitBtn.disabled = true;
-        submitBtn.innerText = "Creating Payment Session...";
+        submitBtn.innerText = "Processing...";
 
         try {
             const numericOrderId = "LB_" + Math.floor(100000 + Math.random() * 900000);
@@ -227,9 +227,10 @@
             });
 
             const result = await response.json();
+            const sessionId = result && result.payment_session_id ? String(result.payment_session_id).trim() : "";
 
-            if (!response.ok || !result.success || !result.payment_session_id) {
-                alert("Payment session create nahi ho paya. Error: " + JSON.stringify(result.error || result.message || result));
+            if (!response.ok || !result || !result.success || !sessionId || !sessionId.startsWith("session_")) {
+                alert("Payment session create nahi ho paya. Error: " + JSON.stringify(result?.error || result?.message || result));
                 submitBtn.disabled = false;
                 submitBtn.innerText = "Proceed to Pay Securely";
                 return;
@@ -252,19 +253,21 @@
             await firebase.firestore().collection("orders").add(orderData);
 
             const checkoutOptions = {
-                paymentSessionId: result.payment_session_id,
-                returnUrl: `${window.location.origin}/orders.html?order_id=${encodeURIComponent(result.order_id || numericOrderId)}`
+                paymentSessionId: sessionId,
+                redirectTarget: "_modal"
             };
 
-            const cfResult = await cashfree.checkout(checkoutOptions);
-            if (cfResult && cfResult.error) {
-                alert(cfResult.error.message || "Checkout failed");
+            cashfree.checkout(checkoutOptions).then(function(res) {
+                if (res && res.error) {
+                    alert(res.error.message);
+                }
                 submitBtn.disabled = false;
                 submitBtn.innerText = "Proceed to Pay Securely";
-            }
+            });
+
         } catch (err) {
             console.error("Payment Error:", err);
-            alert("Kuch error aa gayi payment process me: " + err.message);
+            alert("Kuch error aa gayi payment process me.");
             submitBtn.disabled = false;
             submitBtn.innerText = "Proceed to Pay Securely";
         }
