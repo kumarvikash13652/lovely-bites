@@ -16,7 +16,7 @@
             --text-dark: #2d2926;
             --white: #ffffff;
         }
-        * { box-sizing: border-box; } 
+- { box-sizing: border-box; } 
         body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background: var(--bg-cream); margin: 0; padding: 0; color: var(--text-dark); line-height: 1.6; }
         
         /* Header */
@@ -60,6 +60,29 @@
         .qty-mini-btn { background: #eee; border: none; width: 26px; height: 26px; font-weight: bold; border-radius: 4px; cursor: pointer; }
         .delete-btn { background: #ffebee; color: var(--brand-red); border: none; padding: 4px 8px; font-size: 12px; font-weight: bold; border-radius: 4px; cursor: pointer; }
 
+        /* Translucent Cart Drawer Styles */
+        .cart-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(3px); z-index: 99999; opacity: 0; visibility: hidden; transition: all 0.3s ease; }
+        .cart-overlay.open { opacity: 1; visibility: visible; }
+        
+        .cart-drawer { position: fixed; top: 0; right: -400px; width: 100%; max-width: 380px; height: 100%; background: white; box-shadow: -5px 0 25px rgba(0,0,0,0.15); z-index: 100000; display: flex; flex-direction: column; transition: right 0.35s cubic-bezier(0.16, 1, 0.3, 1); }
+        .cart-drawer.open { right: 0; }
+
+        .cart-drawer-header { padding: 20px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
+        .cart-drawer-header h3 { margin: 0; font-size: 1.2rem; color: var(--text-dark); }
+        .close-drawer-btn { background: none; border: none; font-size: 24px; cursor: pointer; color: #777; }
+
+        .cart-drawer-body { flex: 1; overflow-y: auto; padding: 20px; }
+        .cart-drawer-item { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid #f0f0f0; }
+        .cart-item-info h4 { margin: 0 0 5px 0; font-size: 0.95rem; }
+        .cart-item-info p { margin: 0; color: var(--brand-red); font-weight: bold; font-size: 0.9rem; }
+        .cart-item-controls { display: flex; align-items: center; gap: 8px; }
+        .cart-qty-btn { background: #eee; border: none; width: 26px; height: 26px; border-radius: 4px; font-weight: bold; cursor: pointer; }
+        
+        .cart-drawer-footer { padding: 20px; border-top: 1px solid #eee; background: #fafafa; }
+        .cart-total-row { display: flex; justify-content: space-between; margin-bottom: 15px; font-weight: bold; font-size: 1.1rem; }
+        .btn-checkout-drawer { display: block; width: 100%; background: var(--brand-red); color: white; text-align: center; padding: 14px; border-radius: 30px; font-weight: 800; text-decoration: none; transition: 0.3s; }
+        .btn-checkout-drawer:hover { background: #b7171c; }
+
         .summary-total { display: flex; justify-content: space-between; font-size: 1.3rem; font-weight: 900; color: var(--brand-red); margin-top: 20px; padding-top: 15px; border-top: 2px dashed #ddd; }
         .place-order-btn { background: var(--brand-red); color: white; border: none; width: 100%; padding: 14px; border-radius: 30px; font-weight: 800; font-size: 1.1rem; cursor: pointer; margin-top: 25px; box-shadow: 0 5px 15px rgba(227,30,36,0.3); }
         .place-order-btn:hover { background: #b7171c; }
@@ -78,7 +101,7 @@
         <ul class="nav-menu" id="navigation-drawer-menu">
             <li class="nav-item"><a href="index.html" class="nav-link">Home</a></li>
             <li class="nav-item"><a href="plp.html" class="nav-link">Products</a></li>
-            <li class="nav-item"><a href="checkout.html" class="nav-link">🛒 Cart (<span id="cart-count-badge">0</span>)</a></li>
+            <li class="nav-item"><a href="javascript:void(0)" onclick="toggleCartDrawer(true)" class="nav-link">🛒 Cart (<span id="cart-count-badge">0</span>)</a></li>
             <li class="nav-item"><a href="orders.html" class="nav-link">📦 My Orders</a></li>
             <li class="nav-item"><button id="auth-btn" class="auth-btn">Login</button></li>
         </ul>
@@ -116,6 +139,25 @@
     </div>
 </main>
 
+<!-- Translucent Cart Drawer Overlay & Drawer -->
+<div class="cart-overlay" id="cart-overlay" onclick="toggleCartDrawer(false)"></div>
+<div class="cart-drawer" id="cart-drawer">
+    <div class="cart-drawer-header">
+        <h3>Your Shopping Cart</h3>
+        <button class="close-drawer-btn" onclick="toggleCartDrawer(false)">×</button>
+    </div>
+    <div class="cart-drawer-body" id="cart-drawer-items-container">
+        <p style="text-align: center; color: #777; margin-top: 40px;">Cart is empty</p>
+    </div>
+    <div class="cart-drawer-footer">
+        <div class="cart-total-row">
+            <span>Subtotal:</span>
+            <span id="cart-drawer-subtotal">₹0</span>
+        </div>
+        <a href="checkout.html" class="btn-checkout-drawer">Proceed to Checkout</a>
+    </div>
+</div>
+
 <footer>
     <p>FSSAI: 20426290000095 | © 2026 Lovely Bites. All Rights Reserved.</p>
 </footer>
@@ -148,25 +190,57 @@
             authBtn.innerText = user ? "Logout" : "Login";
             authBtn.onclick = () => user ? firebase.auth().signOut() : firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider());
         }
-        if (user) loadCartSummary(user.uid);
-        else document.getElementById('checkout-items-list').innerHTML = "<p style='color:red;'>Pehle login karein checkout karne ke liye.</p>";
+        if (user) {
+            loadCartSummary(user.uid);
+        } else {
+            document.getElementById('checkout-items-list').innerHTML = "<p style='color:red;'>Pehle login karein checkout karne ke liye.</p>";
+            document.getElementById('cart-drawer-items-container').innerHTML = '<p style="text-align: center; color: #777; margin-top: 40px;">Pehle login karein</p>';
+            document.getElementById('cart-drawer-subtotal').innerText = '₹0';
+        }
     });
+
+    function toggleCartDrawer(open) {
+        const drawer = document.getElementById('cart-drawer');
+        const overlay = document.getElementById('cart-overlay');
+        if (open) {
+            drawer.classList.add('open');
+            overlay.classList.add('open');
+        } else {
+            drawer.classList.remove('open');
+            overlay.classList.remove('open');
+        }
+    }
+
+    async function updateCartItemQty(productId, newQty) {
+        if (!currentUser) return;
+        const cartRef = firebase.firestore().collection("users").doc(currentUser.uid).collection("cart").doc(productId);
+        if (newQty <= 0) {
+            await cartRef.delete();
+        } else {
+            await cartRef.update({ qty: newQty });
+        }
+    }
 
     function loadCartSummary(uid) {
         const itemsContainer = document.getElementById('checkout-items-list');
         const totalSpan = document.getElementById('summary-grand-total');
         const badgeSpan = document.getElementById('cart-count-badge');
+        const drawerContainer = document.getElementById('cart-drawer-items-container');
+        const drawerSubtotal = document.getElementById('cart-drawer-subtotal');
 
         firebase.firestore().collection("users").doc(uid).collection("cart").onSnapshot((snapshot) => {
             cartItemsArray = [];
             let totalAmt = 0;
             let totalQty = 0;
             let htmlContent = "";
+            let drawerHtml = "";
 
             if (snapshot.empty) {
                 itemsContainer.innerHTML = "<p>Aapka cart khaali hai!</p>";
                 totalSpan.innerText = "₹0";
                 if (badgeSpan) badgeSpan.innerText = "0";
+                if (drawerContainer) drawerContainer.innerHTML = '<p style="text-align: center; color: #777; margin-top: 40px;">Cart is empty</p>';
+                if (drawerSubtotal) drawerSubtotal.innerText = "₹0";
                 grandTotalAmount = 0;
                 return;
             }
@@ -185,8 +259,28 @@
                         <div>
                             <strong>${item.productName}</strong><br>
                             <span style="font-size: 0.85rem; color: #666;">₹${itemPrice} x ${itemQty} = <strong>₹${itemTotal}</strong></span>
+                            <div class="item-controls">
+                                <button type="button" class="qty-mini-btn" onclick="updateCartItemQty('${doc.id}', ${itemQty - 1})">-</button>
+                                <span style="font-weight:bold; font-size:14px;">${itemQty}</span>
+                                <button type="button" class="qty-mini-btn" onclick="updateCartItemQty('${doc.id}', ${itemQty + 1})">+</button>
+                                <button type="button" class="delete-btn" onclick="updateCartItemQty('${doc.id}', 0)">Delete</button>
+                            </div>
                         </div>
                         <div style="font-weight: bold; color: var(--brand-red);">₹${itemTotal}</div>
+                    </div>
+                `;
+
+                drawerHtml += `
+                    <div class="cart-drawer-item">
+                        <div class="cart-item-info">
+                            <h4>${item.productName}</h4>
+                            <p>₹${itemPrice} × ${itemQty}</p>
+                        </div>
+                        <div class="cart-item-controls">
+                            <button type="button" class="cart-qty-btn" onclick="updateCartItemQty('${doc.id}', ${itemQty - 1})">-</button>
+                            <span style="font-weight:bold; font-size:14px;">${itemQty}</span>
+                            <button type="button" class="cart-qty-btn" onclick="updateCartItemQty('${doc.id}', ${itemQty + 1})">+</button>
+                        </div>
                     </div>
                 `;
             });
@@ -194,6 +288,8 @@
             itemsContainer.innerHTML = htmlContent;
             totalSpan.innerText = `₹${totalAmt}`;
             if (badgeSpan) badgeSpan.innerText = String(totalQty);
+            if (drawerContainer) drawerContainer.innerHTML = drawerHtml;
+            if (drawerSubtotal) drawerSubtotal.innerText = `₹${totalAmt}`;
             grandTotalAmount = totalAmt;
         });
     }
