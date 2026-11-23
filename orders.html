@@ -109,7 +109,7 @@ to { opacity: 1; transform: translateY(0); }
 .order-item-row { display: flex; justify-content: space-between; font-size: 0.9rem; padding: 4px 0; }
 .order-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 15px; padding-top: 15px; border-top: 1px solid #eee; font-weight: bold; flex-wrap: wrap; gap: 10px; }
 .order-total { font-size: 1.2rem; color: var(--brand-red); }
-.invoice-btn { background: var(--brand-blue); color: #fff; border: none; padding: 8px 16px; border-radius: 20px; font-weight: 700; font-size: 0.85rem; cursor: pointer; transition: 0.2s; }
+.invoice-btn { background: var(--brand-blue); color: #fff; border: none; padding: 8px 16px; border-radius: 20px; font-weight: 700; font-size: 0.85rem; cursor: pointer; }
 .invoice-btn:hover { background: #003d7a; }
 
 /* Footer */
@@ -195,17 +195,17 @@ burger.addEventListener('click', () => menu.classList.toggle('active'));
 });
 
 let currentUser = null;
-window.ordersMap = {};
+window.ordersStore = {};
 
-function safeText(v) {
-return String(v ?? '').replace(/[&<>"']/g, m => ({ '&':'&','<':'<','>':'>','"':'"',"'":''' }[m]));
+function esc(str) {
+return String(str ?? '').replace(/[&<>"']/g, c => ({ '&':'&','<':'<','>':'>','"':'"',"'":''' }[c]));
 }
 
-function openOrderInvoicePdf(docId) {
-const order = window.ordersMap[docId];
-if (!order) { alert("Order details not found."); return; }
+function downloadInvoicePdf(orderId) {
+const order = window.ordersStore[orderId];
+if (!order) { alert("Order not found."); return; }
 
-const displayOrderId = order.orderNumber || order.numericOrderId || order.orderId || docId.substring(0, 10);
+const displayOrderId = order.orderNumber || order.numericOrderId || order.orderId || orderId.substring(0, 10);
 let dateStr = "Recent";
 if (order.createdAt && typeof order.createdAt.toDate === 'function') {
 dateStr = order.createdAt.toDate().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
@@ -217,24 +217,24 @@ const totalAmountNum = Number(order.totalAmount || order.total || 0);
 const taxableAmount = totalAmountNum / 1.05;
 const taxAmount = totalAmountNum - taxableAmount;
 
-let rowsHtml = "";
+let itemsRows = "";
 if (order.items && order.items.length > 0) {
-order.items.forEach((item, i) => {
-const qty = Number(item.qty || item.quantity || 1);
-const lineTotal = Number(item.price || 0) * qty;
+order.items.forEach((item, idx) => {
+const itemQty = Number(item.qty || item.quantity || 1);
+const lineTotal = Number(item.price || 0) * itemQty;
 const lineTaxable = lineTotal / 1.05;
 const lineTax = lineTotal - lineTaxable;
-rowsHtml += `<tr>
-<td>${i + 1}</td>
-<td>${safeText(item.productName || item.name || 'Product')}</td>
-<td style="text-align:center;">${qty}</td>
+itemsRows += `<tr>
+<td>${idx + 1}</td>
+<td>${esc(item.productName || item.name || 'Product')}</td>
+<td style="text-align:center;">${itemQty}</td>
 <td style="text-align:right;">₹${lineTaxable.toFixed(2)}</td>
 <td style="text-align:right;">₹${lineTax.toFixed(2)}</td>
 <td style="text-align:right;">₹${lineTotal.toFixed(2)}</td>
 </tr>`;
 });
 } else {
-rowsHtml = `<tr>
+itemsRows = `<tr>
 <td>1</td>
 <td>Order Items</td>
 <td style="text-align:center;">1</td>
@@ -244,34 +244,34 @@ rowsHtml = `<tr>
 </tr>`;
 }
 
-const gstLine = order.customerGstin ? `<p style="margin:3px 0;"><strong>Customer GSTIN:</strong> ${safeText(order.customerGstin)}</p>` : "";
+const gstinHtml = order.customerGstin ? `<p style="margin:3px 0;"><strong>Customer GSTIN:</strong> ${esc(order.customerGstin)}</p>` : "";
 
-const win = window.open("", "_blank");
-if (!win) { alert("Please allow popups to download PDF invoice."); return; }
+const pdfWin = window.open("", "_blank");
+if (!pdfWin) { alert("Popup blocked. Please allow popups for PDF invoice."); return; }
 
-win.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Invoice #${safeText(displayOrderId)}</title>
+pdfWin.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Invoice #${esc(displayOrderId)}</title>
 <style>
 body{font-family:Arial,sans-serif;margin:24px;color:#222;}
-.box{max-width:780px;margin:0 auto;border:1px solid #ddd;padding:24px;border-radius:8px;}
-.top{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:2px solid #e31e24;padding-bottom:14px;margin-bottom:16px;gap:12px;}
+.inv{max-width:780px;margin:0 auto;border:1px solid #ddd;padding:24px;border-radius:8px;}
+.hdr{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:2px solid #e31e24;padding-bottom:14px;margin-bottom:16px;gap:12px;}
 .brand{display:flex;align-items:center;gap:12px;}
 .brand img{height:56px;width:auto;}
 .meta{text-align:right;font-size:13px;}
-.addr{display:flex;justify-content:space-between;gap:20px;font-size:13px;margin-bottom:18px;}
+.info{display:flex;justify-content:space-between;gap:20px;font-size:13px;margin-bottom:18px;}
 table{width:100%;border-collapse:collapse;font-size:13px;margin-bottom:16px;}
 th,td{border:1px solid #ddd;padding:8px;}
 th{background:#f7f7f7;text-align:left;}
-.tot{width:300px;margin-left:auto;font-size:13px;}
-.tot div{display:flex;justify-content:space-between;padding:4px 0;}
-.tot .grand{font-weight:bold;font-size:15px;border-top:1px solid #333;margin-top:6px;padding-top:8px;color:#e31e24;}
-.foot{margin-top:20px;padding-top:12px;border-top:1px dashed #ccc;font-size:12px;}
-@media print{.noprint{display:none;}.box{border:none;padding:0;}}
+.sum{width:300px;margin-left:auto;font-size:13px;}
+.sum div{display:flex;justify-content:space-between;padding:4px 0;}
+.sum .tot{font-weight:bold;font-size:15px;border-top:1px solid #333;margin-top:6px;padding-top:8px;color:#e31e24;}
+.ftr{margin-top:20px;padding-top:12px;border-top:1px dashed #ccc;font-size:12px;}
+@media print{.no-print{display:none;}.inv{border:none;padding:0;}}
 </style></head><body>
-<div class="noprint" style="max-width:780px;margin:0 auto 12px auto;text-align:right;">
-<button id="printInvoiceBtn" style="background:#0054a6;color:#fff;border:none;padding:8px 16px;border-radius:6px;cursor:pointer;font-weight:bold;">Save / Print PDF</button>
+<div class="no-print" style="max-width:780px;margin:0 auto 12px auto;text-align:right;">
+<button id="savePdfBtn" style="background:#0054a6;color:#fff;border:none;padding:8px 16px;border-radius:6px;cursor:pointer;font-weight:bold;">Save / Print PDF</button>
 </div>
-<div class="box">
-<div class="top">
+<div class="inv">
+<div class="hdr">
 <div class="brand">
 <img src="https://i.ibb.co/mFyGcMzs/Whats-App-Image-2026-04-21-at-12-22-57-removebg-preview.png" alt="Lovely Bites">
 <div>
@@ -279,49 +279,49 @@ th{background:#f7f7f7;text-align:left;}
 <div style="font-size:12px;">K L ENTERPRISE</div>
 <div style="font-size:12px;">GSTIN: <strong>10JQBPK5246N1ZO</strong> | FSSAI: <strong>20426290000095</strong></div>
 <div style="font-size:12px;">Shiv Kala Bhawan, Maharshi Menhi Nagar, Madhepura, Bihar 852113</div>
-<div style="font-size:12px;">Email: support@lovelybites.online | Phone: +91 9546773070</div>
+<div style="font-size:12px;">Email: support@lovelybites.online | Contact: +91 9546773070</div>
 </div>
 </div>
 <div class="meta">
-<div><strong>TAX INVOICE</strong></div>
-<div>Order ID: <strong>#${safeText(displayOrderId)}</strong></div>
-<div>Date: ${safeText(dateStr)}</div>
-<div>Status: ${safeText(order.paymentStatus || order.orderStatus || 'Paid')}</div>
+<div><strong>INVOICE</strong></div>
+<div>Order ID: <strong>#${esc(displayOrderId)}</strong></div>
+<div>Date: ${esc(dateStr)}</div>
+<div>Status: ${esc(order.paymentStatus || order.orderStatus || 'Paid')}</div>
 </div>
 </div>
-<div class="addr">
+<div class="info">
 <div style="width:48%;">
-<strong>Bill / Ship To:</strong>
-<p style="margin:4px 0;"><strong>${safeText(order.customerName || 'N/A')}</strong></p>
-<p style="margin:3px 0;">Phone: ${safeText(order.customerPhone || 'N/A')}</p>
-<p style="margin:3px 0;">Address: ${safeText(order.shippingAddress || order.address || 'N/A')}</p>
-${gstLine}
+<strong>Customer Details:</strong>
+<p style="margin:4px 0;"><strong>${esc(order.customerName || 'N/A')}</strong></p>
+<p style="margin:3px 0;">Phone: ${esc(order.customerPhone || 'N/A')}</p>
+<p style="margin:3px 0;">Address: ${esc(order.shippingAddress || order.address || 'N/A')}</p>
+${gstinHtml}
 </div>
 <div style="width:48%;text-align:right;">
-<strong>Payment Info:</strong>
-<p style="margin:4px 0;">Method: ${safeText((order.paymentMethod || 'Online').toUpperCase())}</p>
-<p style="margin:3px 0;">Status: ${safeText((order.paymentStatus || 'Paid').toUpperCase())}</p>
+<strong>Payment Details:</strong>
+<p style="margin:4px 0;">Method: ${esc((order.paymentMethod || 'Online').toUpperCase())}</p>
+<p style="margin:3px 0;">Status: ${esc((order.paymentStatus || 'Paid').toUpperCase())}</p>
 </div>
 </div>
 <table>
-<thead><tr><th>#</th><th>Product</th><th style="text-align:center;">Qty</th><th style="text-align:right;">Taxable</th><th style="text-align:right;">Tax (5%)</th><th style="text-align:right;">Total</th></tr></thead>
-<tbody>${rowsHtml}</tbody>
+<thead><tr><th>#</th><th>Item</th><th style="text-align:center;">Qty</th><th style="text-align:right;">Taxable</th><th style="text-align:right;">Tax (5%)</th><th style="text-align:right;">Total</th></tr></thead>
+<tbody>${itemsRows}</tbody>
 </table>
-<div class="tot">
+<div class="sum">
 <div><span>Taxable Amount:</span><span>₹${taxableAmount.toFixed(2)}</span></div>
 <div><span>Tax (5%):</span><span>₹${taxAmount.toFixed(2)}</span></div>
-<div class="grand"><span>Total Paid:</span><span>₹${totalAmountNum.toFixed(2)}</span></div>
+<div class="tot"><span>Total Paid:</span><span>₹${totalAmountNum.toFixed(2)}</span></div>
 </div>
-<div class="foot">
+<div class="ftr">
 <p style="margin:0 0 4px 0;font-weight:bold;color:#b7171c;">This order is non-refundable.</p>
 <p style="margin:0;">Lovely Bites (K L ENTERPRISE) | Shiv Kala Bhawan, Maharshi Menhi Nagar, Madhepura, Bihar 852113 | support@lovelybites.online | +91 9546773070</p>
 </div>
 </div>
 </body></html>`);
-win.document.close();
-const btn = win.document.getElementById("printInvoiceBtn");
-if (btn) btn.onclick = () => win.print();
-setTimeout(() => { win.focus(); win.print(); }, 300);
+pdfWin.document.close();
+const saveBtn = pdfWin.document.getElementById("savePdfBtn");
+if (saveBtn) saveBtn.onclick = () => pdfWin.print();
+setTimeout(() => { pdfWin.focus(); pdfWin.print(); }, 300);
 }
 
 function toggleCartDrawer(open) {
@@ -408,18 +408,18 @@ firebase.firestore().collection("orders")
 .where("userId", "==", user.uid)
 .onSnapshot((snapshot) => {
 if (snapshot.empty) {
-window.ordersMap = {};
+window.ordersStore = {};
 ordersWrapper.innerHTML = "<p style='text-align: center; padding: 40px;'>Aapne abhi tak koi order place nahi kiya hai!</p>";
 return;
 }
 
 // Convert snapshot to array for JS sorting (Latest first)
 let ordersArray = [];
-window.ordersMap = {};
+window.ordersStore = {};
 snapshot.forEach(doc => {
-const data = { id: doc.id, ...doc.data() };
-ordersArray.push(data);
-window.ordersMap[doc.id] = data;
+const itemData = { id: doc.id, ...doc.data() };
+ordersArray.push(itemData);
+window.ordersStore[doc.id] = itemData;
 });
 
 // Sort descending (Latest on top)
@@ -499,7 +499,7 @@ ${itemsHTML}
 <span>Total Paid:</span>
 <span class="order-total">₹${totalAmountNum.toFixed(2)}</span>
 </div>
-<button type="button" class="invoice-btn" onclick="openOrderInvoicePdf('${orderId}')">Download PDF Invoice</button>
+<button type="button" class="invoice-btn" onclick="downloadInvoicePdf('${orderId}')">Download PDF Invoice</button>
 </div>
 </div>
 `;
