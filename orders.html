@@ -196,7 +196,6 @@ burger.addEventListener('click', () => menu.classList.toggle('active'));
 
 let currentUser = null;
 window.ordersMap = {};
-let authResolvedOnce = false;
 
 function safeText(v) {
 return String(v ?? '').replace(/[&<>"']/g, m => ({ '&':'&','<':'<','>':'>','"':'"',"'":''' }[m]));
@@ -347,18 +346,6 @@ await cartRef.update({ qty: newQty });
 }
 }
 
-function renderLoggedOutState() {
-const cartBadge = document.getElementById('cart-count-badge');
-const ordersWrapper = document.getElementById('orders-list-wrapper');
-const drawerContainer = document.getElementById('cart-drawer-items-container');
-const drawerSubtotal = document.getElementById('cart-drawer-subtotal');
-
-if (cartBadge) cartBadge.innerText = "0";
-if (drawerContainer) drawerContainer.innerHTML = '<p style="text-align: center; color: #777; margin-top: 40px;">Pehle login karein</p>';
-if (drawerSubtotal) drawerSubtotal.innerText = '₹0';
-if (ordersWrapper) ordersWrapper.innerHTML = "<p style='text-align: center; padding: 40px;'>Pehle login karein apne orders dekhne ke liye.</p>";
-}
-
 firebase.auth().onAuthStateChanged((user) => {
 currentUser = user;
 const authBtn = document.getElementById('auth-btn');
@@ -379,8 +366,6 @@ firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider());
 }
 
 if (user) {
-authResolvedOnce = true;
-
 // Fetch Cart Count & Drawer Items
 firebase.firestore().collection("users").doc(user.uid).collection("cart").onSnapshot((snapshot) => {
 let totalCount = 0;
@@ -527,16 +512,10 @@ ordersWrapper.innerHTML = "<p style='text-align: center; color: red;'>Error load
 });
 
 } else {
-if (!authResolvedOnce) {
-setTimeout(() => {
-if (!currentUser) {
-authResolvedOnce = true;
-renderLoggedOutState();
-}
-}, 2500);
-} else {
-renderLoggedOutState();
-}
+if (cartBadge) cartBadge.innerText = "0";
+if (drawerContainer) drawerContainer.innerHTML = '<p style="text-align: center; color: #777; margin-top: 40px;">Pehle login karein</p>';
+if (drawerSubtotal) drawerSubtotal.innerText = '₹0';
+ordersWrapper.innerHTML = "<p style='text-align: center; padding: 40px;'>Pehle login karein apne orders dekhne ke liye.</p>";
 }
 });
 </script>
