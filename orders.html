@@ -362,7 +362,6 @@
       <div>For any order issue or support, contact us at support@lovelybites.online or +91 9546773070 (Shiv Kala Bhawan, Maharshi Menhi Nagar, Madhepura, Bihar 852113).</div>
     </div>
   </div>
-  <script>window.onload = function() { setTimeout(function() { window.print(); }, 250); };<\/script>
 </body>
 </html>`;
 
@@ -371,6 +370,9 @@
             printWin.document.open();
             printWin.document.write(invoiceHtml);
             printWin.document.close();
+            setTimeout(() => {
+                try { printWin.focus(); printWin.print(); } catch (e) {}
+            }, 350);
         } else {
             alert("Popup block ho gaya hai. Kripya browser mein popup allow karein.");
         }
@@ -398,182 +400,190 @@
         }
     }
 
-    firebase.auth().onAuthStateChanged((user) => {
-        currentUser = user;
-        const authBtn = document.getElementById('auth-btn');
-        const cartBadge = document.getElementById('cart-count-badge');
-        const ordersWrapper = document.getElementById('orders-list-wrapper');
-        const drawerContainer = document.getElementById('cart-drawer-items-container');
-        const drawerSubtotal = document.getElementById('cart-drawer-subtotal');
+    try {
+        firebase.auth().onAuthStateChanged((user) => {
+            currentUser = user;
+            const authBtn = document.getElementById('auth-btn');
+            const cartBadge = document.getElementById('cart-count-badge');
+            const ordersWrapper = document.getElementById('orders-list-wrapper');
+            const drawerContainer = document.getElementById('cart-drawer-items-container');
+            const drawerSubtotal = document.getElementById('cart-drawer-subtotal');
 
-        if (authBtn) {
-            authBtn.innerText = user ? "Logout" : "Login";
-            authBtn.onclick = () => {
-                if (user) {
-                    firebase.auth().signOut();
-                } else {
-                    firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider());
-                }
-            };
-        }
-
-        if (user) {
-            // Fetch Cart Count & Drawer Items
-            firebase.firestore().collection("users").doc(user.uid).collection("cart").onSnapshot((snapshot) => {
-                let totalCount = 0;
-                let subtotal = 0;
-                let drawerHtml = '';
-
-                if (snapshot.empty) {
-                    drawerHtml = '<p style="text-align: center; color: #777; margin-top: 40px;">Cart is empty</p>';
-                } else {
-                    snapshot.forEach(doc => {
-                        const item = doc.data();
-                        const qty = Number(item.qty || 1);
-                        const price = Number(item.price || 0);
-                        totalCount += qty;
-                        subtotal += price * qty;
-
-                        drawerHtml += `
-                            <div class="cart-drawer-item">
-                                <div class="cart-item-info">
-                                    <h4>${item.productName}</h4>
-                                    <p>₹${price} × ${qty}</p>
-                                </div>
-                                <div class="cart-item-controls">
-                                    <button type="button" class="cart-qty-btn" onclick="updateCartItemQty('${doc.id}', ${qty - 1})">-</button>
-                                    <span style="font-weight:bold; font-size:14px;">${qty}</span>
-                                    <button type="button" class="cart-qty-btn" onclick="updateCartItemQty('${doc.id}', ${qty + 1})">+</button>
-                                </div>
-                            </div>
-                        `;
-                    });
-                }
-
-                if (cartBadge) cartBadge.innerText = totalCount;
-                if (drawerContainer) drawerContainer.innerHTML = drawerHtml;
-                if (drawerSubtotal) drawerSubtotal.innerText = `₹${subtotal}`;
-            });
-
-            // Fetch User Orders without requiring Firestore Index (Sorted via JS)
-            firebase.firestore().collection("orders")
-                .where("userId", "==", user.uid)
-                .onSnapshot((snapshot) => {
-                    if (snapshot.empty) {
-                        window.ordersById = {};
-                        ordersWrapper.innerHTML = "<p style='text-align: center; padding: 40px;'>Aapne abhi tak koi order place nahi kiya hai!</p>";
-                        return;
+            if (authBtn) {
+                authBtn.innerText = user ? "Logout" : "Login";
+                authBtn.onclick = () => {
+                    if (user) {
+                        firebase.auth().signOut();
+                    } else {
+                        firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider());
                     }
+                };
+            }
 
-                    // Convert snapshot to array for JS sorting (Latest first)
-                    let ordersArray = [];
-                    window.ordersById = {};
-                    snapshot.forEach(doc => {
-                        const orderObj = { id: doc.id, ...doc.data() };
-                        ordersArray.push(orderObj);
-                        window.ordersById[doc.id] = orderObj;
-                    });
+            if (user) {
+                // Fetch Cart Count & Drawer Items
+                firebase.firestore().collection("users").doc(user.uid).collection("cart").onSnapshot((snapshot) => {
+                    let totalCount = 0;
+                    let subtotal = 0;
+                    let drawerHtml = '';
 
-                    // Sort descending (Latest on top)
-                    ordersArray.sort((a, b) => {
-                        let timeA = a.createdAt?.seconds || a.timestamp?.seconds || 0;
-                        let timeB = b.createdAt?.seconds || b.timestamp?.seconds || 0;
-                        return timeB - timeA;
-                    });
+                    if (snapshot.empty) {
+                        drawerHtml = '<p style="text-align: center; color: #777; margin-top: 40px;">Cart is empty</p>';
+                    } else {
+                        snapshot.forEach(doc => {
+                            const item = doc.data();
+                            const qty = Number(item.qty || 1);
+                            const price = Number(item.price || 0);
+                            totalCount += qty;
+                            subtotal += price * qty;
 
-                    let ordersHTML = "";
-                    ordersArray.forEach(order => {
-                        const orderId = order.id;
-                        
-                        const displayOrderId = order.orderNumber || order.numericOrderId || order.orderId || orderId.substring(0, 10);
-                        
-                        let dateStr = "Recent";
-                        if (order.createdAt && typeof order.createdAt.toDate === 'function') {
-                            dateStr = order.createdAt.toDate().toLocaleDateString('en-IN', {
-                                day: 'numeric',
-                                month: 'short',
-                                year: 'numeric'
-                            });
-                        } else if (order.timestamp && typeof order.timestamp.toDate === 'function') {
-                            dateStr = order.timestamp.toDate().toLocaleDateString('en-IN', {
-                                day: 'numeric',
-                                month: 'short',
-                                year: 'numeric'
-                            });
-                        }
-                        
-                        let itemsHTML = "";
-                        if (order.items && order.items.length > 0) {
-                            order.items.forEach(item => {
-                                const itemQty = Number(item.qty || item.quantity || 1);
-                                const itemPrice = Number(item.price || 0);
-                                itemsHTML += `
-                                    <div class="order-item-row">
-                                        <span>${item.productName || item.name || 'Product'} (x${itemQty})</span>
-                                        <span>₹${(itemPrice * itemQty).toFixed(2)}</span>
+                            drawerHtml += `
+                                <div class="cart-drawer-item">
+                                    <div class="cart-item-info">
+                                        <h4>${item.productName}</h4>
+                                        <p>₹${price} × ${qty}</p>
                                     </div>
-                                `;
-                            });
-                        }
-
-                        const totalAmountNum = Number(order.totalAmount || order.total || 0);
-                        const currentStatus = order.orderStatus || order.status || 'Placed';
-                        const trackingVal = order.trackingInfo || order.tracking || order.awb || '';
-
-                        // Tracking Section HTML
-                        let trackingHTML = '';
-                        if (trackingVal) {
-                            const isUrl = trackingVal.startsWith('http');
-                            trackingHTML = `
-                                <div style="margin-top: 8px; padding: 6px 10px; background: #eef2ff; border-radius: 6px; font-size: 0.85rem;">
-                                    <strong>📦 AWB / Tracking:</strong> 
-                                    ${isUrl ? `<a href="${trackingVal}" target="_blank" style="color: var(--brand-blue); text-decoration: underline;">${trackingVal}</a>` : `<span style="font-family: monospace; color: #333;">${trackingVal}</span>`}
+                                    <div class="cart-item-controls">
+                                        <button type="button" class="cart-qty-btn" onclick="updateCartItemQty('${doc.id}', ${qty - 1})">-</button>
+                                        <span style="font-weight:bold; font-size:14px;">${qty}</span>
+                                        <button type="button" class="cart-qty-btn" onclick="updateCartItemQty('${doc.id}', ${qty + 1})">+</button>
+                                    </div>
                                 </div>
                             `;
-                        }
+                        });
+                    }
 
-                        ordersHTML += `
-                            <div class="order-card">
-                                <div class="order-header">
-                                    <span class="order-id">Order ID: #${displayOrderId}</span>
-                                    <span class="order-status">${currentStatus}</span>
-                                </div>
-                                <div class="order-body">
-                                    <p><strong>Date:</strong> ${dateStr}</p>
-                                    <p><strong>Shipping To:</strong> ${order.customerName || 'N/A'} (${order.customerPhone || 'N/A'})</p>
-                                    <p><strong>Address:</strong> ${order.shippingAddress || order.address || 'N/A'}</p>
-                                    <p><strong>Payment:</strong> ${(order.paymentMethod || 'Online').toUpperCase()} (${(order.paymentStatus || 'Paid').toUpperCase()})</p>
-                                    
-                                    ${trackingHTML}
-
-                                    <div class="orders-items-list" style="margin: 15px 0; background: #fafafa; padding: 10px 15px; border-radius: 8px;">
-                                        ${itemsHTML}
-                                    </div>
-                                </div>
-                                <div class="order-footer">
-                                    <div>
-                                        <span>Total Paid:</span>
-                                        <span class="order-total">₹${totalAmountNum.toFixed(2)}</span>
-                                    </div>
-                                    <button type="button" class="invoice-download-btn" onclick="downloadOrderPdfInvoice('${orderId}')">Download PDF Invoice</button>
-                                </div>
-                            </div>
-                        `;
-                    });
-
-                    ordersWrapper.innerHTML = ordersHTML;
-                }, (error) => {
-                    console.error("Orders fetch error:", error);
-                    ordersWrapper.innerHTML = "<p style='text-align: center; color: red;'>Error loading orders.</p>";
+                    if (cartBadge) cartBadge.innerText = totalCount;
+                    if (drawerContainer) drawerContainer.innerHTML = drawerHtml;
+                    if (drawerSubtotal) drawerSubtotal.innerText = `₹${subtotal}`;
                 });
 
-        } else {
-            if (cartBadge) cartBadge.innerText = "0";
-            if (drawerContainer) drawerContainer.innerHTML = '<p style="text-align: center; color: #777; margin-top: 40px;">Pehle login karein</p>';
-            if (drawerSubtotal) drawerSubtotal.innerText = '₹0';
-            ordersWrapper.innerHTML = "<p style='text-align: center; padding: 40px;'>Pehle login karein apne orders dekhne ke liye.</p>";
+                // Fetch User Orders without requiring Firestore Index (Sorted via JS)
+                firebase.firestore().collection("orders")
+                    .where("userId", "==", user.uid)
+                    .onSnapshot((snapshot) => {
+                        if (snapshot.empty) {
+                            window.ordersById = {};
+                            ordersWrapper.innerHTML = "<p style='text-align: center; padding: 40px;'>Aapne abhi tak koi order place nahi kiya hai!</p>";
+                            return;
+                        }
+
+                        // Convert snapshot to array for JS sorting (Latest first)
+                        let ordersArray = [];
+                        window.ordersById = {};
+                        snapshot.forEach(doc => {
+                            const orderObj = { id: doc.id, ...doc.data() };
+                            ordersArray.push(orderObj);
+                            window.ordersById[doc.id] = orderObj;
+                        });
+
+                        // Sort descending (Latest on top)
+                        ordersArray.sort((a, b) => {
+                            let timeA = a.createdAt?.seconds || a.timestamp?.seconds || 0;
+                            let timeB = b.createdAt?.seconds || b.timestamp?.seconds || 0;
+                            return timeB - timeA;
+                        });
+
+                        let ordersHTML = "";
+                        ordersArray.forEach(order => {
+                            const orderId = order.id;
+                            
+                            const displayOrderId = order.orderNumber || order.numericOrderId || order.orderId || orderId.substring(0, 10);
+                            
+                            let dateStr = "Recent";
+                            if (order.createdAt && typeof order.createdAt.toDate === 'function') {
+                                dateStr = order.createdAt.toDate().toLocaleDateString('en-IN', {
+                                    day: 'numeric',
+                                    month: 'short',
+                                    year: 'numeric'
+                                });
+                            } else if (order.timestamp && typeof order.timestamp.toDate === 'function') {
+                                dateStr = order.timestamp.toDate().toLocaleDateString('en-IN', {
+                                    day: 'numeric',
+                                    month: 'short',
+                                    year: 'numeric'
+                                });
+                            }
+                            
+                            let itemsHTML = "";
+                            if (order.items && order.items.length > 0) {
+                                order.items.forEach(item => {
+                                    const itemQty = Number(item.qty || item.quantity || 1);
+                                    const itemPrice = Number(item.price || 0);
+                                    itemsHTML += `
+                                        <div class="order-item-row">
+                                            <span>${item.productName || item.name || 'Product'} (x${itemQty})</span>
+                                            <span>₹${(itemPrice * itemQty).toFixed(2)}</span>
+                                        </div>
+                                    `;
+                                });
+                            }
+
+                            const totalAmountNum = Number(order.totalAmount || order.total || 0);
+                            const currentStatus = order.orderStatus || order.status || 'Placed';
+                            const trackingVal = order.trackingInfo || order.tracking || order.awb || '';
+
+                            // Tracking Section HTML
+                            let trackingHTML = '';
+                            if (trackingVal) {
+                                const isUrl = trackingVal.startsWith('http');
+                                trackingHTML = `
+                                    <div style="margin-top: 8px; padding: 6px 10px; background: #eef2ff; border-radius: 6px; font-size: 0.85rem;">
+                                        <strong>📦 AWB / Tracking:</strong> 
+                                        ${isUrl ? `<a href="${trackingVal}" target="_blank" style="color: var(--brand-blue); text-decoration: underline;">${trackingVal}</a>` : `<span style="font-family: monospace; color: #333;">${trackingVal}</span>`}
+                                    </div>
+                                `;
+                            }
+
+                            ordersHTML += `
+                                <div class="order-card">
+                                    <div class="order-header">
+                                        <span class="order-id">Order ID: #${displayOrderId}</span>
+                                        <span class="order-status">${currentStatus}</span>
+                                    </div>
+                                    <div class="order-body">
+                                        <p><strong>Date:</strong> ${dateStr}</p>
+                                        <p><strong>Shipping To:</strong> ${order.customerName || 'N/A'} (${order.customerPhone || 'N/A'})</p>
+                                        <p><strong>Address:</strong> ${order.shippingAddress || order.address || 'N/A'}</p>
+                                        <p><strong>Payment:</strong> ${(order.paymentMethod || 'Online').toUpperCase()} (${(order.paymentStatus || 'Paid').toUpperCase()})</p>
+                                        
+                                        ${trackingHTML}
+
+                                        <div class="orders-items-list" style="margin: 15px 0; background: #fafafa; padding: 10px 15px; border-radius: 8px;">
+                                            ${itemsHTML}
+                                        </div>
+                                    </div>
+                                    <div class="order-footer">
+                                        <div>
+                                            <span>Total Paid:</span>
+                                            <span class="order-total">₹${totalAmountNum.toFixed(2)}</span>
+                                        </div>
+                                        <button type="button" class="invoice-download-btn" onclick="downloadOrderPdfInvoice('${orderId}')">Download PDF Invoice</button>
+                                    </div>
+                                </div>
+                            `;
+                        });
+
+                        ordersWrapper.innerHTML = ordersHTML;
+                    }, (error) => {
+                        console.error("Orders fetch error:", error);
+                        ordersWrapper.innerHTML = "<p style='text-align: center; color: red;'>Error loading orders.</p>";
+                    });
+
+            } else {
+                if (cartBadge) cartBadge.innerText = "0";
+                if (drawerContainer) drawerContainer.innerHTML = '<p style="text-align: center; color: #777; margin-top: 40px;">Pehle login karein</p>';
+                if (drawerSubtotal) drawerSubtotal.innerText = '₹0';
+                ordersWrapper.innerHTML = "<p style='text-align: center; padding: 40px;'>Pehle login karein apne orders dekhne ke liye.</p>";
+            }
+        });
+    } catch (authErr) {
+        console.error("Auth initialization error:", authErr);
+        const ordersWrapper = document.getElementById('orders-list-wrapper');
+        if (ordersWrapper) {
+            ordersWrapper.innerHTML = "<p style='text-align: center; color: red; padding: 40px;'>Orders load karne mein error aayi. Page refresh karein.</p>";
         }
-    });
+    }
 </script>
 
 <!-- Floating WhatsApp Button -->
