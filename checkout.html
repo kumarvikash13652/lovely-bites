@@ -221,6 +221,14 @@
         }
     }
 
+    async function clearUserCart(uid) {
+        const cartSnapshot = await firebase.firestore().collection("users").doc(uid).collection("cart").get();
+        if (cartSnapshot.empty) return;
+        const batch = firebase.firestore().batch();
+        cartSnapshot.forEach(doc => batch.delete(doc.ref));
+        await batch.commit();
+    }
+
     function loadCartSummary(uid) {
         const itemsContainer = document.getElementById('checkout-items-list');
         const totalSpan = document.getElementById('summary-grand-total');
@@ -332,9 +340,10 @@
                 return;
             }
 
+            const finalOrderId = result.order_id || numericOrderId;
             const orderData = {
-                orderId: result.order_id || numericOrderId,
-                orderNumber: result.order_id || numericOrderId,
+                orderId: finalOrderId,
+                orderNumber: finalOrderId,
                 userId: currentUser.uid,
                 customerName: name,
                 customerPhone: phone,
@@ -346,17 +355,33 @@
                 orderStatus: "Pending Payment",
                 createdAt: firebase.firestore.FieldValue.serverTimestamp()
             };
-            await firebase.firestore().collection("orders").add(orderData);
+            const orderDocRef = await firebase.firestore().collection("orders").add(orderData);
 
             const checkoutOptions = {
                 paymentSessionId: sessionId,
                 redirectTarget: "_modal"
             };
 
-            cashfree.checkout(checkoutOptions).then(function(res) {
+            cashfree.checkout(checkoutOptions).then(async function(res) {
                 if (res && res.error) {
-                    alert(res.error.message);
+                    alert(res.error.message || "Payment cancel ya fail ho gayi.");
+                    submitBtn.disabled = false;
+                    submitBtn.innerText = "Proceed to Pay Securely";
+                    return;
                 }
+
+                await orderDocRef.update({
+                    paymentStatus: "Paid",
+                    orderStatus: "Paid",
+                    paidAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    cashfreeResponse: res || null
+                });
+
+                await clearUserCart(currentUser.uid);
+                window.location.href = `orders.html?order_id=${encodeURIComponent(finalOrderId)}`;
+            }).catch(function(err) {
+                console.error("Cashfree Checkout Error:", err);
+                alert("Payment status check karte waqt error aayi.");
                 submitBtn.disabled = false;
                 submitBtn.innerText = "Proceed to Pay Securely";
             });
