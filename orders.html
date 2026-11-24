@@ -1,531 +1,786 @@
 <!DOCTYPE html>
+
 <html lang="en">
+
 <head>
+
 <meta charset="UTF-8">
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <link rel="icon" type="image/png" href="https://i.ibb.co/mFyGcMzs/Whats-App-Image-2026-04-21-at-12-22-57-removebg-preview.png">
+
 <title>My Orders | Lovely Bites</title>
 
+
+
 <style>
+
 :root {
+
 --brand-red: #e31e24;
+
 --brand-yellow: #ffcb05;
+
 --brand-blue: #0054a6;
+
 --brand-orange: #f58220;
+
 --bg-cream: #fffdf5;
+
 --text-dark: #2d2926;
+
 --white: #ffffff;
+
 }
-- { box-sizing: border-box; }
+
+{ box-sizing: border-box; }
 body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background: var(--bg-cream); margin: 0; padding: 0; color: var(--text-dark); line-height: 1.6; }
+
 /* Language Bar */
+
 .lang-bar { background: var(--brand-blue); padding: 8px; text-align: center; display: flex; justify-content: center; align-items: center; gap: 10px; }
+
 .lang-btn { background: rgba(255,255,255,0.2); border: 1px solid white; color: white; padding: 4px 12px; cursor: pointer; font-size: 12px; border-radius: 20px; transition: 0.2s; }
+
 .lang-btn:hover { background: rgba(255,255,255,0.4); }
 
+
+
 /* Header */
+
 header { background: var(--white); padding: 1rem 2rem; text-align: center; position: relative; box-shadow: 0 4px 20px rgba(0,0,0,0.06); border-bottom: 4px solid var(--brand-red); }
+
 .logo img { max-height: 90px; width: auto; filter: drop-shadow(2px 2px 0px var(--brand-blue)); padding: 5px; transition: transform 0.3s ease; }
+
 .logo img:hover { transform: scale(1.02); }
+
 .gstin-top-right { position: absolute; top: 20px; right: 20px; color: #777; font-size: 0.75rem; text-align: right; font-family: monospace; background: #f8f9fa; padding: 4px 10px; border-radius: 6px; border: 1px solid #eee; }
+
 /* Navigation - Desktop Premium Look */
+
 .nav-wrapper { display: flex; align-items: center; justify-content: space-between; max-width: 1200px; margin: 0 auto; padding: 5px 10px; position: relative; width: 100%; }
+
 .nav-menu { display: flex; list-style: none; margin: 0; padding: 0; gap: 28px; align-items: center; }
+
 .nav-item { position: relative; }
+
 .nav-link { text-decoration: none; color: var(--text-dark); font-weight: 700; font-size: 0.95rem; padding: 8px 12px; display: block; cursor: pointer; transition: color 0.3s, background 0.3s; border-radius: 8px; }
+
 .nav-link:hover { color: var(--brand-red); background: rgba(227, 30, 36, 0.04); }
+
 /* Burger Button - Premium Modern Look */
+
 .burger-btn { display: none; background: #f8f9fa; border: 1px solid #e5e7eb; border-radius: 10px; cursor: pointer; padding: 10px 12px; z-index: 100001; transition: all 0.3s ease; }
+
 .burger-btn:hover { background: #fee2e2; border-color: #fca5a5; }
+
 .burger-bar { display: block; width: 22px; height: 2.5px; margin: 4px auto; background-color: var(--text-dark); border-radius: 2px; transition: all 0.3s ease; }
+
 /* Mobile Dropdown Menu Styling */
+
 @media (max-width: 768px) {
+
 header { padding: 0.8rem 1rem; }
+
 .burger-btn { display: block; }
+
 .nav-menu {
+
 display: none;
+
 position: absolute;
+
 top: calc(100% + 12px);
+
 left: 15px;
+
 right: 15px;
+
 width: auto;
+
 background: var(--white);
+
 flex-direction: column;
+
 align-items: stretch;
+
 padding: 20px;
+
 box-shadow: 0 15px 35px rgba(0,0,0,0.12);
+
 border-radius: 16px;
+
 border: 1px solid rgba(0,0,0,0.06);
+
 border-top: 4px solid var(--brand-red);
+
 z-index: 100000;
+
 gap: 8px;
+
 animation: slideDown 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+
 }
+
 .nav-menu.active { display: flex; }
+
 .nav-link { padding: 12px 16px; border-radius: 10px; font-size: 1rem; text-align: left; }
+
 .nav-link:hover { background: rgba(227, 30, 36, 0.08); color: var(--brand-red); }
+
 .auth-btn { width: 100%; margin-top: 5px; padding: 12px !important; text-align: center; }
+
 .gstin-top-right { display: none; }
+
 }
+
+
 
 @keyframes slideDown {
+
 from { opacity: 0; transform: translateY(-10px); }
+
 to { opacity: 1; transform: translateY(0); }
+
 }
+
+
 
 .auth-btn { background: var(--brand-red); color: #fff; border: none; padding: 10px 22px; border-radius: 20px; font-weight: 700; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(227,30,36,0.25); }
+
 .auth-btn:hover { background: #b7171c; transform: translateY(-1px); box-shadow: 0 6px 15px rgba(227,30,36,0.35); }
 
+
+
 /* Translucent Cart Drawer Styles */
+
 .cart-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(3px); z-index: 99999; opacity: 0; visibility: hidden; transition: all 0.3s ease; }
+
 .cart-overlay.open { opacity: 1; visibility: visible; }
+
 .cart-drawer { position: fixed; top: 0; right: -400px; width: 100%; max-width: 380px; height: 100%; background: white; box-shadow: -5px 0 25px rgba(0,0,0,0.15); z-index: 100000; display: flex; flex-direction: column; transition: right 0.35s cubic-bezier(0.16, 1, 0.3, 1); }
+
 .cart-drawer.open { right: 0; }
 
+
+
 .cart-drawer-header { padding: 20px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
+
 .cart-drawer-header h3 { margin: 0; font-size: 1.2rem; color: var(--text-dark); }
+
 .close-drawer-btn { background: none; border: none; font-size: 24px; cursor: pointer; color: #777; }
 
+
+
 .cart-drawer-body { flex: 1; overflow-y: auto; padding: 20px; }
+
 .cart-drawer-item { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid #f0f0f0; }
+
 .cart-item-info h4 { margin: 0 0 5px 0; font-size: 0.95rem; }
+
 .cart-item-info p { margin: 0; color: var(--brand-red); font-weight: bold; font-size: 0.9rem; }
+
 .cart-item-controls { display: flex; align-items: center; gap: 8px; }
+
 .cart-qty-btn { background: #eee; border: none; width: 26px; height: 26px; border-radius: 4px; font-weight: bold; cursor: pointer; }
+
 .cart-drawer-footer { padding: 20px; border-top: 1px solid #eee; background: #fafafa; }
+
 .cart-total-row { display: flex; justify-content: space-between; margin-bottom: 15px; font-weight: bold; font-size: 1.1rem; }
+
 .btn-checkout-drawer { display: block; width: 100%; background: var(--brand-red); color: white; text-align: center; padding: 14px; border-radius: 30px; font-weight: 800; text-decoration: none; transition: 0.3s; }
+
 .btn-checkout-drawer:hover { background: #b7171c; }
 
+
+
 /* Orders Container */
+
 .orders-container { max-width: 900px; margin: 40px auto; padding: 0 20px; }
+
 .section-title { font-size: 2rem; color: var(--brand-blue); margin-bottom: 25px; font-weight: 800; text-align: center; }
+
 .order-card { background: white; border-radius: 12px; padding: 25px; margin-bottom: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); border-left: 6px solid var(--brand-orange); }
+
 .order-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding-bottom: 12px; margin-bottom: 15px; flex-wrap: wrap; gap: 10px; }
+
 .order-id { font-family: monospace; font-size: 0.9rem; color: #666; }
+
 .order-status { background: #e6f4ea; color: #137333; padding: 4px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: bold; }
+
 .order-body p { margin: 5px 0; font-size: 0.95rem; }
+
 .order-items-list { margin: 15px 0; background: #fafafa; padding: 10px 15px; border-radius: 8px; }
+
 .order-item-row { display: flex; justify-content: space-between; font-size: 0.9rem; padding: 4px 0; }
-.order-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 15px; padding-top: 15px; border-top: 1px solid #eee; font-weight: bold; flex-wrap: wrap; gap: 10px; }
+
+.order-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 15px; padding-top: 15px; border-top: 1px solid #eee; font-weight: bold; }
+
 .order-total { font-size: 1.2rem; color: var(--brand-red); }
-.invoice-btn { background: var(--brand-blue); color: #fff; border: none; padding: 8px 16px; border-radius: 20px; font-weight: 700; font-size: 0.85rem; cursor: pointer; }
-.invoice-btn:hover { background: #003d7a; }
+
+
 
 /* Footer */
+
 footer { background: var(--text-dark); color: #aaa; padding: 3rem 2rem; font-size: 0.9rem; margin-top: 50px; }
+
 .footer-container { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; text-align: left; }
+
 @media(max-width: 768px) { .footer-container { grid-template-columns: 1fr; } }
+
 .footer-col h5 { color: var(--white); margin-bottom: 15px; text-transform: uppercase; letter-spacing: 1px; }
+
 .footer-platforms { margin: 10px 0; display: flex; flex-wrap: wrap; gap: 15px; align-items: center; }
+
 .platform-link img { height: 25px; filter: grayscale(1) brightness(2); opacity: 0.7; transition: 0.3s; }
+
 .platform-link:hover img { filter: grayscale(0) brightness(1); opacity: 1; }
+
 .msme-logo { height: 60px !important; filter: none !important; opacity: 1 !important; margin-top: 10px; }
+
 .footer-bottom { grid-column: 1 / -1; text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); font-size: 11px; opacity: 0.5; }
+
 </style>
+
 </head>
+
 <body>
 
+
+
 <div class="lang-bar"><button class="lang-btn" onclick="location.reload()">English</button><button class="lang-btn">हिंदी</button></div>
+
 <header>
+
 <div class="gstin-top-right">K L ENTERPRISE | GSTIN: 10JQBPK5246N1ZO</div>
+
 <div class="nav-wrapper">
+
 <div class="logo"><a href="index.html"><img src="https://i.ibb.co/mFyGcMzs/Whats-App-Image-2026-04-21-at-12-22-57-removebg-preview.png" alt="Logo"></a></div>
+
 <button class="burger-btn" id="mobile-burger-trigger"><span class="burger-bar"></span><span class="burger-bar"></span><span class="burger-bar"></span></button>
+
 <ul class="nav-menu" id="navigation-drawer-menu">
+
 <li class="nav-item"><a href="index.html" class="nav-link">Home</a></li>
+
 <li class="nav-item"><a href="plp.html" class="nav-link">Products</a></li>
+
 <li class="nav-item"><a href="javascript:void(0)" onclick="toggleCartDrawer(true)" class="nav-link">🛒 Cart (<span id="cart-count-badge">0</span>)</a></li>
+
 <li class="nav-item"><a href="orders.html" class="nav-link">📦 My Orders</a></li>
+
 <li class="nav-item"><button id="auth-btn" class="auth-btn">Login</button></li>
+
 </ul>
+
 </div>
+
 </header>
 
+
+
 <main class="orders-container">
+
 <h2 class="section-title">My Order History</h2>
+
 <div id="orders-list-wrapper">
+
 <p style="text-align: center; padding: 40px;">Loading your orders...</p>
+
 </div>
+
 </main>
 
+
+
 <!-- Translucent Cart Drawer Overlay & Drawer -->
+
 <div class="cart-overlay" id="cart-overlay" onclick="toggleCartDrawer(false)"></div>
+
 <div class="cart-drawer" id="cart-drawer">
+
 <div class="cart-drawer-header">
+
 <h3>Your Shopping Cart</h3>
+
 <button class="close-drawer-btn" onclick="toggleCartDrawer(false)">×</button>
+
 </div>
+
 <div class="cart-drawer-body" id="cart-drawer-items-container">
+
 <p style="text-align: center; color: #777; margin-top: 40px;">Cart is empty</p>
+
 </div>
+
 <div class="cart-drawer-footer">
+
 <div class="cart-total-row">
+
 <span>Subtotal:</span>
+
 <span id="cart-drawer-subtotal">₹0</span>
+
 </div>
+
 <a href="checkout.html" class="btn-checkout-drawer">Proceed to Checkout</a>
+
 </div>
+
 </div>
+
+
 
 <footer id="contact">
+
 <div class="footer-container">
+
 <div class="footer-col"><h5>Quality & Certification</h5><p><strong>FSSAI: 20426290000095</strong></p><img src="https://i.ibb.co/ds7NhrHf/New-Project-5.png" class="msme-logo" alt="MSME"></div>
+
 <div class="footer-col"><h5>Shop Online</h5><p>Find us on Marketplaces:</p><div class="footer-platforms"><a href="#" class="platform-link"><img src="https://i.ibb.co/hRB8h7zS/Amazon-Logo-White-PNG.png" alt="Amazon"></a><a href="#" class="platform-link"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/33/Meesho_logo.png/250px-Meesho_logo.png" alt="Meesho"></a><a href="#" class="platform-link"><img src="https://i.ibb.co/HT14SWjR/tradeindia-logo-rounded-glossy-icon-with-transparent-background-free-png.webp" alt="TradeIndia"></a></div></div>
+
 <div class="footer-col"><h5>Contact Us</h5><p>Shiv Kala Bhawan, Maharshi Menhi Nagar, Madhepura, Bihar 852113</p><p>Email: support@lovelybites.online</p></div>
+
 <div class="footer-bottom">© 2026 Lovely Bites. All Rights Reserved.</div>
+
 </div>
+
 </footer>
 
+
+
 <!-- Firebase SDKs -->
+
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 
+
+
 <!-- External Firebase Initialization File -->
+
 <script src="firebase-init.js"></script>
 
+
+
 <script>
+
 document.addEventListener('DOMContentLoaded', () => {
+
 const burger = document.getElementById('mobile-burger-trigger');
+
 const menu = document.getElementById('navigation-drawer-menu');
+
 if (burger && menu) {
+
 burger.addEventListener('click', () => menu.classList.toggle('active'));
+
 }
+
 });
+
+
 
 let currentUser = null;
-window.ordersStore = {};
 
-function esc(str) {
-return String(str ?? '').replace(/[&<>"']/g, c => ({ '&':'&','<':'<','>':'>','"':'"',"'":''' }[c]));
-}
 
-function downloadInvoicePdf(orderId) {
-const order = window.ordersStore[orderId];
-if (!order) { alert("Order not found."); return; }
-
-const displayOrderId = order.orderNumber || order.numericOrderId || order.orderId || orderId.substring(0, 10);
-let dateStr = "Recent";
-if (order.createdAt && typeof order.createdAt.toDate === 'function') {
-dateStr = order.createdAt.toDate().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
-} else if (order.timestamp && typeof order.timestamp.toDate === 'function') {
-dateStr = order.timestamp.toDate().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
-}
-
-const totalAmountNum = Number(order.totalAmount || order.total || 0);
-const taxableAmount = totalAmountNum / 1.05;
-const taxAmount = totalAmountNum - taxableAmount;
-
-let itemsRows = "";
-if (order.items && order.items.length > 0) {
-order.items.forEach((item, idx) => {
-const itemQty = Number(item.qty || item.quantity || 1);
-const lineTotal = Number(item.price || 0) * itemQty;
-const lineTaxable = lineTotal / 1.05;
-const lineTax = lineTotal - lineTaxable;
-itemsRows += `<tr>
-<td>${idx + 1}</td>
-<td>${esc(item.productName || item.name || 'Product')}</td>
-<td style="text-align:center;">${itemQty}</td>
-<td style="text-align:right;">₹${lineTaxable.toFixed(2)}</td>
-<td style="text-align:right;">₹${lineTax.toFixed(2)}</td>
-<td style="text-align:right;">₹${lineTotal.toFixed(2)}</td>
-</tr>`;
-});
-} else {
-itemsRows = `<tr>
-<td>1</td>
-<td>Order Items</td>
-<td style="text-align:center;">1</td>
-<td style="text-align:right;">₹${taxableAmount.toFixed(2)}</td>
-<td style="text-align:right;">₹${taxAmount.toFixed(2)}</td>
-<td style="text-align:right;">₹${totalAmountNum.toFixed(2)}</td>
-</tr>`;
-}
-
-const gstinHtml = order.customerGstin ? `<p style="margin:3px 0;"><strong>Customer GSTIN:</strong> ${esc(order.customerGstin)}</p>` : "";
-
-const pdfWin = window.open("", "_blank");
-if (!pdfWin) { alert("Popup blocked. Please allow popups for PDF invoice."); return; }
-
-pdfWin.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Invoice #${esc(displayOrderId)}</title>
-<style>
-body{font-family:Arial,sans-serif;margin:24px;color:#222;}
-.inv{max-width:780px;margin:0 auto;border:1px solid #ddd;padding:24px;border-radius:8px;}
-.hdr{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:2px solid #e31e24;padding-bottom:14px;margin-bottom:16px;gap:12px;}
-.brand{display:flex;align-items:center;gap:12px;}
-.brand img{height:56px;width:auto;}
-.meta{text-align:right;font-size:13px;}
-.info{display:flex;justify-content:space-between;gap:20px;font-size:13px;margin-bottom:18px;}
-table{width:100%;border-collapse:collapse;font-size:13px;margin-bottom:16px;}
-th,td{border:1px solid #ddd;padding:8px;}
-th{background:#f7f7f7;text-align:left;}
-.sum{width:300px;margin-left:auto;font-size:13px;}
-.sum div{display:flex;justify-content:space-between;padding:4px 0;}
-.sum .tot{font-weight:bold;font-size:15px;border-top:1px solid #333;margin-top:6px;padding-top:8px;color:#e31e24;}
-.ftr{margin-top:20px;padding-top:12px;border-top:1px dashed #ccc;font-size:12px;}
-@media print{.no-print{display:none;}.inv{border:none;padding:0;}}
-</style></head><body>
-<div class="no-print" style="max-width:780px;margin:0 auto 12px auto;text-align:right;">
-<button id="savePdfBtn" style="background:#0054a6;color:#fff;border:none;padding:8px 16px;border-radius:6px;cursor:pointer;font-weight:bold;">Save / Print PDF</button>
-</div>
-<div class="inv">
-<div class="hdr">
-<div class="brand">
-<img src="https://i.ibb.co/mFyGcMzs/Whats-App-Image-2026-04-21-at-12-22-57-removebg-preview.png" alt="Lovely Bites">
-<div>
-<h2 style="margin:0;color:#0054a6;">Lovely Bites</h2>
-<div style="font-size:12px;">K L ENTERPRISE</div>
-<div style="font-size:12px;">GSTIN: <strong>10JQBPK5246N1ZO</strong> | FSSAI: <strong>20426290000095</strong></div>
-<div style="font-size:12px;">Shiv Kala Bhawan, Maharshi Menhi Nagar, Madhepura, Bihar 852113</div>
-<div style="font-size:12px;">Email: support@lovelybites.online | Contact: +91 9546773070</div>
-</div>
-</div>
-<div class="meta">
-<div><strong>INVOICE</strong></div>
-<div>Order ID: <strong>#${esc(displayOrderId)}</strong></div>
-<div>Date: ${esc(dateStr)}</div>
-<div>Status: ${esc(order.paymentStatus || order.orderStatus || 'Paid')}</div>
-</div>
-</div>
-<div class="info">
-<div style="width:48%;">
-<strong>Customer Details:</strong>
-<p style="margin:4px 0;"><strong>${esc(order.customerName || 'N/A')}</strong></p>
-<p style="margin:3px 0;">Phone: ${esc(order.customerPhone || 'N/A')}</p>
-<p style="margin:3px 0;">Address: ${esc(order.shippingAddress || order.address || 'N/A')}</p>
-${gstinHtml}
-</div>
-<div style="width:48%;text-align:right;">
-<strong>Payment Details:</strong>
-<p style="margin:4px 0;">Method: ${esc((order.paymentMethod || 'Online').toUpperCase())}</p>
-<p style="margin:3px 0;">Status: ${esc((order.paymentStatus || 'Paid').toUpperCase())}</p>
-</div>
-</div>
-<table>
-<thead><tr><th>#</th><th>Item</th><th style="text-align:center;">Qty</th><th style="text-align:right;">Taxable</th><th style="text-align:right;">Tax (5%)</th><th style="text-align:right;">Total</th></tr></thead>
-<tbody>${itemsRows}</tbody>
-</table>
-<div class="sum">
-<div><span>Taxable Amount:</span><span>₹${taxableAmount.toFixed(2)}</span></div>
-<div><span>Tax (5%):</span><span>₹${taxAmount.toFixed(2)}</span></div>
-<div class="tot"><span>Total Paid:</span><span>₹${totalAmountNum.toFixed(2)}</span></div>
-</div>
-<div class="ftr">
-<p style="margin:0 0 4px 0;font-weight:bold;color:#b7171c;">This order is non-refundable.</p>
-<p style="margin:0;">Lovely Bites (K L ENTERPRISE) | Shiv Kala Bhawan, Maharshi Menhi Nagar, Madhepura, Bihar 852113 | support@lovelybites.online | +91 9546773070</p>
-</div>
-</div>
-</body></html>`);
-pdfWin.document.close();
-const saveBtn = pdfWin.document.getElementById("savePdfBtn");
-if (saveBtn) saveBtn.onclick = () => pdfWin.print();
-setTimeout(() => { pdfWin.focus(); pdfWin.print(); }, 300);
-}
 
 function toggleCartDrawer(open) {
+
 const drawer = document.getElementById('cart-drawer');
+
 const overlay = document.getElementById('cart-overlay');
+
 if (open) {
+
 drawer.classList.add('open');
+
 overlay.classList.add('open');
+
 } else {
+
 drawer.classList.remove('open');
+
 overlay.classList.remove('open');
+
 }
+
 }
+
+
 
 async function updateCartItemQty(productId, newQty) {
+
 if (!currentUser) return;
+
 const cartRef = firebase.firestore().collection("users").doc(currentUser.uid).collection("cart").doc(productId);
+
 if (newQty <= 0) {
+
 await cartRef.delete();
+
 } else {
+
 await cartRef.update({ qty: newQty });
+
 }
+
 }
+
+
 
 firebase.auth().onAuthStateChanged((user) => {
+
 currentUser = user;
+
 const authBtn = document.getElementById('auth-btn');
+
 const cartBadge = document.getElementById('cart-count-badge');
+
 const ordersWrapper = document.getElementById('orders-list-wrapper');
+
 const drawerContainer = document.getElementById('cart-drawer-items-container');
+
 const drawerSubtotal = document.getElementById('cart-drawer-subtotal');
 
+
+
 if (authBtn) {
+
 authBtn.innerText = user ? "Logout" : "Login";
+
 authBtn.onclick = () => {
-if (user) {
-firebase.auth().signOut();
-} else {
-firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider());
-}
-};
-}
 
 if (user) {
+
+firebase.auth().signOut();
+
+} else {
+
+firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider());
+
+}
+
+};
+
+}
+
+
+
+if (user) {
+
 // Fetch Cart Count & Drawer Items
+
 firebase.firestore().collection("users").doc(user.uid).collection("cart").onSnapshot((snapshot) => {
+
 let totalCount = 0;
+
 let subtotal = 0;
+
 let drawerHtml = '';
 
+
+
 if (snapshot.empty) {
+
 drawerHtml = '<p style="text-align: center; color: #777; margin-top: 40px;">Cart is empty</p>';
+
 } else {
+
 snapshot.forEach(doc => {
+
 const item = doc.data();
+
 const qty = Number(item.qty || 1);
+
 const price = Number(item.price || 0);
+
 totalCount += qty;
+
 subtotal += price * qty;
 
+
+
 drawerHtml += `
+
 <div class="cart-drawer-item">
+
 <div class="cart-item-info">
+
 <h4>${item.productName}</h4>
+
 <p>₹${price} × ${qty}</p>
+
 </div>
+
 <div class="cart-item-controls">
+
 <button type="button" class="cart-qty-btn" onclick="updateCartItemQty('${doc.id}', ${qty - 1})">-</button>
+
 <span style="font-weight:bold; font-size:14px;">${qty}</span>
+
 <button type="button" class="cart-qty-btn" onclick="updateCartItemQty('${doc.id}', ${qty + 1})">+</button>
+
 </div>
+
 </div>
+
 `;
+
 });
+
 }
+
+
 
 if (cartBadge) cartBadge.innerText = totalCount;
+
 if (drawerContainer) drawerContainer.innerHTML = drawerHtml;
+
 if (drawerSubtotal) drawerSubtotal.innerText = `₹${subtotal}`;
+
 });
+
+
 
 // Fetch User Orders without requiring Firestore Index (Sorted via JS)
+
 firebase.firestore().collection("orders")
+
 .where("userId", "==", user.uid)
+
 .onSnapshot((snapshot) => {
+
 if (snapshot.empty) {
-window.ordersStore = {};
+
 ordersWrapper.innerHTML = "<p style='text-align: center; padding: 40px;'>Aapne abhi tak koi order place nahi kiya hai!</p>";
+
 return;
+
 }
+
+
 
 // Convert snapshot to array for JS sorting (Latest first)
+
 let ordersArray = [];
-window.ordersStore = {};
+
 snapshot.forEach(doc => {
-const itemData = { id: doc.id, ...doc.data() };
-ordersArray.push(itemData);
-window.ordersStore[doc.id] = itemData;
+
+ordersArray.push({ id: doc.id, ...doc.data() });
+
 });
+
+
 
 // Sort descending (Latest on top)
+
 ordersArray.sort((a, b) => {
+
 let timeA = a.createdAt?.seconds || a.timestamp?.seconds || 0;
+
 let timeB = b.createdAt?.seconds || b.timestamp?.seconds || 0;
+
 return timeB - timeA;
+
 });
+
+
 
 let ordersHTML = "";
+
 ordersArray.forEach(order => {
+
 const orderId = order.id;
+
 const displayOrderId = order.orderNumber || order.numericOrderId || order.orderId || orderId.substring(0, 10);
+
 let dateStr = "Recent";
+
 if (order.createdAt && typeof order.createdAt.toDate === 'function') {
+
 dateStr = order.createdAt.toDate().toLocaleDateString('en-IN', {
+
 day: 'numeric',
+
 month: 'short',
+
 year: 'numeric'
+
 });
+
 } else if (order.timestamp && typeof order.timestamp.toDate === 'function') {
+
 dateStr = order.timestamp.toDate().toLocaleDateString('en-IN', {
+
 day: 'numeric',
+
 month: 'short',
+
 year: 'numeric'
+
 });
+
 }
+
 let itemsHTML = "";
+
 if (order.items && order.items.length > 0) {
+
 order.items.forEach(item => {
+
 const itemQty = Number(item.qty || item.quantity || 1);
+
 const itemPrice = Number(item.price || 0);
+
 itemsHTML += `
+
 <div class="order-item-row">
+
 <span>${item.productName || item.name || 'Product'} (x${itemQty})</span>
+
 <span>₹${(itemPrice * itemQty).toFixed(2)}</span>
+
 </div>
+
 `;
+
 });
+
 }
+
+
 
 const totalAmountNum = Number(order.totalAmount || order.total || 0);
+
 const currentStatus = order.orderStatus || order.status || 'Placed';
+
 const trackingVal = order.trackingInfo || order.tracking || order.awb || '';
 
+
+
 // Tracking Section HTML
+
 let trackingHTML = '';
+
 if (trackingVal) {
+
 const isUrl = trackingVal.startsWith('http');
+
 trackingHTML = `
+
 <div style="margin-top: 8px; padding: 6px 10px; background: #eef2ff; border-radius: 6px; font-size: 0.85rem;">
+
 <strong>📦 AWB / Tracking:</strong>
+
 ${isUrl ? `<a href="${trackingVal}" target="_blank" style="color: var(--brand-blue); text-decoration: underline;">${trackingVal}</a>` : `<span style="font-family: monospace; color: #333;">${trackingVal}</span>`}
+
 </div>
+
 `;
+
 }
+
+
 
 ordersHTML += `
+
 <div class="order-card">
+
 <div class="order-header">
+
 <span class="order-id">Order ID: #${displayOrderId}</span>
+
 <span class="order-status">${currentStatus}</span>
+
 </div>
+
 <div class="order-body">
+
 <p><strong>Date:</strong> ${dateStr}</p>
+
 <p><strong>Shipping To:</strong> ${order.customerName || 'N/A'} (${order.customerPhone || 'N/A'})</p>
+
 <p><strong>Address:</strong> ${order.shippingAddress || order.address || 'N/A'}</p>
+
 <p><strong>Payment:</strong> ${(order.paymentMethod || 'Online').toUpperCase()} (${(order.paymentStatus || 'Paid').toUpperCase()})</p>
+
 ${trackingHTML}
 
+
+
 <div class="orders-items-list" style="margin: 15px 0; background: #fafafa; padding: 10px 15px; border-radius: 8px;">
+
 ${itemsHTML}
+
 </div>
+
 </div>
+
 <div class="order-footer">
-<div>
+
 <span>Total Paid:</span>
+
 <span class="order-total">₹${totalAmountNum.toFixed(2)}</span>
+
 </div>
-<button type="button" class="invoice-btn" onclick="downloadInvoicePdf('${orderId}')">Download PDF Invoice</button>
+
 </div>
-</div>
+
 `;
+
 });
+
+
 
 ordersWrapper.innerHTML = ordersHTML;
+
 }, (error) => {
+
 console.error("Orders fetch error:", error);
+
 ordersWrapper.innerHTML = "<p style='text-align: center; color: red;'>Error loading orders.</p>";
+
 });
+
+
 
 } else {
+
 if (cartBadge) cartBadge.innerText = "0";
+
 if (drawerContainer) drawerContainer.innerHTML = '<p style="text-align: center; color: #777; margin-top: 40px;">Pehle login karein</p>';
+
 if (drawerSubtotal) drawerSubtotal.innerText = '₹0';
+
 ordersWrapper.innerHTML = "<p style='text-align: center; padding: 40px;'>Pehle login karein apne orders dekhne ke liye.</p>";
+
 }
+
 });
+
 </script>
 
+
+
 <!-- Floating WhatsApp Button -->
+
 <a href="https://wa.me/919546773070?text=Hello%20Lovely%20Bites,%20mujhe%20products%20ke%20bare%2520me%20jaanna%20hai"
+
 target="_blank"
+
 style="position: fixed; bottom: 20px; right: 20px; background-color: #25d366; color: white; border-radius: 50px; padding: 12px 20px; display: flex; align-items: center; gap: 8px; text-decoration: none; font-weight: bold; box-shadow: 0 4px 10px rgba(0,0,0,0.3); z-index: 99999; font-size: 14px;">
+
 <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp" style="width: 24px; height: 24px;">
+
 Chat with Us
+
 </a>
+
 </body>
-</html>
+
+</html>   
