@@ -1,16 +1,127 @@
 function escapeInvoiceText(value) {
     return String(value ?? '').replace(/[&<>"']/g, function (ch) {
         return {
-            '&': '&amp;',
-            '<': '&lt;',
-            '>': '&gt;',
-            '"': '&quot;',
-            "'": '&#39;'
+            '&': '&',
+            '<': '<',
+            '>': '>',
+            '"': '"',
+            "'": '''
         }[ch];
     });
 }
 
-function downloadOrderPdfInvoice(orderId) {
+function invRound2(num) {
+    const n = Number(num);
+    if (!isFinite(n) || isNaN(n)) return 0;
+    return Math.round((n + Number.EPSILON) * 100) / 100;
+}
+
+function invNormalizeKey(val) {
+    return String(val || "").trim().toLowerCase().replace(/[\s_-]+/g, "");
+}
+
+function parseTaxPercentValue(raw) {
+    if (raw === undefined || raw === null || raw === "") return null;
+    if (typeof raw === "number") {
+        return isFinite(raw) && raw >= 0 && raw <= 100 ? invRound2(raw) : null;
+    }
+    const match = String(raw).trim().match(/(\d+(?:\.\d+)?)/);
+    if (!match) return null;
+    const num = Number(match[1]);
+    return !isNaN(num) && isFinite(num) && num >= 0 && num <= 100 ? invRound2(num) : null;
+}
+
+async function fetchProductTaxRatesMap() {
+    const mapByKey = new Map();
+
+    const indexProductDoc = (docId, p) => {
+        if (!p || typeof p !== "object") return;
+        const rate = parseTaxPercentValue(
+            p.taxPercent ?? p.tax_percent ?? p.gstRate ?? p.gst_rate ?? p.gstPercent ?? p.gst_percent
+        );
+        if (rate === null) return;
+
+        const keys = [
+            docId,
+            p.id,
+            p.productId,
+            p.product_id,
+            p.sku,
+            p.productSku,
+            p.product_sku,
+            p.code,
+            p.name,
+            p.productName,
+            p.product_name,
+            p.title
+        ]
+            .filter(Boolean)
+            .map((k) => String(k).trim().toLowerCase());
+
+        for (const k of keys) {
+            mapByKey.set(k, rate);
+            mapByKey.set(invNormalizeKey(k), rate);
+        }
+    };
+
+    try {
+        if (window.firebase && typeof window.firebase.firestore === "function") {
+            const snap = await window.firebase.firestore().collection("products").get();
+            snap.forEach((doc) => indexProductDoc(doc.id, doc.data()));
+            return mapByKey;
+        }
+    } catch (_) {}
+
+    try {
+        if (window.__lbFirestoreMod && window.__lbFirestoreDb) {
+            const { collection, getDocs } = window.__lbFirestoreMod;
+            const snap = await getDocs(collection(window.__lbFirestoreDb, "products"));
+            snap.forEach((doc) => indexProductDoc(doc.id, doc.data()));
+            return mapByKey;
+        }
+    } catch (_) {}
+
+    return mapByKey;
+}
+
+function resolveItemTaxRateFromMap(item, order, rateMap, idx) {
+    const directRate = parseTaxPercentValue(
+        item?.taxPercent ?? item?.tax_percent ?? item?.gstRate ?? item?.gst_rate ?? item?.gstPercent ?? item?.gst_percent
+    );
+    if (directRate !== null) return directRate;
+
+    if (Array.isArray(order?.taxBreakup?.itemTaxRates) && order.taxBreakup.itemTaxRates[idx] !== undefined) {
+        const fromBreakup = parseTaxPercentValue(order.taxBreakup.itemTaxRates[idx]);
+        if (fromBreakup !== null) return fromBreakup;
+    }
+
+    const candidates = [
+        item?.id,
+        item?.productId,
+        item?.product_id,
+        item?.sku,
+        item?.productSku,
+        item?.product_sku,
+        item?.code,
+        item?.productName,
+        item?.product_name,
+        item?.name,
+        item?.title
+    ]
+        .filter(Boolean)
+        .map((c) => String(c).trim().toLowerCase());
+
+    for (const c of candidates) {
+        if (rateMap.has(c)) return rateMap.get(c);
+        const nc = invNormalizeKey(c);
+        if (rateMap.has(nc)) return rateMap.get(nc);
+    }
+
+    const orderRate = parseTaxPercentValue(order?.taxPercent ?? order?.gstRate ?? order?.gstPercent);
+    return orderRate !== null ? orderRate : 0;
+}
+
+async function downloadOrderPdfInvoice(orderId) {
     const store = window.ordersStore || window.ordersById || {};
     const order = store[orderId];
 
@@ -19,6 +130,7 @@ function downloadOrderPdfInvoice(orderId) {
         return;
     }
 
+    const rateMap = await fetchProductTaxRatesMap();
     const displayOrderId = order.orderNumber || order.numericOrderId || order.orderId || String(orderId).substring(0, 10);
 
     let dateStr = "Recent";
@@ -36,41 +148,102 @@ function downloadOrderPdfInvoice(orderId) {
         });
     }
 
-    const totalAmountNum = Number(order.totalAmount || order.total || 0);
-    const taxableAmount = totalAmountNum / 1.05;
-    const taxAmount = totalAmountNum - taxableAmount;
+    const rawItems = Array.isArray(order.items) ? order.items : [];
+    const fallbackTotal = invRound2(order.totalAmount || order.total || 0);
 
     let itemsRowsHtml = "";
-    if (Array.isArray(order.items) && order.items.length > 0) {
-        order.items.forEach(function (item, idx) {
-            const qty = Number(item.qty || item.quantity || 1);
-            const lineTotal = Number(item.price || 0) * qty;
-            const lineTaxable = lineTotal / 1.05;
-            const lineTax = lineTotal - lineTaxable;
+    let computedTaxable = 0;
+    let computedTax = 0;
+    let computedTotal = 0;
+
+    if (rawItems.length > 0) {
+        const rawSubtotal = rawItems.reduce((sum, item) => {
+            const qty = Math.max(1, Number(item.qty || item.quantity || 1));
+            const unitPrice = Number(item.price ?? item.rrp ?? item.mrp ?? 0);
+            return sum + (isNaN(unitPrice) || unitPrice < 0 ? 0 : unitPrice * qty);
+        }, 0);
+
+        const targetTotal = fallbackTotal > 0 ? fallbackTotal : invRound2(rawSubtotal);
+        const scaleFactor = rawSubtotal > 0 ? targetTotal / rawSubtotal : 0;
+        let allocatedTotal = 0;
+
+        rawItems.forEach(function (item, idx) {
+            const qty = Math.max(1, Number(item.qty || item.quantity || 1));
+            const unitPrice = Number(item.price ?? item.rrp ?? item.mrp ?? 0);
+            const safeUnitPrice = isNaN(unitPrice) || unitPrice < 0 ? 0 : unitPrice;
+            const taxRate = resolveItemTaxRateFromMap(item, order, rateMap, idx);
+
+            let lineTotal;
+            if (idx === rawItems.length - 1) {
+                lineTotal = invRound2(Math.max(0, targetTotal - allocatedTotal));
+            } else {
+                lineTotal = rawSubtotal > 0
+                    ? invRound2(safeUnitPrice * qty * scaleFactor)
+                    : (idx === 0 ? targetTotal : 0);
+                allocatedTotal = invRound2(allocatedTotal + lineTotal);
+            }
+
+            const lineTaxable = taxRate > 0 ? invRound2(lineTotal / (1 + taxRate / 100)) : invRound2(lineTotal);
+            const lineTax = invRound2(Math.max(0, lineTotal - lineTaxable));
+            const halfTaxRate = invRound2(taxRate / 2);
+            const halfTaxAmt = invRound2(lineTax / 2);
+
+            computedTaxable = invRound2(computedTaxable + lineTaxable);
+            computedTax = invRound2(computedTax + lineTax);
+            computedTotal = invRound2(computedTotal + lineTotal);
+
+            const safeName = escapeInvoiceText(item.productName || item.name || item.title || `Item ${idx + 1}`);
+            const safeSku = escapeInvoiceText(item.sku || item.productSku || item.id || "");
 
             itemsRowsHtml += `
                 <tr>
                     <td>${idx + 1}</td>
-                    <td>${escapeInvoiceText(item.productName || item.name || "Product")}</td>
+                    <td>
+                        <div><strong>${safeName}</strong></div>
+                        <div style="font-size:11px;color:#555;">
+                            ${safeSku ? `SKU/ID: ${safeSku} | ` : ""}GST ${taxRate}% (CGST ${halfTaxRate}%: ₹${halfTaxAmt.toFixed(2)} + SGST ${halfTaxRate}%: ₹${halfTaxAmt.toFixed(2)})
+                        </div>
+                    </td>
                     <td style="text-align:center;">${qty}</td>
                     <td style="text-align:right;">₹${lineTaxable.toFixed(2)}</td>
-                    <td style="text-align:right;">₹${lineTax.toFixed(2)}</td>
+                    <td style="text-align:right;">₹${lineTax.toFixed(2)} (${taxRate}%)</td>
                     <td style="text-align:right;">₹${lineTotal.toFixed(2)}</td>
                 </tr>
             `;
         });
     } else {
+        const singleRate = parseTaxPercentValue(order?.taxBreakup?.gstRatePercent ?? order?.taxPercent) ?? 0;
+        computedTotal = fallbackTotal;
+        computedTaxable = singleRate > 0 ? invRound2(computedTotal / (1 + singleRate / 100)) : computedTotal;
+        computedTax = invRound2(Math.max(0, computedTotal - computedTaxable));
+
         itemsRowsHtml = `
             <tr>
                 <td>1</td>
                 <td>Order Items</td>
                 <td style="text-align:center;">1</td>
-                <td style="text-align:right;">₹${taxableAmount.toFixed(2)}</td>
-                <td style="text-align:right;">₹${taxAmount.toFixed(2)}</td>
-                <td style="text-align:right;">₹${totalAmountNum.toFixed(2)}</td>
+                <td style="text-align:right;">₹${computedTaxable.toFixed(2)}</td>
+                <td style="text-align:right;">₹${computedTax.toFixed(2)} (${singleRate}%)</td>
+                <td style="text-align:right;">₹${computedTotal.toFixed(2)}</td>
             </tr>
         `;
     }
+
+    const useSavedBreakup = order && order.taxBreakup && typeof order.taxBreakup === "object"
+        && order.taxBreakup.subtotal !== undefined
+        && order.taxBreakup.totalTaxAmount !== undefined;
+
+    const finalTaxableAmount = useSavedBreakup ? invRound2(order.taxBreakup.subtotal) : computedTaxable;
+    const finalTaxAmount = useSavedBreakup ? invRound2(order.taxBreakup.totalTaxAmount) : computedTax;
+    const finalTotalAmount = useSavedBreakup && order.taxBreakup.grandTotal !== undefined
+        ? invRound2(order.taxBreakup.grandTotal)
+        : (fallbackTotal > 0 ? fallbackTotal : computedTotal);
+    const finalCgstAmount = useSavedBreakup && order.taxBreakup.cgstAmount !== undefined
+        ? invRound2(order.taxBreakup.cgstAmount)
+        : invRound2(finalTaxAmount / 2);
+    const finalSgstAmount = useSavedBreakup && order.taxBreakup.sgstAmount !== undefined
+        ? invRound2(order.taxBreakup.sgstAmount)
+        : invRound2(finalTaxAmount - finalCgstAmount);
 
     const customerGstinHtml = order.customerGstin
         ? `<p style="margin:3px 0;"><strong>Customer GSTIN:</strong> ${escapeInvoiceText(order.customerGstin)}</p>`
@@ -98,7 +271,7 @@ function downloadOrderPdfInvoice(orderId) {
   table { width: 100%; border-collapse: collapse; font-size: 13px; margin-bottom: 16px; }
   th, td { border: 1px solid #ddd; padding: 8px; }
   th { background: #f7f7f7; text-align: left; }
-  .summary-box { width: 310px; margin-left: auto; font-size: 13px; }
+  .summary-box { width: 320px; margin-left: auto; font-size: 13px; }
   .summary-line { display: flex; justify-content: space-between; padding: 4px 0; }
   .summary-total { font-weight: bold; font-size: 15px; border-top: 1px solid #333; margin-top: 6px; padding-top: 8px; color: #e31e24; }
   .inv-footer { margin-top: 20px; padding-top: 12px; border-top: 1px dashed #ccc; font-size: 12px; color: #444; }
@@ -151,7 +324,7 @@ function downloadOrderPdfInvoice(orderId) {
           <th>Item</th>
           <th style="text-align:center;">Qty</th>
           <th style="text-align:right;">Taxable</th>
-          <th style="text-align:right;">Tax (5%)</th>
+          <th style="text-align:right;">Tax</th>
           <th style="text-align:right;">Total</th>
         </tr>
       </thead>
@@ -161,9 +334,11 @@ function downloadOrderPdfInvoice(orderId) {
     </table>
 
     <div class="summary-box">
-      <div class="summary-line"><span>Taxable Amount:</span><span>₹${taxableAmount.toFixed(2)}</span></div>
-      <div class="summary-line"><span>Tax (5%):</span><span>₹${taxAmount.toFixed(2)}</span></div>
-      <div class="summary-line summary-total"><span>Total Paid:</span><span>₹${totalAmountNum.toFixed(2)}</span></div>
+      <div class="summary-line"><span>Taxable Amount:</span><span>₹${finalTaxableAmount.toFixed(2)}</span></div>
+      <div class="summary-line"><span>CGST:</span><span>₹${finalCgstAmount.toFixed(2)}</span></div>
+      <div class="summary-line"><span>SGST:</span><span>₹${finalSgstAmount.toFixed(2)}</span></div>
+      <div class="summary-line"><span>Total Tax:</span><span>₹${finalTaxAmount.toFixed(2)}</span></div>
+      <div class="summary-line summary-total"><span>Total Paid:</span><span>₹${finalTotalAmount.toFixed(2)}</span></div>
     </div>
 
     <div class="inv-footer">
