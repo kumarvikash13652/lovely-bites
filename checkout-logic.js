@@ -1,3 +1,28 @@
+async function generateNextSerialOrderId(db) {
+    const counterRef = db.collection("counters").doc("orders");
+
+    const nextSeq = await db.runTransaction(async (transaction) => {
+        const snap = await transaction.get(counterRef);
+        const currentSeq = snap.exists && typeof snap.data()?.seq === "number"
+            ? snap.data().seq
+            : 0;
+        const updatedSeq = currentSeq + 1;
+
+        transaction.set(
+            counterRef,
+            {
+                seq: updatedSeq,
+                updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+            },
+            { merge: true }
+        );
+
+        return updatedSeq;
+    });
+
+    return `LB${String(nextSeq).padStart(6, "0")}`;
+}
+
 async function placeOrderAndPay() {
     console.log("Button click hua!");
 
@@ -26,7 +51,7 @@ async function placeOrderAndPay() {
 
     try {
         const db = firebase.firestore();
-        
+
         // Fetch cart items to calculate total and save items
         const cartRef = db.collection("users").doc(authUser.uid).collection("cart");
         const cartSnapshot = await cartRef.get();
@@ -44,7 +69,12 @@ async function placeOrderAndPay() {
             totalAmount += subtotal;
         });
 
+        // Generate atomic, non-duplicate serial order ID (e.g., LB000001)
+        const serialOrderId = await generateNextSerialOrderId(db);
+
         const orderData = {
+            orderId: serialOrderId,
+            orderNumber: serialOrderId,
             userId: authUser.uid,
             name: name,
             email: email,
@@ -60,17 +90,17 @@ async function placeOrderAndPay() {
 
         console.log("Database mein bheja ja raha data:", orderData);
 
-        // Save order to Firestore
-        const docRef = await db.collection("orders").add(orderData);
-        console.log("Order successfully likha gaya! ID:", docRef.id);
-        
+        // Save order to Firestore using the exact same serialOrderId as Document ID
+        await db.collection("orders").doc(serialOrderId).set(orderData);
+        console.log("Order successfully likha gaya! ID:", serialOrderId);
+
         // Clear User Cart
         const batch = db.batch();
         cartSnapshot.forEach(doc => batch.delete(doc.ref));
         await batch.commit();
 
-        // Redirect to Success Page
-        window.location.href = `success.html?orderId=${docRef.id}`;
+        // Redirect to Success Page with the exact same orderId
+        window.location.href = `success.html?orderId=${serialOrderId}`;
 
     } catch (e) {
         console.error("Error saving to database:", e);
