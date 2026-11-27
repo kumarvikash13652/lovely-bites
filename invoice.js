@@ -1,11 +1,11 @@
 function escapeInvoiceText(value) {
     return String(value ?? '').replace(/[&<>"']/g, function (ch) {
         return {
-            '&': '&',
-            '<': '<',
-            '>': '>',
-            '"': '"',
-            "'": '''
+            '&': '\x26amp;',
+            '<': '\x26lt;',
+            '>': '\x26gt;',
+            '"': '\x26quot;',
+            "'": '\x26#39;'
         }[ch];
     });
 }
